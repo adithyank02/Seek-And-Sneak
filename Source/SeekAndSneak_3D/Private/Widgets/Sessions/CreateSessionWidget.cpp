@@ -39,49 +39,40 @@ void UCreateSessionWidget::HandleTextBoxCommited(const FText& CommitedText, ETex
 
 void UCreateSessionWidget::OnCreateButtonClicked()
 {
-//	if (CallOnce)
-	//{
-	//	CallOnce = false;
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 
-		IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
 
-		if (OnlineSubsystem)
+		if (SessionInterface.IsValid())
 		{
-			IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UCreateSessionWidget::OnSessionCreateCompleted);
 
-			if (SessionInterface.IsValid())
-			{
-				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UCreateSessionWidget::OnSessionCreateCompleted);
+			OnlineSessionSettings.bIsLANMatch = IsLan;
+			OnlineSessionSettings.NumPublicConnections = NumberOfConnections;
+			OnlineSessionSettings.bShouldAdvertise = ShouldAdvertise;
+			OnlineSessionSettings.bAllowJoinInProgress = bJoinOnProgress;
+			OnlineSessionSettings.bUsesPresence = bUsePresence;
 
-				OnlineSessionSettings.bIsLANMatch = IsLan;
-				OnlineSessionSettings.NumPublicConnections = NumberOfConnections;
-				OnlineSessionSettings.bShouldAdvertise = ShouldAdvertise;
-				OnlineSessionSettings.bAllowJoinInProgress = bJoinOnProgress;
-				OnlineSessionSettings.bUsesPresence = bUsePresence;
+			//It Is Sending In The For Of Key Value Pair 
+			OnlineSessionSettings.Set(FName("SessionCode")/*Key*/, RandomSessionCodeGenerator()/*Value*/, EOnlineDataAdvertisementType::ViaPingOnly);
+			FString SessionCode = RandomSessionCodeGenerator();
 
-				//It Is Sending In The For Of Key Value Pair 
-				OnlineSessionSettings.Set(FName("SessionCode")/*Key*/, RandomSessionCodeGenerator()/*Value*/, EOnlineDataAdvertisementType::ViaPingOnly);
-				FString SessionCode = RandomSessionCodeGenerator();
+			//Setting Session Name Has Local System Name
+			FName SessionName = FPlatformProcess::ComputerName();
 
-				//Setting Session Name Has Local System Name
-				FName SessionName = FPlatformProcess::ComputerName();
+			SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings);
 
-				SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings);
-
-				UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Every Thing Fine"), true, true, FLinearColor::Green);
-				UKismetSystemLibrary::PrintString(GetWorld(), SessionCode, true, true, FLinearColor::Yellow, 5);
-			}
-			else
-			{
-				UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Session Interface Failed"), true, true, FLinearColor::Red);
-			}
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Every Thing Fine"), true, true, FLinearColor::Green);
+			UKismetSystemLibrary::PrintString(GetWorld(), SessionCode, true, true, FLinearColor::Yellow, 5);
 		}
 		else
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnlineSubsystem Failed"), true, true, FLinearColor::Red);
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Session Interface Failed"), true, true, FLinearColor::Red);
 		}
-//	}
-	
+	}
+
 }
 
 void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool WasSuccessful)

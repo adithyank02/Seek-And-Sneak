@@ -7,6 +7,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FClassFinder<USessionWidget>WidgetClass(TEXT("/Game/Widgets/BP_SessionWidget.BP_SessionWidget_C"));
+
+	if (WidgetClass.Succeeded())
+	{
+		SessionWidgetClass = WidgetClass.Class;
+	}
+}
+
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -14,16 +24,16 @@ void UMainMenuWidget::NativeConstruct()
 	CreateSessionButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::OnCreateSessionButtonClicked);
 	ExitGameButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::OnExitGameButtonClicked);
 
-//	WidgetSwitcher->AddChild(this);
-	WidgetSwitcher->AddChild(SessionWidget);	
+	SessionWidget = CreateWidget<USessionWidget>(this,SessionWidgetClass);
+	WidgetSwitcher->AddChild(SessionWidget);
 
 	SessionWidget->BackButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::SessionWidgetBackButton);
-
+	
 }
 
 void UMainMenuWidget::OnCreateSessionButtonClicked()
 {
-	WidgetSwitcher->SetActiveWidget(SessionWidget);
+	WidgetSwitcher->SetActiveWidgetIndex(1);
 }
 
 void UMainMenuWidget::OnExitGameButtonClicked()
@@ -33,5 +43,6 @@ void UMainMenuWidget::OnExitGameButtonClicked()
 
 void UMainMenuWidget::SessionWidgetBackButton()
 {
+	//Back To Main Menu Widget
 	WidgetSwitcher->SetActiveWidgetIndex(0);
 }

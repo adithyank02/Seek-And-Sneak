@@ -24,9 +24,8 @@ private:
 
 	void BeginPlay()override;
 
-	//TSubclassOf<UMainMenuWidget>MainMenuClass;
-
-	TSubclassOf<UCreateSessionWidget>MainMenuClass;
+	UPROPERTY()
+	TSubclassOf<UMainMenuWidget>MainMenuClass;
 
 	UPROPERTY()
 	class UUserWidget* MainMenuWidget;

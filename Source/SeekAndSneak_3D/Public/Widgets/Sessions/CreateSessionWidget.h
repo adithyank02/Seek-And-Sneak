@@ -61,9 +61,6 @@ private:
 	//Function That Trigger After Session Creation 
 	void OnSessionCreateCompleted(FName SessionName , bool WasSuccessful);
 
-	//Button Trigger More Than Once
-	bool CallOnce = true;
-
 	//RandomCode Length 
 	const int CodeLength = 6;
 

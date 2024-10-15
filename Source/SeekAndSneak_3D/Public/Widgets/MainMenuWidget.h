@@ -19,9 +19,16 @@ class SEEKANDSNEAK_3D_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+
+	UMainMenuWidget(const FObjectInitializer& ObjectInitializer);
+
 private:
 
 	void NativeConstruct()override;
+
+
+	TSubclassOf<USessionWidget>SessionWidgetClass;
 
 	//Components For Setting Main Menu UI
 
@@ -40,7 +47,7 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* WidgetSwitcher;
 
-	UPROPERTY(meta = (BindWidget))
+	//UPROPERTY(meta = (BindWidget))
 	USessionWidget* SessionWidget;
 
 	UFUNCTION()

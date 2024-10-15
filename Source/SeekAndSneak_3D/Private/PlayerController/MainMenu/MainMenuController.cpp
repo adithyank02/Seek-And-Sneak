@@ -9,10 +9,7 @@
 
 AMainMenuController::AMainMenuController()
 {	
-	//static ConstructorHelpers::FClassFinder<UUserWidget>WidgetClass(TEXT("/Game/Widgets/BP_MainMenuWidget.BP_MainMenuWidget_C"));
-
-	static ConstructorHelpers::FClassFinder<UUserWidget>WidgetClass(TEXT("/Game/Widgets/Sessions/BP_CreateSessionWidget.BP_CreateSessionWidget_C"));
-
+	static ConstructorHelpers::FClassFinder<UUserWidget>WidgetClass(TEXT("/Game/Widgets/BP_MainMenuWidget.BP_MainMenuWidget_C"));
 
 	if (WidgetClass.Succeeded())
 	{
@@ -33,12 +30,5 @@ void AMainMenuController::DeleyFunction()
 		MainMenuWidget = CreateWidget<UUserWidget>(this, MainMenuClass);
 		MainMenuWidget->AddToViewport();
 		bShowMouseCursor = true;
-
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("True"));
 	}
-	else
-	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("False"));
-	}
-
 }

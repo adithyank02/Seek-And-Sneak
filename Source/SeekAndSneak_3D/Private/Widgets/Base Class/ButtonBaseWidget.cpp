@@ -25,7 +25,6 @@ void UButtonBaseWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	BaseButton->OnReleased.AddDynamic(this, &UButtonBaseWidget::OnBaseButtonClicked);
-	
 
 }
 
