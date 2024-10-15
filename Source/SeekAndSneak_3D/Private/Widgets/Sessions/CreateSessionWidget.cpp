@@ -67,10 +67,6 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Every Thing Fine"), true, true, FLinearColor::Green);
 			UKismetSystemLibrary::PrintString(GetWorld(), SessionCode, true, true, FLinearColor::Yellow, 5);
 		}
-		else
-		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Session Interface Failed"), true, true, FLinearColor::Red);
-		}
 	}
 
 }
@@ -85,6 +81,10 @@ void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool WasS
 		FString Option = "listen";
 
 		UGameplayStatics::OpenLevel(GetWorld(), LevelName,true, Option);
+	}
+	else
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SOMETHING WENT WRONG !!! PLEASE TRY AGAIN"), true, true, FLinearColor::Red, 5);
 	}
 }
 
