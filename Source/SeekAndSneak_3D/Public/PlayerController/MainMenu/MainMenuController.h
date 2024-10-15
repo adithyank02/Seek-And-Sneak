@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Widgets/MainMenuWidget.h"
+#include "Widgets/Sessions/CreateSessionWidget.h"
 #include "MainMenuController.generated.h"
 
 /**
@@ -23,10 +24,13 @@ private:
 
 	void BeginPlay()override;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UMainMenuWidget>MainMenuClass;
+	//TSubclassOf<UMainMenuWidget>MainMenuClass;
+
+	TSubclassOf<UCreateSessionWidget>MainMenuClass;
 
 	UPROPERTY()
 	class UUserWidget* MainMenuWidget;
+
+	void DeleyFunction();
 	
 };

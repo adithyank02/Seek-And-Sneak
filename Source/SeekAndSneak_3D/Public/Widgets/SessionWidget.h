@@ -17,7 +17,7 @@ UCLASS()
 class SEEKANDSNEAK_3D_API USessionWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 private:
 
 	void NativeConstruct() override;
@@ -28,10 +28,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UFindSessionWidget* FindSessionWidget;
 
+public:
 	UPROPERTY(meta = (BindWidget))
 	UButtonBaseWidget* BackButton;
 
-	UFUNCTION()
-	void OnBackButtonClicked();
-	
 };

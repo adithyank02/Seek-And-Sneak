@@ -7,6 +7,10 @@
 #include "Widgets/Base Class/ButtonBaseWidget.h"
 #include "MainMenuWidget.generated.h"
 
+class UVerticalBox;
+class UWidgetSwitcher;
+class USessionWidget;
+
 /**
  * 
  */
@@ -19,13 +23,26 @@ private:
 
 	void NativeConstruct()override;
 
-	//Using The Button Widget In Main Widget
+	//Components For Setting Main Menu UI
+
 	UPROPERTY(meta = (BindWidget))
 	UButtonBaseWidget* CreateSessionButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UButtonBaseWidget* JoinSessionButton;
+	UButtonBaseWidget* ExitGameButton;
 
+	UFUNCTION()
 	void OnCreateSessionButtonClicked();
-	
+	UFUNCTION()
+	void OnExitGameButtonClicked();
+
+	//Widget Switcher
+	UPROPERTY(meta = (BindWidget))
+	UWidgetSwitcher* WidgetSwitcher;
+
+	UPROPERTY(meta = (BindWidget))
+	USessionWidget* SessionWidget;
+
+	UFUNCTION()
+	void SessionWidgetBackButton();
 };

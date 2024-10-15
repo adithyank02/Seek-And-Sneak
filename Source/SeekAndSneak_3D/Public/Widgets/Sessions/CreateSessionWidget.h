@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
+
+#include "OnlineSubsystem.h"
+#include "OnlineSessionSettings.h"
+#include "Interfaces/OnlineSessionInterface.h"
+
 #include "CreateSessionWidget.generated.h"
 
-class USizeBox;
-class UBorder;
 class UEditableTextBox;
 class UButtonBaseWidget;
 
@@ -25,19 +29,52 @@ protected:
 
 private:
 
-	UPROPERTY(meta = (BindWidget))
-	USizeBox* SizeBox;
+	const int MaxConnectionNum = 10;
+	const int MinConnectionNum = 2; 
 
-	UPROPERTY(meta  = (BindWidget))
-	UBorder* Border;
+	int NumberOfConnections;
 
 	UPROPERTY(meta = (BindWidget))
 	UEditableTextBox* TotalPlayerNum_TextBox;
+
+	UFUNCTION()
+	void HandleTextBoxCommited(const FText& CommitedText, ETextCommit::Type CommitedType);
 
 	UPROPERTY(meta = (BindWidget))
 	UButtonBaseWidget* CreateButton;
 
 	UFUNCTION()
 	void OnCreateButtonClicked();
+
+
+	FName GamePlayLevelName;
+
+	//Game Should Always Run For Lan
+	const bool IsLan = true;
+	const bool ShouldAdvertise = true;
+	const bool bJoinOnProgress = false;
+	const bool bUsePresence = false;
+
+	//Session Handling
+	FOnlineSessionSettings OnlineSessionSettings;
+
+	//Function That Trigger After Session Creation 
+	void OnSessionCreateCompleted(FName SessionName , bool WasSuccessful);
+
+	//Button Trigger More Than Once
+	bool CallOnce = true;
+
+	//RandomCode Length 
+	const int CodeLength = 6;
+
+	//For Generating The Random Code
+
+	const FString Characters = TEXT("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+	const int StringTotalLength = Characters.Len();
+
+	FString RandomSessionCodeGenerator();
+
+
 	
 };

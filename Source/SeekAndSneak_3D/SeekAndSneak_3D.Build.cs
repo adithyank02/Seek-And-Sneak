@@ -8,7 +8,7 @@ public class SeekAndSneak_3D : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"SlateCore", "EnhancedInput" , "Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"SlateCore", "EnhancedInput" , "Niagara" , "OnlineSubsystem" , "OnlineSubsystemUtils" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

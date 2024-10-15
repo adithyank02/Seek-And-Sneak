@@ -6,7 +6,7 @@
 
 void UFindSessionWidget::NativeConstruct()
 {
-	FindButton->BaseButtonClicked.AddUObject(this, &UFindSessionWidget::OnFindButtonClicked);
+	FindButton->BaseButtonClicked.BindUObject(this, &UFindSessionWidget::OnFindButtonClicked);
 }
 
 void UFindSessionWidget::OnFindButtonClicked()

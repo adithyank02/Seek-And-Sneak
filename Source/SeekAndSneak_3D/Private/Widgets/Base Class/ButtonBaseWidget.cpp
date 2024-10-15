@@ -24,13 +24,14 @@ void UButtonBaseWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	BaseButton->OnClicked.AddDynamic(this, &UButtonBaseWidget::OnBaseButtonClicked);
+	BaseButton->OnReleased.AddDynamic(this, &UButtonBaseWidget::OnBaseButtonClicked);
+	
 
 }
 
 void UButtonBaseWidget::OnBaseButtonClicked()
 {
-	BaseButtonClicked.Broadcast();
+	BaseButtonClicked.ExecuteIfBound();
 
 
 }

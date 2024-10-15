@@ -15,7 +15,7 @@ class UTextBlock;
  * 
  */
 
-DECLARE_MULTICAST_DELEGATE(FOnButtonClicked);
+DECLARE_DELEGATE(FOnButtonClicked);
 
 UCLASS()
 class SEEKANDSNEAK_3D_API UButtonBaseWidget : public UUserWidget

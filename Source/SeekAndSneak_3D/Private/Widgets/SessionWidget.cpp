@@ -4,12 +4,13 @@
 #include "Widgets/SessionWidget.h"
 #include "Widgets/Base Class/ButtonBaseWidget.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 void USessionWidget::NativeConstruct()
 {
-	BackButton->BaseButtonClicked.AddUObject(this, &USessionWidget::OnBackButtonClicked);
-}
-
-void USessionWidget::OnBackButtonClicked()
-{
 
 }
+
+
+
+
