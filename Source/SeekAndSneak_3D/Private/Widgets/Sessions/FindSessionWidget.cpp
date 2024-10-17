@@ -5,8 +5,6 @@
 #include "Widgets/Base Class/ButtonBaseWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
-
-#include "Online/OnlineSessionNames.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -17,6 +15,7 @@ void UFindSessionWidget::NativeConstruct()
 	FindButton->BaseButtonClicked.BindUObject(this, &UFindSessionWidget::OnFindButtonClicked);
 
 	EnterSessionCode_TextBox->OnTextCommitted.AddDynamic(this, &UFindSessionWidget::SessionCode_TextBoxCommited);
+
 }
 
 
@@ -26,17 +25,25 @@ void UFindSessionWidget::SessionCode_TextBoxCommited(const FText& CommitedText, 
 
 	if (CodeLength == RoomCodeLength)
 	{
-		GiveSessionCode = FCString::Atoi(*CommitedText.ToString());
+		GiveSessionCode = CommitedText.ToString();
+		//Converting All Characters To Upper --- Cause The Text See Is Always Upper Even If User Type Lower
+		GiveSessionCode.ToUpperInline();
+
+		bCanStartFinding = true; 
 	}
 	else
 	{
-		//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Room Code Invalid"));
-		RoomCodeInvalidText->SetVisibility(ESlateVisibility::Visible);
-
-		GetWorld()->GetTimerManager().SetTimer(ResetInvalidTextTimer, this, &UFindSessionWidget::ResetInvalidTextVisibility,2,false);
-		EnterSessionCode_TextBox->SetText(FText::FromString(""));
+		ShowInvalidText();
 	}
 
+}
+
+void UFindSessionWidget::ShowInvalidText()
+{
+	RoomCodeInvalidText->SetVisibility(ESlateVisibility::Visible);
+
+	GetWorld()->GetTimerManager().SetTimer(ResetInvalidTextTimer, this, &UFindSessionWidget::ResetInvalidTextVisibility, 2, false);
+	EnterSessionCode_TextBox->SetText(FText::FromString(""));
 }
 
 void UFindSessionWidget::ResetInvalidTextVisibility()
@@ -47,37 +54,74 @@ void UFindSessionWidget::ResetInvalidTextVisibility()
 
 void UFindSessionWidget::OnFindButtonClicked()
 {
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-
-	if (OnlineSubsystem)
+	if (bCanStartFinding)
 	{
-		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+		UKismetSystemLibrary::PrintString(GetWorld(), GiveSessionCode, true, true, FLinearColor::Black, 30);
 
-		if (SessionInterface.IsValid())
+		if (IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
 		{
-			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UFindSessionWidget::OnFindSessionCompleted);
+			//Getting Session Interface According To World Context /PIE/StandAlone Etc
+			IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
 
-			TSharedPtr<FOnlineSessionSearch>SessionSetting = MakeShareable(new FOnlineSessionSearch());
+			if (SessionInterface.IsValid())
+			{
+				//Clearing All Findings When It Already Exist
+				if(SessionSetting.IsValid()) SessionInterface->ClearOnFindSessionsCompleteDelegates(this);
 
-			SessionSetting->MaxSearchResults = MaxSearching;
-			SessionSetting->PingBucketSize = SearchPingBucketSize;
+				SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UFindSessionWidget::OnFindSessionCompleted);
 
-			SessionSetting->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+				SessionSetting = MakeShareable(new FOnlineSessionSearch());
 
-			SessionInterface->FindSessions(0, SessionSetting.ToSharedRef());
+				SessionSetting->bIsLanQuery = false;
+				SessionSetting->MaxSearchResults = MaxSearching;
+				SessionSetting->PingBucketSize = SearchPingBucketSize;
+
+				//Finding The Sessiong
+				if (SessionInterface->FindSessions(0, SessionSetting.ToSharedRef()))return;
+			}
 		}
 	}
+	else
+	{
+		ShowInvalidText();
+	}
+	
 }
 
 void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 {
 	if (bIsSucess)
 	{
-
-	}
-	else
-	{
-		
+		if (SessionSetting->SearchResults.Num() > 0)
+		{
+			
+			FString RoomCode;
+			for (const FOnlineSessionSearchResult& SearchInfo : SessionSetting->SearchResults)
+			{ 
+				//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Loop Started"), true, true, FLinearColor::Blue, 5);
+				if (SearchInfo.Session.SessionSettings.Get(RoomCodeKey, RoomCode))
+				{
+					if (GiveSessionCode == RoomCode)
+					{
+						JoinSession();
+					}
+					//UKismetSystemLibrary::PrintString(GetWorld(), RoomCode, true, true, FLinearColor::Red, 5);
+				}
+				//else
+				//{
+					//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Empty string loaded"), true, true, FLinearColor::Blue, 5);
+				//}
+			}
+		}
 	}
 }
+
+void UFindSessionWidget::JoinSession()
+{
+
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Joined Session"));
+
+}
+	
+
 

@@ -13,6 +13,8 @@ void UCreateSessionWidget::NativeConstruct()
 
 	TotalPlayerNum_TextBox->OnTextCommitted.AddDynamic(this, &UCreateSessionWidget::HandleTextBoxCommited);
 
+	NumberOfConnections = 2; 
+
 }
 
 void UCreateSessionWidget::HandleTextBoxCommited(const FText& CommitedText, ETextCommit::Type CommitedType)
@@ -43,7 +45,9 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 
 	if (OnlineSubsystem)
 	{
-		IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+		//IOnlineSessionPtr SessionInterface = OnlineSubsystem->GetSessionInterface();
+
+		IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
 
 		if (SessionInterface.IsValid())
 		{
@@ -51,29 +55,28 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 
 			OnlineSessionSettings.bIsLANMatch = IsLan;
 			OnlineSessionSettings.NumPublicConnections = NumberOfConnections;
-			OnlineSessionSettings.bShouldAdvertise = ShouldAdvertise;
-			OnlineSessionSettings.bAllowJoinInProgress = bJoinOnProgress;
-			OnlineSessionSettings.bUsesPresence = bUsePresence;
-
+			OnlineSessionSettings.bShouldAdvertise = BShouldAdvertise;
+			OnlineSessionSettings.bAllowJoinInProgress = BJoinOnProgress;
+			OnlineSessionSettings.bUsesPresence = false;
+			
 			//It Is Sending In The For Of Key Value Pair 
-			OnlineSessionSettings.Set(FName("SessionCode")/*Key*/, RandomSessionCodeGenerator()/*Value*/, EOnlineDataAdvertisementType::ViaPingOnly);
-			FString SessionCode = RandomSessionCodeGenerator();
-
+			OnlineSessionSettings.Set(RoomCodeKey/*Key*/, RandomSessionCodeGenerator()/*Value*/, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+			
 			//Setting Session Name Has Local System Name
 			FName SessionName = FPlatformProcess::ComputerName();
 
-			SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings);
+			if (SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings))return;
 
 			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Every Thing Fine"), true, true, FLinearColor::Green);
-			UKismetSystemLibrary::PrintString(GetWorld(), SessionCode, true, true, FLinearColor::Yellow, 5);
+			
 		}
 	}
 
 }
 
-void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool WasSuccessful)
+void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool bWasSuccessful)
 {
-	if (WasSuccessful)
+	if (bWasSuccessful)
 	{
 		//Name Of The Map
 		FName LevelName = FName("TempMap");
@@ -81,6 +84,8 @@ void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool WasS
 		FString Option = "listen";
 
 		UGameplayStatics::OpenLevel(GetWorld(), LevelName,true, Option);
+
+		UKismetSystemLibrary::PrintString(GetWorld(), SessionName.ToString(), true, true, FLinearColor::Blue, 5);
 	}
 	else
 	{
@@ -92,12 +97,12 @@ FString UCreateSessionWidget::RandomSessionCodeGenerator()
 {
 	FString GeneratedCode;
 
-	for (int itr = 0; itr <= CodeLength; itr++)
+	for (int Itr = 1; Itr <= CodeLength; Itr++)
 	{
 		int Index = FMath::RandRange(0, StringTotalLength-1);
 		GeneratedCode += Characters[Index];
 	}
-
+	UKismetSystemLibrary::PrintString(GetWorld(),GeneratedCode, true, true, FLinearColor::Yellow, 60);
 	return GeneratedCode;
 }
 

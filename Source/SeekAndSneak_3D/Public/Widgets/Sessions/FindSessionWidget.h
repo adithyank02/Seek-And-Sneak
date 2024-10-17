@@ -9,6 +9,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemTypes.h"
+#include "OnlineSubsystemUtils.h"
 
 #include "FindSessionWidget.generated.h"
 
@@ -33,30 +34,45 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UEditableTextBox* EnterSessionCode_TextBox;
 
-	UFUNCTION()
-	void SessionCode_TextBoxCommited(const FText& CommitedText, ETextCommit::Type CommitType);
+	UPROPERTY(meta = (BindWidget))
+	UButtonBaseWidget* FindButton;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* RoomCodeInvalidText;
 
-	FTimerHandle ResetInvalidTextTimer;
-	void ResetInvalidTextVisibility();
 
-	UPROPERTY(meta = (BindWidget))
-	UButtonBaseWidget* FindButton;
+	UFUNCTION()
+	void SessionCode_TextBoxCommited(const FText& CommitedText, ETextCommit::Type CommitType);
 
 	UFUNCTION()
 	void OnFindButtonClicked();
 
+	
+
+	bool bCanStartFinding;
+
+	void ShowInvalidText();
+
+	FTimerHandle ResetInvalidTextTimer;
+	void ResetInvalidTextVisibility();
+
 	//Find And Join Session Managment
 
-	const int RoomCodeLength = 8;
-	int GiveSessionCode;
+	TSharedPtr<FOnlineSessionSearch>SessionSetting;
+
+	//For Verying From The UserInput
+	const int RoomCodeLength = 6;
+	FString GiveSessionCode;
+
+	//For Finding The RoomCode Stored In The Key On SessionSettings
+	const FName RoomCodeKey = FName("RoomCode");
 
 	const bool LanQuery = true;
 	const int MaxSearching = 5;
 	const int SearchPingBucketSize = 50;
 
 	void OnFindSessionCompleted(bool bIsSucess);
+
+	void JoinSession();
 	
 };

@@ -10,7 +10,9 @@ public class SeekAndSneak_3D : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"SlateCore", "EnhancedInput" , "Niagara" , "OnlineSubsystem" , "OnlineSubsystemUtils" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+        DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
+
+        PrivateDependencyModuleNames.AddRange(new string[] {  });
 
         PublicIncludePaths.AddRange(new string[] { "EnhancedInput/Public" });
 
