@@ -48,7 +48,7 @@ private:
 	void OnFindButtonClicked();
 
 	
-
+	//Variable For Starting The FindSession
 	bool bCanStartFinding;
 
 	void ShowInvalidText();
@@ -66,6 +66,8 @@ private:
 
 	//For Finding The RoomCode Stored In The Key On SessionSettings
 	const FName RoomCodeKey = FName("RoomCode");
+	//For Finding Session Name 
+	const FName SessionKey = FName("SESSIONKEY");
 
 	const bool LanQuery = true;
 	const int MaxSearching = 5;
@@ -73,6 +75,8 @@ private:
 
 	void OnFindSessionCompleted(bool bIsSucess);
 
-	void JoinSession();
+	void JoinSession(const FOnlineSessionSearchResult& SearchResult);
+
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	
 };

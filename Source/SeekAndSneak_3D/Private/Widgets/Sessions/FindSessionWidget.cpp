@@ -5,6 +5,9 @@
 #include "Widgets/Base Class/ButtonBaseWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework\PlayerController.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -66,7 +69,7 @@ void UFindSessionWidget::OnFindButtonClicked()
 			if (SessionInterface.IsValid())
 			{
 				//Clearing All Findings When It Already Exist
-				if(SessionSetting.IsValid()) SessionInterface->ClearOnFindSessionsCompleteDelegates(this);
+				if (SessionSetting.IsValid()) SessionInterface->ClearOnFindSessionsCompleteDelegates(this);
 
 				SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UFindSessionWidget::OnFindSessionCompleted);
 
@@ -85,7 +88,7 @@ void UFindSessionWidget::OnFindButtonClicked()
 	{
 		ShowInvalidText();
 	}
-	
+
 }
 
 void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
@@ -94,32 +97,63 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 	{
 		if (SessionSetting->SearchResults.Num() > 0)
 		{
-			
+
 			FString RoomCode;
 			for (const FOnlineSessionSearchResult& SearchInfo : SessionSetting->SearchResults)
-			{ 
+			{
 				//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Loop Started"), true, true, FLinearColor::Blue, 5);
 				if (SearchInfo.Session.SessionSettings.Get(RoomCodeKey, RoomCode))
 				{
 					if (GiveSessionCode == RoomCode)
 					{
-						JoinSession();
+						UKismetSystemLibrary::PrintString(GetWorld(), TEXT("JOIN SESSION CALLED"));
+						JoinSession(SearchInfo);
+						return;
 					}
-					//UKismetSystemLibrary::PrintString(GetWorld(), RoomCode, true, true, FLinearColor::Red, 5);
+					else
+					{
+						UKismetSystemLibrary::PrintString(GetWorld(), TEXT("JOIN SESSION NOT CALLED"), true, true, FLinearColor::Red, 5);
+					}
 				}
-				//else
-				//{
-					//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Empty string loaded"), true, true, FLinearColor::Blue, 5);
-				//}
+				
 			}
 		}
 	}
 }
 
-void UFindSessionWidget::JoinSession()
+void UFindSessionWidget::JoinSession(const FOnlineSessionSearchResult& SearchResult)
 {
+	FString GetSessionName;
+	if (SearchResult.Session.SessionSettings.Get(SessionKey, GetSessionName))
+	{
+		if (IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld()))
+		{
+			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UFindSessionWidget::OnJoinSessionComplete);
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Joined Session"));
+			if (SessionInterface->JoinSession(0, FName(*GetSessionName), SearchResult))return;
+		}
+	}
+	else
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SESSION NAME NOT FOUND"), true, true, FLinearColor::Red, 5);
+	}
+
+
+}
+
+void UFindSessionWidget::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld()))
+	{
+		FString ConnectToServer;
+		if(SessionInterface->GetResolvedConnectString(SessionName, ConnectToServer))
+		{
+			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+			{
+				PlayerController->ClientTravel(ConnectToServer, ETravelType::TRAVEL_Absolute);
+			}
+		}
+	}
 
 }
 	

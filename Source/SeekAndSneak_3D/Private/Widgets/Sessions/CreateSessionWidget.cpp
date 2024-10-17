@@ -64,6 +64,11 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 			
 			//Setting Session Name Has Local System Name
 			FName SessionName = FPlatformProcess::ComputerName();
+			//Creating A Key For  Session Name
+			FName SessionKey = FName("SESSIONKEY");
+
+			//Setting Session Name For Make Use To Join The Session
+			OnlineSessionSettings.Set(SessionKey, SessionName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 			if (SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings))return;
 
