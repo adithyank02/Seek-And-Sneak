@@ -28,7 +28,11 @@ void AMainMenuController::DeleyFunction()
 	if (MainMenuClass)
 	{
 		MainMenuWidget = CreateWidget<UUserWidget>(this, MainMenuClass);
-		MainMenuWidget->AddToViewport();
-		bShowMouseCursor = true;
+		if (MainMenuWidget)
+		{
+			MainMenuWidget->AddToViewport();
+			bShowMouseCursor = true;
+		}
+		
 	}
 }
