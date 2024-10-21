@@ -14,8 +14,7 @@ void ALobbyGameMode::OnPostLogin(AController* NewPlayerController)
 {
 	Super::OnPostLogin(NewPlayerController);
 
-	FTimerHandle PlayerCameraViewTimer;
-	GetWorld()->GetTimerManager().SetTimer(PlayerCameraViewTimer, [this, NewPlayerController] {SetNewPlayerViewOnCamera(NewPlayerController); }, 0.1,false);
+	SpawnLobbyCharacter(NewPlayerController);
 
 }
 	
@@ -23,42 +22,22 @@ void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PlayerViewCamera = GetWorld()->SpawnActor<ACameraActor>(ACameraActor::StaticClass(),CameraSpawnTransform);
 
-	if (PlayerViewCamera)
-	{
-		if (UCameraComponent* CameraComponent = PlayerViewCamera->FindComponentByClass<UCameraComponent>())
-		{
-			//Setting Full View On Screen
-			CameraComponent->bConstrainAspectRatio = false;
-		}
-	}
 }
 
-void ALobbyGameMode::SetNewPlayerViewOnCamera(AController* NewPlayerController)
+void ALobbyGameMode::SpawnLobbyCharacter(AController* NewPlayerController)
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(NewPlayerController))
 	{
-		PlayerController->SetViewTarget(PlayerViewCamera);
+		int LocationIndex = GetRandomUniqueIndex();
+		FTransform CharacterSpawnTransform;
 
-		SpawnLobbyCharacter(PlayerController);
+		if (LocationIndex != -1)CharacterSpawnTransform.SetLocation(LobbyPlayerSpawnLocation[LocationIndex]);
+
+		ACharacter* LobbyCharacter = GetWorld()->SpawnActor<ACharacter>(LobbyCharacterClass, CharacterSpawnTransform);
+
+		LobbyCharacter->PossessedBy(PlayerController);
 	}
-	else
-	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Controller Is Null"), true, true, FLinearColor::Red, 5);
-	}
-}
-
-void ALobbyGameMode::SpawnLobbyCharacter(APlayerController* PlayerController)
-{
-	int LocationIndex = GetRandomUniqueIndex();
-	FTransform CharacterSpawnTransform;
-
-	if (LocationIndex != -1)CharacterSpawnTransform.SetLocation(LobbyPlayerSpawnLocation[LocationIndex]);
-
-	ACharacter* LobbyCharacter =  GetWorld()->SpawnActor<ACharacter>(LobbyCharacterClass, CharacterSpawnTransform);
-
-	LobbyCharacter->PossessedBy(PlayerController);
 }
 
 int ALobbyGameMode::GetRandomUniqueIndex()

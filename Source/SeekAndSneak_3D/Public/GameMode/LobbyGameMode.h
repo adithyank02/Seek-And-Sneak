@@ -20,12 +20,6 @@ private:
 
  	void BeginPlay() override;
 
-	UPROPERTY()
-	ACameraActor* PlayerViewCamera;
-
-	UPROPERTY(EditDefaultsOnly)
-	FTransform CameraSpawnTransform;
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACharacter>LobbyCharacterClass;
 
@@ -35,9 +29,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FVector>LobbyPlayerSpawnLocation;
 
-	void SetNewPlayerViewOnCamera(AController* NewPlayerController);
-
-	void SpawnLobbyCharacter(APlayerController* PlayerController);
+	void SpawnLobbyCharacter(AController* NewPlayerController);
 
 	int GetRandomUniqueIndex();
 	
