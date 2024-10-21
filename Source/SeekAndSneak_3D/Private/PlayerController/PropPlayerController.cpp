@@ -39,10 +39,6 @@ void APropPlayerController::BeginPlay()
 			}
 		}
 
-		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), LobbyWidgetClass);
-		if (Widget)
-		{
-			Widget->AddToViewport();
-		}
+		
 	}
 }

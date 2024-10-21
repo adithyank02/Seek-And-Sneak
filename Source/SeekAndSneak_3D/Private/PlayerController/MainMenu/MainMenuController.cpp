@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
 AMainMenuController::AMainMenuController()
@@ -19,8 +21,10 @@ AMainMenuController::AMainMenuController()
 
 void AMainMenuController::BeginPlay()
 {
+	
+
 	FTimerHandle DeleyTimer;
-	GetWorld()->GetTimerManager().SetTimer(DeleyTimer, this, &AMainMenuController::DeleyFunction, 1);
+	GetWorld()->GetTimerManager().SetTimer(DeleyTimer, this, &AMainMenuController::DeleyFunction, 0.1);
 }
 
 void AMainMenuController::DeleyFunction()
@@ -34,5 +38,16 @@ void AMainMenuController::DeleyFunction()
 			bShowMouseCursor = true;
 		}
 		
+	}
+	ACameraActor* CamActor = GetWorld()->SpawnActor<ACameraActor>(ACameraActor::StaticClass(), FTransform::Identity);
+
+	if (CamActor)
+	{
+		if (UCameraComponent* CamComp = CamActor->GetComponentByClass<UCameraComponent>())
+		{
+			CamComp->bConstrainAspectRatio = false;
+		}
+		SetViewTarget(CamActor);
+
 	}
 }

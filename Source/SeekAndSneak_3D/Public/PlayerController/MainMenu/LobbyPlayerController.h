@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "LobbyPlayerController.generated.h"
 
+class ULobbyWidget;
+
 /**
  * 
  */
@@ -24,6 +26,10 @@ protected:
 
 	void  BeginPlay()override;
 
+	TSubclassOf<ULobbyWidget>LobbyWidgetClass;
+	
 	void SpawnCameraActor();
+
+	void CreateLobbyWidget();
 	
 };

@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
+#include "Widgets/LobbyWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
@@ -14,13 +15,26 @@ ALobbyPlayerController::ALobbyPlayerController()
 	CameraActorSpawnTransform.SetLocation(FVector(450, -40, 180));
 	CameraActorSpawnTransform.SetRotation(FQuat::MakeFromRotator(FRotator(-20,0,0)));/*Axis Is YZX*/
 	CameraActorSpawnTransform.SetScale3D(FVector(1, 1, 1));
+
+	ConstructorHelpers::FClassFinder<ULobbyWidget>LobbyWidget(TEXT("/Game/Widgets/BP_LobbyWidget.BP_LobbyWidget_C"));
+
+	if (LobbyWidget.Succeeded())
+	{
+		LobbyWidgetClass = LobbyWidget.Class;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failded To Load Asset LObbyWidget"));
+	}
 }
 
 void ALobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsLocalController())
+	UE_LOG(LogTemp, Error, TEXT("Begin Play Started"));
+
+	if (GetLocalPlayer())
 	{
 		FTimerHandle SpawnCameraTimer;
 		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.1, false);
@@ -39,5 +53,22 @@ void ALobbyPlayerController::SpawnCameraActor()
 			SetViewTarget(CameraActor);
 		}
 	}
+	CreateLobbyWidget();
+	
+}
+
+void ALobbyPlayerController::CreateLobbyWidget()
+{
+	if (LobbyWidgetClass)
+	{
+		UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), LobbyWidgetClass);
+		if (Widget)
+		{
+			Widget->AddToViewport();
+		}
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Hellow"));
+	}
+
+	
 }
 
