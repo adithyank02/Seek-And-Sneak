@@ -4,6 +4,7 @@
 #include "Widgets/Sessions/CreateSessionWidget.h"
 #include "Widgets/Base Class/ButtonBaseWidget.h"
 #include "Components/EditableTextBox.h"
+#include "Interface/GameInstance/PropHuntGameInstInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -60,7 +61,8 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 			OnlineSessionSettings.bUsesPresence = false;
 			
 			//It Is Sending In The For Of Key Value Pair 
-			OnlineSessionSettings.Set(RoomCodeKey/*Key*/, RandomSessionCodeGenerator()/*Value*/, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+			FString RoomCode = RandomSessionCodeGenerator();
+			OnlineSessionSettings.Set(RoomCodeKey/*Key*/, RoomCode/*Value*/, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 			
 			//Setting Session Name Has Local System Name
 			FName SessionName = FPlatformProcess::ComputerName();
@@ -70,9 +72,12 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 			//Setting Session Name For Make Use To Join The Session
 			OnlineSessionSettings.Set(SessionKey, SessionName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
-			if (SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings))return;
+			if (IPropHuntGameInstInterface* GameInstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
+			{
+				GameInstanceInterface->SetRoomId(RoomCode);
 
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Every Thing Fine"), true, true, FLinearColor::Green);
+				if (SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings))return;
+			}
 			
 		}
 	}

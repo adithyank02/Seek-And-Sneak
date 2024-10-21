@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "InputMappingContext.h"
 #include "InputAction.h"
+#include "Widgets/LobbyWidget.h"
 #include "PropPlayerController.generated.h"
 
 /**
@@ -42,5 +43,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* SmokeBombAction;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ULobbyWidget>LobbyWidgetClass;
 	
 };
