@@ -19,7 +19,11 @@ protected:
 	void SetRoomId(FString RoomID)override;
 	FString GetRoomId()override;
 
+	void SetPlayerInGameName(FString NewName)override;
+
 private:
 	FString RoomCode;
+
+	FString LocalPlayerInGameName;
 
 };

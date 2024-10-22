@@ -26,4 +26,6 @@ public:
 	virtual void SetRoomId(FString RoomID) = 0;
 	virtual FString GetRoomId() = 0;
 
+	virtual void SetPlayerInGameName(FString NewName) = 0;
+
 };

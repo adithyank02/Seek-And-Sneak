@@ -12,3 +12,8 @@ FString UPropHuntGameInstance::GetRoomId()
 {
 	return RoomCode;
 }
+
+void UPropHuntGameInstance::SetPlayerInGameName(FString NewName)
+{
+	LocalPlayerInGameName = NewName;
+}
