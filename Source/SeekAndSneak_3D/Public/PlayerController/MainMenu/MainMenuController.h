@@ -31,5 +31,7 @@ private:
 	class UUserWidget* MainMenuWidget;
 
 	void DeleyFunction();
+
+	void SetInputModeType(UUserWidget* CreatedWidget);
 	
 };

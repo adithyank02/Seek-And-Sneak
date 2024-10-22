@@ -35,7 +35,7 @@ void AMainMenuController::DeleyFunction()
 		if (MainMenuWidget)
 		{
 			MainMenuWidget->AddToViewport();
-			bShowMouseCursor = true;
+			SetInputModeType(MainMenuWidget);
 		}
 		
 	}
@@ -50,4 +50,14 @@ void AMainMenuController::DeleyFunction()
 		SetViewTarget(CamActor);
 
 	}
+}
+
+void AMainMenuController::SetInputModeType(UUserWidget* CreatedWidget)
+{
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(CreatedWidget->TakeWidget());
+
+	SetInputMode(InputMode);
+
+	bShowMouseCursor = true;
 }

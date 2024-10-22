@@ -29,7 +29,7 @@ protected:
 	TSubclassOf<ULobbyWidget>LobbyWidgetClass;
 	
 	void SpawnCameraActor();
-
 	void CreateLobbyWidget();
+	void SetInputModeType(UUserWidget* CreatedWidget);
 	
 };

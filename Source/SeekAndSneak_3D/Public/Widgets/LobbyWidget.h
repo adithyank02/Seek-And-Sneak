@@ -7,6 +7,7 @@
 #include "LobbyWidget.generated.h"
 
 class UTextBlock;
+class UButtonBaseWidget;
 
 /**
  * 
@@ -17,7 +18,20 @@ class SEEKANDSNEAK_3D_API ULobbyWidget : public UUserWidget
 	GENERATED_BODY()
 
 	void NativeConstruct()override;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* IdText;
+
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* RoomCodeText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WaitToGameStartText;
+
+	UPROPERTY(meta = (BindWidget))
+	UButtonBaseWidget* StartMatchButton;
+
+	UFUNCTION()
+	void StartMatchButtonClicked();
 	
 };

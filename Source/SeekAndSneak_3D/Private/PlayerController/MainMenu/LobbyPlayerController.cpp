@@ -22,23 +22,20 @@ ALobbyPlayerController::ALobbyPlayerController()
 	{
 		LobbyWidgetClass = LobbyWidget.Class;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failded To Load Asset LObbyWidget"));
-	}
+
 }
 
 void ALobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Error, TEXT("Begin Play Started"));
-
 	if (GetLocalPlayer())
 	{
 		FTimerHandle SpawnCameraTimer;
 		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.1, false);
 	}
+	
+
 }
 
 void ALobbyPlayerController::SpawnCameraActor()
@@ -65,10 +62,21 @@ void ALobbyPlayerController::CreateLobbyWidget()
 		if (Widget)
 		{
 			Widget->AddToViewport();
-		}
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Hellow"));
-	}
 
+			SetInputModeType(Widget);
+		}
+		
+	}
 	
+}
+
+void ALobbyPlayerController::SetInputModeType(UUserWidget* CreatedWidget)
+{
+	FInputModeUIOnly InputMode; 
+
+	InputMode.SetWidgetToFocus(CreatedWidget->TakeWidget());
+	SetInputMode(InputMode);
+
+	bShowMouseCursor = true;
 }
 
