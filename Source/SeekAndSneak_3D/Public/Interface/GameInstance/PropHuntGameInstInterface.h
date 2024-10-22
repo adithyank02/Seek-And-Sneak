@@ -25,7 +25,9 @@ public:
 
 	virtual void SetRoomId(FString RoomID) = 0;
 	virtual FString GetRoomId() = 0;
+	virtual FString GetSaveSlotName() = 0;
 
-	virtual void SetPlayerInGameName(FString NewName) = 0;
+	virtual void SavePlayerName(FString NewName) = 0;
+	virtual FString GetSavedPlayerName() = 0;
 
 };

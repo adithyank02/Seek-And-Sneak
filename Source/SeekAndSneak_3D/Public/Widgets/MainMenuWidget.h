@@ -45,7 +45,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* LongNameWarningText;
 
-	FString PlayerInGameName;
+	FString SavedPlayerName;
+	FString Player_InGameName;
 
 	const int PlayerNameMaxLen = 8;
 

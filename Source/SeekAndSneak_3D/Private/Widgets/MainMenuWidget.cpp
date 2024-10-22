@@ -8,6 +8,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+
 #include "Interface/GameInstance/PropHuntGameInstInterface.h"
 
 UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -35,31 +36,46 @@ void UMainMenuWidget::NativeConstruct()
 	EnterNameEditableBox->OnTextCommitted.AddDynamic(this, &UMainMenuWidget::OnPlayerNameCommitted);
 
 	SessionWidget->BackButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::SessionWidgetBackButton);
-	
+
+	if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
+	{
+		if (UGameplayStatics::DoesSaveGameExist(InstanceInterface->GetSaveSlotName(), 0))
+		{
+			EnterNameEditableBox->SetText(FText::FromString(InstanceInterface->GetSavedPlayerName()));
+			//EnterNameEditableBox->SetHintText(FText::FromString(InstanceInterface->GetSavedPlayerName()));
+
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Save Game Exist"), true, true, FLinearColor::Yellow, 5);
+		}
+		else
+		{
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Save Game NOT Exist"), true, true, FLinearColor::Yellow, 5);
+		}
+	}
 }
 
 void UMainMenuWidget::OnPlayerNameCommitted(const FText& Text, ETextCommit::Type CommitType)
 {
 	FString NameStr = Text.ToString();
 
-	if (NameStr.Len() > 8)
+	if (NameStr.Len() > PlayerNameMaxLen)
 	{
 		LongNameWarningText->SetVisibility(ESlateVisibility::Visible);
 		//Setting The Limit For Player Name
 		EnterNameEditableBox->SetText(FText::FromString(NameStr.Left(PlayerNameMaxLen)));
 	}
-	PlayerInGameName = NameStr;
+	Player_InGameName = NameStr;
 }
 
 void UMainMenuWidget::OnCreateSessionButtonClicked()
 {
-	if (!PlayerInGameName.IsEmpty() && PlayerInGameName.Len() <= PlayerNameMaxLen)
+	if (!Player_InGameName.IsEmpty())
 	{
 		if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
 		{
-			InstanceInterface->SetPlayerInGameName(PlayerInGameName);
+			InstanceInterface->SavePlayerName(Player_InGameName);
+			//NO Use
+			SavedPlayerName = Player_InGameName;
 		}
-
 		WidgetSwitcher->SetActiveWidgetIndex(1);
 	}
 	else
