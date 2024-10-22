@@ -2,7 +2,6 @@
 
 
 #include "GameInstance/PropHuntGameInstance.h"
-
 #include "Kismet/GameplayStatics.h"
 
 void UPropHuntGameInstance::Init()
@@ -43,8 +42,6 @@ void UPropHuntGameInstance::SavePlayerName(FString NewName)
 
 	UGameplayStatics::SaveGameToSlot(SaveGameObject, SlotName, 0);
 
-	UKismetSystemLibrary::PrintString(GetWorld(),SaveGameObject->PlayerName,true,true,FLinearColor::Blue,10);
-	
 }
 
 FString UPropHuntGameInstance::GetSavedPlayerName()

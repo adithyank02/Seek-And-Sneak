@@ -37,38 +37,25 @@ void UMainMenuWidget::NativeConstruct()
 
 	SessionWidget->BackButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::SessionWidgetBackButton);
 
-	if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
-	{
-		if (UGameplayStatics::DoesSaveGameExist(InstanceInterface->GetSaveSlotName(), 0))
-		{
-			EnterNameEditableBox->SetText(FText::FromString(InstanceInterface->GetSavedPlayerName()));
-			//EnterNameEditableBox->SetHintText(FText::FromString(InstanceInterface->GetSavedPlayerName()));
+	CheckForSavedPlayerName();
 
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Save Game Exist"), true, true, FLinearColor::Yellow, 5);
-		}
-		else
-		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Save Game NOT Exist"), true, true, FLinearColor::Yellow, 5);
-		}
-	}
 }
 
 void UMainMenuWidget::OnPlayerNameCommitted(const FText& Text, ETextCommit::Type CommitType)
 {
-	FString NameStr = Text.ToString();
+	Player_InGameName = Text.ToString();
 
-	if (NameStr.Len() > PlayerNameMaxLen)
+	if (Player_InGameName.Len() > PlayerNameMaxLen || DoesContainWhiteSpace())
 	{
-		LongNameWarningText->SetVisibility(ESlateVisibility::Visible);
-		//Setting The Limit For Player Name
-		EnterNameEditableBox->SetText(FText::FromString(NameStr.Left(PlayerNameMaxLen)));
+		//Show As Erro And Setting The Limit For Player Name
+		ShowPlayerNameError();
 	}
-	Player_InGameName = NameStr;
+	
 }
 
 void UMainMenuWidget::OnCreateSessionButtonClicked()
 {
-	if (!Player_InGameName.IsEmpty())
+	if (!Player_InGameName.IsEmpty() && Player_InGameName.Len() <= PlayerNameMaxLen &&!DoesContainWhiteSpace())
 	{
 		if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
 		{
@@ -80,10 +67,9 @@ void UMainMenuWidget::OnCreateSessionButtonClicked()
 	}
 	else
 	{
-		LongNameWarningText->SetVisibility(ESlateVisibility::Visible);
-		EnterNameEditableBox->SetText(FText::FromString(""));
+		//Giving Error For Player And Reducing Size
+		ShowPlayerNameError();
 	}
-	
 }
 
 void UMainMenuWidget::OnExitGameButtonClicked()
@@ -95,4 +81,37 @@ void UMainMenuWidget::SessionWidgetBackButton()
 {
 	//Back To Main Menu Widget
 	WidgetSwitcher->SetActiveWidgetIndex(0);
+}
+
+//---------Helper Function --------------
+
+
+void UMainMenuWidget::ShowPlayerNameError()
+{
+	LongNameWarningText->SetVisibility(ESlateVisibility::Visible);
+	EnterNameEditableBox->SetText(FText::FromString(Player_InGameName.Left(PlayerNameMaxLen)));
+}
+
+
+void UMainMenuWidget::CheckForSavedPlayerName()
+{
+	if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
+	{
+		if (UGameplayStatics::DoesSaveGameExist(InstanceInterface->GetSaveSlotName(), 0))
+		{
+			FString StoredName = InstanceInterface->GetSavedPlayerName();
+			EnterNameEditableBox->SetText(FText::FromString(StoredName));
+			Player_InGameName = StoredName;
+		}
+	}
+}
+
+
+bool UMainMenuWidget::DoesContainWhiteSpace()
+{
+	for (int itr = 0; itr < Player_InGameName.Len(); itr++)
+	{
+		if (FChar::IsWhitespace(Player_InGameName[itr]))return true;
+	}
+	return false;
 }

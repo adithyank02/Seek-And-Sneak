@@ -48,7 +48,7 @@ private:
 	FString SavedPlayerName;
 	FString Player_InGameName;
 
-	const int PlayerNameMaxLen = 8;
+	const int PlayerNameMaxLen = 9;
 
 	UFUNCTION()
 	void OnPlayerNameCommitted(const FText& Text, ETextCommit::Type CommitType);
@@ -67,4 +67,14 @@ private:
 
 	UFUNCTION()
 	void SessionWidgetBackButton();
+	
+	//Helper Function
+
+	void ShowPlayerNameError();
+
+	void CheckForSavedPlayerName();
+
+	//For Checking The Player Name Contain WhiteSpace Or Not
+	bool DoesContainWhiteSpace();
 };
+

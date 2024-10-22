@@ -18,6 +18,7 @@ public:
 
 	UPropHuntSaveGame();
 
+	UPROPERTY()
 	FString PlayerName;
 	
 };
