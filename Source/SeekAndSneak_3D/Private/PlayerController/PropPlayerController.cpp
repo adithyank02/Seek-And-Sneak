@@ -6,11 +6,28 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Runtime/Engine/Public/TimerManager.h"
+
 void APropPlayerController::BeginPlay()
 {
-	//Only Applied By The LocalPlayer
-	if (GetLocalPlayer())
+	Super::BeginPlay();
+}
+
+void APropPlayerController::Client_SetInputBinding_Implementation()
+{
+	if (IsLocalController())
 	{
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &APropPlayerController::BindInputFunction);
+	}
+}
+
+void APropPlayerController::BindInputFunction()
+{
+	//Only Applied By The LocalPlayer
+	if (IsLocalController())
+	{
+		SetInputMode(FInputModeGameOnly());
+
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			//Setting Up The Mapping Context
@@ -21,6 +38,7 @@ void APropPlayerController::BeginPlay()
 
 		if (UEnhancedInputComponent* EnhancedInput = Cast <UEnhancedInputComponent>(this->InputComponent))
 		{
+
 			if (APropPlayer* PropPlayer = Cast<APropPlayer>(GetPawn()))
 			{
 				//Binding InputAction And The Correspoding Functions
@@ -36,9 +54,11 @@ void APropPlayerController::BeginPlay()
 
 				EnhancedInput->BindAction(SmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
 
+
 			}
 		}
-
 		
 	}
+
 }
+

@@ -43,6 +43,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* SmokeBombAction;
 
-	
+public:
+
+	UFUNCTION(Client,Reliable)
+	void Client_SetInputBinding();
+
+	void BindInputFunction();
 	
 };
