@@ -3,9 +3,10 @@
 
 #include "GameMode/GameplayGameMode.h"
 
+#include "HunterPlayer/HunterPlayer.h"
 #include "PropPlayer/PropPlayer.h"
-#include "PlayerController/PropPlayerController.h"
 
+#include "PlayerController/CommonPlayerController.h"
 
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -40,7 +41,7 @@ void AGameplayGameMode::SetUpPropCharacter()
 	//Getting The Count To Spawn -- PropCount < Hunter Count
 	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2 ;
 
-	int SpawnTranformIndex = 0;
+	int PropSpawnTransformIndex = 0;
 
 	//Setting The Character To Spawn Any Way
 	FActorSpawnParameters SpawnParams;
@@ -49,25 +50,50 @@ void AGameplayGameMode::SetUpPropCharacter()
 	for (int Itr = 1; Itr <= PropCharacterSpawnCount; Itr++)
 	{
 		//Getting Random Index For Selecting Random Player
-		int Index = GetRandomIndex(0, TotalNumberOfPlayer-1);
+		int Index = GetRandomIndex(0, TotalNumberOfPlayer - 1);
 
-		if (APropPlayerController* PropController = Cast <APropPlayerController>(CopyArray[Index]))
+		if (ACommonPlayerController* PlayerController = Cast <ACommonPlayerController>(CopyArray[Index]))
 		{
-			if (APropPlayer* PropCharacter = GetWorld()->SpawnActor<APropPlayer>(PropCharacterClass, PropCharacterSpawnTranform[Index], SpawnParams))
+			if (ACharacter* PlayerCharacter = GetWorld()->SpawnActor<ACharacter>(PropCharacterClass, PropCharacterSpawnTranform[PropSpawnTransformIndex], SpawnParams))
 			{
-				PropController->Possess(PropCharacter);
-				PropController->Client_SetInputBinding();
+				PlayerController->Possess(PlayerCharacter);
+				//Setting Input Binding For Prop Character
+				PlayerController->SetClientInputBinding(ECharacterType::PropCharacter);
 
 				//Removing For Not To Spawn Same Player Twice
 				CopyArray.RemoveAt(Index);
 				TotalNumberOfPlayer--;
 				//Next Spawn Index
-				SpawnTranformIndex++;
+				PropSpawnTransformIndex++;
 			}
 		}
 	}
-
+	SetupHunterCharacter(CopyArray);
+	
 }
+
+void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingController)
+{
+	int HunterSpawnTransformIndex = 0; 
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	for (auto PController : RemainingController)
+	{
+		if (ACommonPlayerController* PlayerController = Cast <ACommonPlayerController>(PController))
+		{
+			if (ACharacter* PlayerCharacter = GetWorld()->SpawnActor<ACharacter>(HunterCharacterClass, HunterCharacterSpawnTranform[HunterSpawnTransformIndex], SpawnParams))
+			{
+				PlayerController->Possess(PlayerCharacter);
+				PlayerController->SetClientInputBinding(ECharacterType::HunterCharacter);
+
+				HunterSpawnTransformIndex++;
+			}
+		}
+	}
+}
+
 
 int AGameplayGameMode::GetRandomIndex(int Min, int Max)
 {

@@ -57,6 +57,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* WeaponMesh;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APlayerCameraManager>HunterCharacterCameraManager;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

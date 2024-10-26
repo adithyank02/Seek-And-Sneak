@@ -23,12 +23,21 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode
 
 	void SetUpPropCharacter();
 
+	void SetupHunterCharacter(TArray<AController*>RemainingController);
+
+
 	int GetRandomIndex(int Min, int Max);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class APropPlayer>PropCharacterClass;
 
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AHunterPlayer>HunterCharacterClass;
+
+	UPROPERTY(EditDefaultsOnly)
 	TArray<FTransform>PropCharacterSpawnTranform;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FTransform>HunterCharacterSpawnTranform;
 
 };

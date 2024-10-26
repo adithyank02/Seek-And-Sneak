@@ -15,7 +15,7 @@
 #include "Interface/Feature/Hunter/PropProximityInterface.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
-#include "Kismet/KismetSystemLibrary.h"
+#include "PlayerController/CommonPlayerController.h"
 
 #include "PlayerController/HunterPlayerController.h"
 
