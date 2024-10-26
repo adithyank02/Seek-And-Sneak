@@ -38,6 +38,13 @@ private:
 	void BindHunterPlayerInputs();
 	void BindPropPlayerInputs();
 
+	void RemoveUnwantedRef();
+
+	void RemoveHunterInputRef();
+	void RemovePropInputRef();
+
+	int index;
+
 public:
 
 	UFUNCTION(Client,Reliable)

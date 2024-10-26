@@ -25,6 +25,9 @@ ACommonPlayerController::ACommonPlayerController()
 void ACommonPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d"), index), true, true, FLinearColor::White, 15);
+	index++;
 }
 
 
@@ -35,15 +38,62 @@ void ACommonPlayerController::SetClientInputBinding_Implementation(ECharacterTyp
 		if (CharacterType == ECharacterType::HunterCharacter)
 		{
 			GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ACommonPlayerController::BindHunterPlayerInputs);
+			RemovePropInputRef();
 		}
 		else if (CharacterType == ECharacterType::PropCharacter)
 		{
 			GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ACommonPlayerController::BindPropPlayerInputs);
+			RemoveHunterInputRef();
 		}
 		OwnerCharacterType = CharacterType;
 	}
 
 }
+void ACommonPlayerController::RemoveUnwantedRef()
+{
+	switch (OwnerCharacterType)
+	{
+	case ECharacterType::HunterCharacter: RemovePropInputRef();
+		break;
+	case ECharacterType::PropCharacter: RemoveHunterInputRef();
+	}
+}
+
+//Deleting Ref Of Input That Don't Use
+void ACommonPlayerController::RemoveHunterInputRef()
+{
+	HunterPlayerMappingContext = nullptr;
+	HunterJogAction = nullptr;
+	HunterLookAction = nullptr;
+	HunterSprintAction = nullptr;
+	HunterFireWeaponAction = nullptr;
+
+	delete HunterPlayerMappingContext;
+	delete HunterJogAction;
+	delete HunterLookAction;
+	delete HunterSprintAction;
+	delete HunterFireWeaponAction;
+}
+
+void ACommonPlayerController::RemovePropInputRef()
+{
+	PropPlayerMappingContext = nullptr;
+	PropMoveAction = nullptr;
+	PropLookAction = nullptr;
+	PropJumpAction = nullptr;
+	PropMorphAction = nullptr;
+	PropCloneAction = nullptr;
+	PropSmokeBombAction = nullptr;
+
+	delete PropPlayerMappingContext;
+	delete PropMoveAction;
+	delete PropLookAction;
+	delete PropJumpAction;
+	delete PropMorphAction;
+	delete PropCloneAction;
+	delete PropSmokeBombAction;
+}
+
 
 /*--------------------------------------------------- Binding Input And Function ------------------------------------------------------------------*/
 
