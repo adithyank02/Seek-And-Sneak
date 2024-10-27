@@ -25,6 +25,7 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode
 
 	void SetupHunterCharacter(TArray<AController*>RemainingController);
 
+	void CallPreMatchWidget();
 
 	int GetRandomIndex(int Min, int Max);
 

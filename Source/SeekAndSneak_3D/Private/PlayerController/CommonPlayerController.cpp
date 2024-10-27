@@ -14,20 +14,30 @@
 
 #include "Runtime/Engine/Public/TimerManager.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Widgets/PreMatch/CharacterPreMatchWidget.h"
+
+#include "Others/Create Widget/ConcreteClass/CreatePreMatchWidget.h"
+
+
 #include "Kismet/KismetSystemLibrary.h"
 
 
+ECharacterType ACommonPlayerController::GetCharacterType()
+{
+	return OwnerCharacterType;
+}
+
 ACommonPlayerController::ACommonPlayerController()
 {
-
+	WidgetLibrary.Add(EWidgetType::PreMatchWidget, MakeUnique<CreatePreMatchWidget>());
 }
 
 void ACommonPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d"), index), true, true, FLinearColor::White, 15);
-	index++;
+
 }
 
 

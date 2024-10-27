@@ -4,28 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interface/Controller/ControllerInterface.h"
+
+#include "Others/Create Widget/CreateWidgetAbstract.h"
 
 #include "InputMappingContext.h"
 #include "InputAction.h"
 
+#include "Others/EnumClass/CharacterTypeEnum.h"
 #include "CommonPlayerController.generated.h"
 
-UENUM()
-enum class ECharacterType : uint8
-{
-	HunterCharacter,
-	PropCharacter,
-};
+
 
 /**
  * 
  */
 UCLASS()
-class SEEKANDSNEAK_3D_API ACommonPlayerController : public APlayerController
+class SEEKANDSNEAK_3D_API ACommonPlayerController : public APlayerController , public IControllerInterface
 {
 	GENERATED_BODY()
 
 protected:
+
+	ECharacterType GetCharacterType()override;
 
 	ACommonPlayerController();
 
@@ -43,7 +44,10 @@ private:
 	void RemoveHunterInputRef();
 	void RemovePropInputRef();
 
-	int index;
+    UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UCharacterPreMatchWidget>HunterPreMatchWidgetClass;
+
+	TMap<EWidgetType,TUniquePtr<CreateWidgetAbstract>>WidgetLibrary;
 
 public:
 

@@ -7,6 +7,7 @@
 #include "PropPlayer/PropPlayer.h"
 
 #include "PlayerController/CommonPlayerController.h"
+#include "Others/EnumClass/CharacterTypeEnum.h"
 
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -92,6 +93,9 @@ void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingContr
 			}
 		}
 	}
+	// Call Pre match widget in controller using rpc
+	// ControllerRpc -> Call Widget
+	// GameState -> StartTimer()
 }
 
 
