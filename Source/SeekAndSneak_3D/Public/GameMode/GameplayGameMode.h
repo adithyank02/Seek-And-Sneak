@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "Interface/GameMode/PropHuntGameModeInterface.h"
 #include "GameplayGameMode.generated.h"
 
 class IControllerInterface;
@@ -12,7 +13,7 @@ class IControllerInterface;
  * 
  */
 UCLASS()
-class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode
+class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHuntGameModeInterface
 {
 	GENERATED_BODY()
 	
@@ -20,18 +21,31 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode
 
 	void BeginPlay()override;
 
+	/*Interface Function*/
+	void PreMatchTimerEnded()override;
+
+	//Storing Controller Interface - - Avoiding Re-Casting
 	TArray<TScriptInterface<IControllerInterface>>ControllerInterfaceArray;
 
+	//Storing All Joined Controller
     UPROPERTY()
 	TArray<AController*>JoinedPlayerController;
 
+	//For Spawning And Possesing Prop Character
 	void SetUpPropCharacter();
 
+	//For Spawning And Possesing Hunter Character
 	void SetupHunterCharacter(TArray<AController*>RemainingController);
 
 	void CallPreMatchWidget();
 
+	//Function To Store Controller Interface
+	void StoreControllerInterface(AController* PlayerController, IControllerInterface* InterfaceRef);
+
+	//Random Index For Selecting Player
 	int GetRandomIndex(int Min, int Max);
+
+//--------------- UPROPERTY VARIABLES------------------
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class APropPlayer>PropCharacterClass;

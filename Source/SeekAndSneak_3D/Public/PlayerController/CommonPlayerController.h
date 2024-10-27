@@ -28,6 +28,7 @@ protected:
 
 	void SetControllerInputBinding(ECharacterType CharacterType)override;
 	void InitializePreMatchUI()override;
+	void InitializeInMatchUI() override;
 	ECharacterType GetCharacterType()override;
 
 	ACommonPlayerController();
@@ -49,20 +50,30 @@ private:
     UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UCharacterPreMatchWidget>HunterPreMatchWidgetClass;
 
+	//Mapping Responsible For Storing Widget Class 
 	TMap<EWidgetType,TUniquePtr<CreateWidgetAbstract>>WidgetLibrary;
 
 public:
 
+	//Binding Input In All Clients
 	UFUNCTION(Client,Reliable)
 	void SetClientInputBinding(ECharacterType CharacterType);
 
 protected:
 
+	//Client Function For Setting PreMatch Widget
 	UFUNCTION(Client,Reliable)
 	void SetClientPreMatchWidget();
 
+	//Clinet Function For Setting InMatch Widget
+	UFUNCTION(Client,Reliable)
+	void SetClientInMatchWidget();
+
 
 private:
+
+	void SetHunterInMatchMappingContext();
+
 
 /*---------------------------------Hunter Player Controller Inputs---------------------------------------- */
 

@@ -22,5 +22,8 @@ public:
 	CreateWidgetAbstract();
 	virtual ~CreateWidgetAbstract();
 
+	//Function To Create Widget
 	virtual void Begin(APlayerController* PlayerController, ECharacterType CharacterType) = 0;
+	//Function To Remove Widget
+	virtual void End() = 0;
 };

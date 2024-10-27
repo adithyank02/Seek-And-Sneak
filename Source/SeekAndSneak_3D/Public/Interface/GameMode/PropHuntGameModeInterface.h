@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "Others/EnumClass/CharacterTypeEnum.h"
-#include "ControllerInterface.generated.h"
+#include "PropHuntGameModeInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UControllerInterface : public UInterface
+class UPropHuntGameModeInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,15 +16,12 @@ class UControllerInterface : public UInterface
 /**
  * 
  */
-class SEEKANDSNEAK_3D_API IControllerInterface
+class SEEKANDSNEAK_3D_API IPropHuntGameModeInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void SetControllerInputBinding(ECharacterType CharacterType) = 0; 
-	virtual void InitializePreMatchUI() = 0; 
-	virtual void InitializeInMatchUI() = 0;
-	virtual ECharacterType GetCharacterType() = 0; 
+	virtual void PreMatchTimerEnded() = 0; 
 };

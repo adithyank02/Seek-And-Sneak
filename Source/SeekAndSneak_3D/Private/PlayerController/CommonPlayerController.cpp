@@ -23,6 +23,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 
+/*-----------------------------Interface Function--------------------------------*/
 void ACommonPlayerController::SetControllerInputBinding(ECharacterType CharacterType)
 {
 	SetClientInputBinding(CharacterType);
@@ -33,10 +34,16 @@ void ACommonPlayerController::InitializePreMatchUI()
 	SetClientPreMatchWidget();	
 }
 
+void ACommonPlayerController::InitializeInMatchUI()
+{
+	SetClientInMatchWidget();
+}
+
 ECharacterType ACommonPlayerController::GetCharacterType()
 {
 	return OwnerCharacterType;
 }
+/*----------------------------Interface Function---------------------------------*/
 
 ACommonPlayerController::ACommonPlayerController()
 {	
@@ -53,6 +60,7 @@ void ACommonPlayerController::SetClientInputBinding_Implementation(ECharacterTyp
 {
 	if (IsLocalController())
 	{
+		//Setting Input Accoriding To Player Character
 		if (CharacterType == ECharacterType::HunterCharacter)
 		{
 			GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ACommonPlayerController::BindHunterPlayerInputs);
@@ -67,7 +75,7 @@ void ACommonPlayerController::SetClientInputBinding_Implementation(ECharacterTyp
 	}
 }
 
-
+//For Removing Non Used Dependecies
 void ACommonPlayerController::RemoveUnwantedRef()
 {
 	switch (OwnerCharacterType)
@@ -83,12 +91,14 @@ void ACommonPlayerController::RemoveUnwantedRef()
 void ACommonPlayerController::RemoveHunterInputRef()
 {
 	HunterInMatchMappingContext = nullptr;
+	HunterPreMatchMappingContext = nullptr;
 	HunterJogAction = nullptr;
 	HunterLookAction = nullptr;
 	HunterSprintAction = nullptr;
 	HunterFireWeaponAction = nullptr;
 
 	delete HunterInMatchMappingContext;
+	delete HunterPreMatchMappingContext;
 	delete HunterJogAction;
 	delete HunterLookAction;
 	delete HunterSprintAction;
@@ -119,8 +129,35 @@ void ACommonPlayerController::RemovePropInputRef()
 
 void ACommonPlayerController::SetClientPreMatchWidget_Implementation()
 {
+	//Creating Pre Match Widget
 	if(IsLocalController())WidgetLibrary[EWidgetType::PreMatchWidget]->Begin(this, OwnerCharacterType);	
 }
+
+void ACommonPlayerController::SetClientInMatchWidget_Implementation()
+{
+	if (IsLocalController())
+	{
+		//Changing The MappingContext Of Hunter Player Of GamePlay
+		if (OwnerCharacterType == ECharacterType::HunterCharacter)
+		{
+			SetHunterInMatchMappingContext();
+		}
+		//Removing The PreMatch Widget
+		WidgetLibrary[EWidgetType::PreMatchWidget]->End();
+	}
+
+}
+//Mapping Context With Full Controlls Enabled
+void ACommonPlayerController::SetHunterInMatchMappingContext()
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+	{
+		//Setting Up The Mapping Context
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(HunterInMatchMappingContext, 0);
+	}
+}
+
 
 /*--------------------------------------------------- Binding Input And Function ------------------------------------------------------------------*/
 

@@ -16,6 +16,18 @@
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+/*------------InterFunction--------------*/
+void AGameplayGameMode::PreMatchTimerEnded()
+{
+	//Calling To Create The InMatch UI Widget
+	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+	{
+		Interface->InitializeInMatchUI();
+	}
+	
+}
+
+
 void AGameplayGameMode::OnPostLogin(AController* NewController)
 {
 	Super::OnPostLogin(NewController);
@@ -59,10 +71,8 @@ void AGameplayGameMode::SetUpPropCharacter()
 
 		if (IControllerInterface* Interface = Cast <IControllerInterface>(CopyArray[Index]))
 		{
-			TScriptInterface<IControllerInterface>InterfaceRef;
-			InterfaceRef.SetObject(CopyArray[Index]);
-			InterfaceRef.SetInterface(Interface);
-			ControllerInterfaceArray.Add(InterfaceRef);
+			//Storing Controller Interface
+			StoreControllerInterface(CopyArray[Index], Interface);
 
 			if (ACharacter* PlayerCharacter = GetWorld()->SpawnActor<ACharacter>(PropCharacterClass, PropCharacterSpawnTranform[PropSpawnTransformIndex], SpawnParams))
 			{
@@ -93,16 +103,16 @@ void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingContr
 	{
 		if (IControllerInterface* Interface = Cast <IControllerInterface>(PController))
 		{
-			TScriptInterface<IControllerInterface>InterfaceRef;
-			InterfaceRef.SetObject(PController);
-			InterfaceRef.SetInterface(Interface);
-			ControllerInterfaceArray.Add(InterfaceRef);
+			//Storing Controller Interface
+			StoreControllerInterface(PController, Interface);
 
 			if (ACharacter* PlayerCharacter = GetWorld()->SpawnActor<ACharacter>(HunterCharacterClass, HunterCharacterSpawnTranform[HunterSpawnTransformIndex], SpawnParams))
 			{
 				PController->Possess(PlayerCharacter);
+				//Setting Input Binding For Hunter Character
 				Interface->SetControllerInputBinding(ECharacterType::HunterCharacter);
 
+				//Next Spawn Index
 				HunterSpawnTransformIndex++;
 			}
 		}
@@ -113,9 +123,6 @@ void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingContr
 		GameStateInterface->StartPreMatchTimer(30);
 	}
 	CallPreMatchWidget();
-	// Call Pre match widget in controller using rpc
-	// ControllerRpc -> Call Widget
-	// GameState -> StartTimer()
 }
 
 void AGameplayGameMode::CallPreMatchWidget()
@@ -124,6 +131,14 @@ void AGameplayGameMode::CallPreMatchWidget()
 	{
 		Interface->InitializePreMatchUI();
 	}
+}
+
+void AGameplayGameMode::StoreControllerInterface(AController* PlayerController, IControllerInterface* InterfaceRef)
+{
+	TScriptInterface<IControllerInterface>Interface;
+	Interface.SetObject(PlayerController);
+	Interface.SetInterface(InterfaceRef);
+	ControllerInterfaceArray.Add(Interface);
 }
 
 

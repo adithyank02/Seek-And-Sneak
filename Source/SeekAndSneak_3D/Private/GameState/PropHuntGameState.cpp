@@ -4,7 +4,8 @@
 #include "GameState/PropHuntGameState.h"
 
 #include "Net/UnrealNetwork.h"
-
+#include "GameFramework/GameMode.h"
+#include "Interface/GameMode/PropHuntGameModeInterface.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
 #include "Kismet/KismetSystemLibrary.h"
@@ -23,6 +24,7 @@ void APropHuntGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 void APropHuntGameState::OnRep_MatchTimer()
 {
+    //BoradCasting The Change Of Timer To Client
     OnMatchTimerChange.Broadcast(MatchTimer);
 }
 
@@ -34,6 +36,7 @@ void APropHuntGameState::StartMatchTimer()
 void APropHuntGameState::UpdatMatchTimer()
 {
     MatchTimer--;
+    //Broad Casting The Change Of Timer To Server
     OnMatchTimerChange.Broadcast(MatchTimer);
     if (MatchTimer == 0)StopMatchTimer();
 }
@@ -41,6 +44,19 @@ void APropHuntGameState::UpdatMatchTimer()
 void APropHuntGameState::StopMatchTimer()
 {
     GetWorld()->GetTimerManager().ClearTimer(MatchTimerHandle);
+
+    //Informing The GameMode About Match Timer Finish
+    if (HasAuthority())
+    {
+        AGameMode* PropHuntGameMode = Cast<AGameMode>(GetWorld()->GetAuthGameMode());
+        if (PropHuntGameMode)
+        {
+            if (IPropHuntGameModeInterface* GameModeInterface = Cast<IPropHuntGameModeInterface>(PropHuntGameMode))
+            {
+                GameModeInterface->PreMatchTimerEnded();        
+            }
+        }
+    }
 }
 
 

@@ -20,12 +20,12 @@ class SEEKANDSNEAK_3D_API APropHuntGameState : public AGameState , public IGameS
 
 public:
 
+	//Delegate For Server To Inform TimerValue Changes
 	FOnMatchTimerChanges OnMatchTimerChange;
 
 private:
 
 	//Interface Function
-
 	void StartPreMatchTimer(int32 StartingTimer)override;
 	APropHuntGameState* GetPropHuntGameState()override;
 

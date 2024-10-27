@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Others/Create Widget/CreateWidgetAbstract.h"
 
+class UCharacterPreMatchWidget;
 
 /**
  * 
@@ -17,9 +18,15 @@ public:
 
 private:
 
+	/*Abstract Function*/
 	void Begin(APlayerController* PlayerController, ECharacterType CharacterType)override;
+	void End()override;
 
 protected:
 
+	//For Storing Widget Ref
+	UCharacterPreMatchWidget* PreMatchWidget;
+
+	//Widget Class For Creating
 	TSubclassOf<class UCharacterPreMatchWidget>PreMatchWidgetClass;
 };

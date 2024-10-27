@@ -17,12 +17,8 @@ void UCharacterPreMatchWidget::NativeConstruct()
 	{
 		if (IGameStateInterface* Interface = Cast<IGameStateInterface>(PropHuntGameState))
 		{
+			//Binding The GameState MatchTimer Delegate
 			Interface->GetPropHuntGameState()->OnMatchTimerChange.AddUObject(this, &UCharacterPreMatchWidget::SetTextOnMatchTimerUpdate);
-
-			PropHuntGameStateInterface.SetObject(PropHuntGameState);
-			PropHuntGameStateInterface.SetInterface(Interface);
-
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Stored Game"));
 		}
 	}
 
@@ -31,6 +27,7 @@ void UCharacterPreMatchWidget::NativeConstruct()
 	SetWidgetText();
 }
 
+//Storing The Character Type Player
 void UCharacterPreMatchWidget::SetCharacterType()
 {
 	if (IControllerInterface* ControllerInterface = Cast<IControllerInterface>(GetOwningPlayer()))
@@ -39,12 +36,14 @@ void UCharacterPreMatchWidget::SetCharacterType()
 	}
 }
 
+//Delegate Binded Function
 void UCharacterPreMatchWidget::SetTextOnMatchTimerUpdate(int32 MatchTimer)
 {
 	PreMatchTimer->SetText(FText::AsNumber(MatchTimer));
 
 }
 
+//Setting Widget Components According To Character
 void UCharacterPreMatchWidget::SetWidgetText()
 {
 	FString CharacterText;
@@ -61,7 +60,7 @@ void UCharacterPreMatchWidget::SetWidgetText()
 	{
         CharacterText = FString("Prop");
         CharacterObjective = FString("Hide from the hunter and survive till the end");
-		ShowingTimeText = FString("PROP HIDING TIME");
+		ShowingTimeText = FString("HIDING TIME ENDS IN");
 	}
 	CharacterTypeText->SetText(FText::FromString(CharacterText));
 	CharacterObjectiveText->SetText(FText::FromString(CharacterObjective));

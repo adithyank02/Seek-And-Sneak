@@ -36,9 +36,6 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ShowTimerText;
 
-	UPROPERTY()
-	TScriptInterface<IGameStateInterface>PropHuntGameStateInterface;
-
 	/*For Setting The CharacterType Of The Controller*/
 	void SetCharacterType();
 

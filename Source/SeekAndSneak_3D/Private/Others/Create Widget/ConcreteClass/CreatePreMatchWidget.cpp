@@ -7,6 +7,7 @@
 
 CreatePreMatchWidget::CreatePreMatchWidget()
 {
+	//Retreving BP Widget Class
 	PreMatchWidgetClass = LoadClass<UCharacterPreMatchWidget>(nullptr, TEXT("/Game/Widgets/BP_CharacterPreMatchWidget.BP_CharacterPreMatchWidget_C"));
 }
 
@@ -18,7 +19,8 @@ void CreatePreMatchWidget::Begin(APlayerController* PlayerController, ECharacter
 {
 	if (PreMatchWidgetClass && PlayerController->IsLocalController())
 	{
-		UCharacterPreMatchWidget* PreMatchWidget = CreateWidget<UCharacterPreMatchWidget>(PlayerController, PreMatchWidgetClass);
+		//Creating Widget
+	    PreMatchWidget = CreateWidget<UCharacterPreMatchWidget>(PlayerController, PreMatchWidgetClass);
 		if (PreMatchWidget)
 		{
 			PreMatchWidget->AddToViewport();
@@ -26,4 +28,9 @@ void CreatePreMatchWidget::Begin(APlayerController* PlayerController, ECharacter
 		
 	}
 
+}
+
+void CreatePreMatchWidget::End()
+{
+	if(PreMatchWidget)PreMatchWidget->RemoveFromParent();
 }
