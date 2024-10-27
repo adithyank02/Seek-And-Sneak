@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "GameStateInterface.generated.h"
 
+class APropHuntGameState;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UGameStateInterface : public UInterface
@@ -23,7 +25,7 @@ class SEEKANDSNEAK_3D_API IGameStateInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual int32 GetPreMatchTimerVariable() = 0;
-	//int GetInMatchTimerVariable() = 0; 
+	virtual void StartPreMatchTimer(int32 StartingTimer) = 0; 
+	virtual APropHuntGameState* GetPropHuntGameState() = 0;
 
 };

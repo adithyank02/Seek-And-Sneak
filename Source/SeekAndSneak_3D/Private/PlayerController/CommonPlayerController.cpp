@@ -23,21 +23,29 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 
+void ACommonPlayerController::SetControllerInputBinding(ECharacterType CharacterType)
+{
+	SetClientInputBinding(CharacterType);
+}
+
+void ACommonPlayerController::InitializePreMatchUI()
+{
+	SetClientPreMatchWidget();	
+}
+
 ECharacterType ACommonPlayerController::GetCharacterType()
 {
 	return OwnerCharacterType;
 }
 
 ACommonPlayerController::ACommonPlayerController()
-{
-	WidgetLibrary.Add(EWidgetType::PreMatchWidget, MakeUnique<CreatePreMatchWidget>());
+{	
+	WidgetLibrary.Add(EWidgetType::PreMatchWidget,MakeUnique<CreatePreMatchWidget>());
 }
 
 void ACommonPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 }
 
 
@@ -57,8 +65,9 @@ void ACommonPlayerController::SetClientInputBinding_Implementation(ECharacterTyp
 		}
 		OwnerCharacterType = CharacterType;
 	}
-
 }
+
+
 void ACommonPlayerController::RemoveUnwantedRef()
 {
 	switch (OwnerCharacterType)
@@ -69,16 +78,17 @@ void ACommonPlayerController::RemoveUnwantedRef()
 	}
 }
 
+
 //Deleting Ref Of Input That Don't Use
 void ACommonPlayerController::RemoveHunterInputRef()
 {
-	HunterPlayerMappingContext = nullptr;
+	HunterInMatchMappingContext = nullptr;
 	HunterJogAction = nullptr;
 	HunterLookAction = nullptr;
 	HunterSprintAction = nullptr;
 	HunterFireWeaponAction = nullptr;
 
-	delete HunterPlayerMappingContext;
+	delete HunterInMatchMappingContext;
 	delete HunterJogAction;
 	delete HunterLookAction;
 	delete HunterSprintAction;
@@ -87,7 +97,7 @@ void ACommonPlayerController::RemoveHunterInputRef()
 
 void ACommonPlayerController::RemovePropInputRef()
 {
-	PropPlayerMappingContext = nullptr;
+	PropMappingContext = nullptr;
 	PropMoveAction = nullptr;
 	PropLookAction = nullptr;
 	PropJumpAction = nullptr;
@@ -95,7 +105,7 @@ void ACommonPlayerController::RemovePropInputRef()
 	PropCloneAction = nullptr;
 	PropSmokeBombAction = nullptr;
 
-	delete PropPlayerMappingContext;
+	delete PropMappingContext;
 	delete PropMoveAction;
 	delete PropLookAction;
 	delete PropJumpAction;
@@ -104,6 +114,13 @@ void ACommonPlayerController::RemovePropInputRef()
 	delete PropSmokeBombAction;
 }
 
+/*------------------Client Rpc---------------------*/
+
+
+void ACommonPlayerController::SetClientPreMatchWidget_Implementation()
+{
+	if(IsLocalController())WidgetLibrary[EWidgetType::PreMatchWidget]->Begin(this, OwnerCharacterType);	
+}
 
 /*--------------------------------------------------- Binding Input And Function ------------------------------------------------------------------*/
 
@@ -113,13 +130,6 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 	if (IsLocalController())
 	{
 		SetInputMode(FInputModeGameOnly());
-
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-		{
-			//Setting Up The Mapping Context
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(HunterPlayerMappingContext, 0);
-		}
 
 		if (UEnhancedInputComponent* EnhancedInput = Cast <UEnhancedInputComponent>(this->InputComponent))
 		{
@@ -135,8 +145,15 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Started, HunterPlayer, &AHunterPlayer::StartFiringWeapon);
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::StopFiringWeapon);
 
-				UKismetSystemLibrary::PrintString(GetWorld(), GetPawn()->GetName(),true,true,FLinearColor::Black,10);
+				UKismetSystemLibrary::PrintString(GetWorld(), GetPawn()->GetName(), true, true, FLinearColor::Black, 10);
 
+			}
+			//Setting The Pre Match MappingContext For Until The Prop Hide In Game
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			{
+				//Setting Up The Mapping Context
+				Subsystem->ClearAllMappings();
+				Subsystem->AddMappingContext(HunterPreMatchMappingContext, 0);
 			}
 		}
 	}
@@ -152,7 +169,7 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 		{
 			//Setting Up The Mapping Context
 			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(PropPlayerMappingContext, 0);
+			Subsystem->AddMappingContext(PropMappingContext, 0);
 		}
 
 		if (UEnhancedInputComponent* EnhancedInput = Cast <UEnhancedInputComponent>(this->InputComponent))
@@ -172,7 +189,6 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 
 				EnhancedInput->BindAction(PropSmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
 
-				
 			}
 		}
 

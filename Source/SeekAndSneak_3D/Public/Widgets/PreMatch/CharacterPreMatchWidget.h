@@ -8,6 +8,7 @@
 #include "CharacterPreMatchWidget.generated.h"
 
 class UTextBlock;
+class IGameStateInterface;
 
 /**
  * 
@@ -32,11 +33,19 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CharacterObjectiveText;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ShowTimerText;
+
+	UPROPERTY()
+	TScriptInterface<IGameStateInterface>PropHuntGameStateInterface;
+
 	/*For Setting The CharacterType Of The Controller*/
 	void SetCharacterType();
-	/*Binding The Text To Game State Timer*/
-	void SetPreMatchTimer();
+
 	/*Set Text Accoriding To Character Type*/
 	void SetWidgetText();
+
+	/*Binded To Game State Delegate And Set the Updated Value To Text*/
+	void SetTextOnMatchTimerUpdate(int32 MatchTimer);
 	
 };

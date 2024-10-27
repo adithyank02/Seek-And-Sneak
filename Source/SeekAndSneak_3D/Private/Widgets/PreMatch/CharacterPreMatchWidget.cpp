@@ -8,12 +8,25 @@
 #include "Interface/Controller/ControllerInterface.h"
 #include "Interface/GameState/GameStateInterface.h"
 
+#include "Kismet/KismetSystemLibrary.h"
 
 void UCharacterPreMatchWidget::NativeConstruct()
 {
-	SetCharacterType();
+	AGameState* PropHuntGameState =  GetWorld()->GetGameState<AGameState>();
+	if (PropHuntGameState)
+	{
+		if (IGameStateInterface* Interface = Cast<IGameStateInterface>(PropHuntGameState))
+		{
+			Interface->GetPropHuntGameState()->OnMatchTimerChange.AddUObject(this, &UCharacterPreMatchWidget::SetTextOnMatchTimerUpdate);
 
-	SetPreMatchTimer();
+			PropHuntGameStateInterface.SetObject(PropHuntGameState);
+			PropHuntGameStateInterface.SetInterface(Interface);
+
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Stored Game"));
+		}
+	}
+
+	SetCharacterType();
 
 	SetWidgetText();
 }
@@ -26,30 +39,31 @@ void UCharacterPreMatchWidget::SetCharacterType()
 	}
 }
 
-void UCharacterPreMatchWidget::SetPreMatchTimer()
+void UCharacterPreMatchWidget::SetTextOnMatchTimerUpdate(int32 MatchTimer)
 {
-	if (IGameStateInterface* Interface = Cast<IGameStateInterface>(GetWorld()->GetGameState<APropHuntGameState>()))
-	{
-		int32 TimerValue = Interface->GetPreMatchTimerVariable();
-		PreMatchTimer->SetText(FText::AsNumber(TimerValue));
-	}
+	PreMatchTimer->SetText(FText::AsNumber(MatchTimer));
+
 }
 
 void UCharacterPreMatchWidget::SetWidgetText()
 {
 	FString CharacterText;
 	FString CharacterObjective;
+	FString ShowingTimeText;
 
 	if (PlayerCharacter == ECharacterType::HunterCharacter)
 	{
 		CharacterText = FString("Hunter");
-		CharacterObjective = FString("Find All The Props And Destroy It");
+		CharacterObjective = FString("Find And Destroy The Props Before Time Finish");
+		ShowingTimeText = FString("MATCH STARTS IN");
 	}
 	else
 	{
         CharacterText = FString("Prop");
         CharacterObjective = FString("Hide from the hunter and survive till the end");
+		ShowingTimeText = FString("PROP HIDING TIME");
 	}
 	CharacterTypeText->SetText(FText::FromString(CharacterText));
 	CharacterObjectiveText->SetText(FText::FromString(CharacterObjective));
+	ShowTimerText->SetText(FText::FromString(ShowingTimeText));
 }

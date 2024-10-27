@@ -6,6 +6,8 @@
 #include "GameFramework/GameMode.h"
 #include "GameplayGameMode.generated.h"
 
+class IControllerInterface;
+
 /**
  * 
  */
@@ -17,6 +19,8 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode
 	void OnPostLogin(AController* NewController)override;
 
 	void BeginPlay()override;
+
+	TArray<TScriptInterface<IControllerInterface>>ControllerInterfaceArray;
 
     UPROPERTY()
 	TArray<AController*>JoinedPlayerController;

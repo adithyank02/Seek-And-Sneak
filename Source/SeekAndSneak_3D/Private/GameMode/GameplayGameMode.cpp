@@ -2,12 +2,16 @@
 
 
 #include "GameMode/GameplayGameMode.h"
+#include "GameFramework/GameState.h"
 
 #include "HunterPlayer/HunterPlayer.h"
 #include "PropPlayer/PropPlayer.h"
 
-#include "PlayerController/CommonPlayerController.h"
+#include "Interface/Controller/ControllerInterface.h"
 #include "Others/EnumClass/CharacterTypeEnum.h"
+
+#include "Interface/GameState/GameStateInterface.h"
+
 
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -53,13 +57,18 @@ void AGameplayGameMode::SetUpPropCharacter()
 		//Getting Random Index For Selecting Random Player
 		int Index = GetRandomIndex(0, TotalNumberOfPlayer - 1);
 
-		if (ACommonPlayerController* PlayerController = Cast <ACommonPlayerController>(CopyArray[Index]))
+		if (IControllerInterface* Interface = Cast <IControllerInterface>(CopyArray[Index]))
 		{
+			TScriptInterface<IControllerInterface>InterfaceRef;
+			InterfaceRef.SetObject(CopyArray[Index]);
+			InterfaceRef.SetInterface(Interface);
+			ControllerInterfaceArray.Add(InterfaceRef);
+
 			if (ACharacter* PlayerCharacter = GetWorld()->SpawnActor<ACharacter>(PropCharacterClass, PropCharacterSpawnTranform[PropSpawnTransformIndex], SpawnParams))
 			{
-				PlayerController->Possess(PlayerCharacter);
+				CopyArray[Index]->Possess(PlayerCharacter);
 				//Setting Input Binding For Prop Character
-				PlayerController->SetClientInputBinding(ECharacterType::PropCharacter);
+				Interface->SetControllerInputBinding(ECharacterType::PropCharacter);
 
 				//Removing For Not To Spawn Same Player Twice
 				CopyArray.RemoveAt(Index);
@@ -82,20 +91,39 @@ void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingContr
 
 	for (auto PController : RemainingController)
 	{
-		if (ACommonPlayerController* PlayerController = Cast <ACommonPlayerController>(PController))
+		if (IControllerInterface* Interface = Cast <IControllerInterface>(PController))
 		{
+			TScriptInterface<IControllerInterface>InterfaceRef;
+			InterfaceRef.SetObject(PController);
+			InterfaceRef.SetInterface(Interface);
+			ControllerInterfaceArray.Add(InterfaceRef);
+
 			if (ACharacter* PlayerCharacter = GetWorld()->SpawnActor<ACharacter>(HunterCharacterClass, HunterCharacterSpawnTranform[HunterSpawnTransformIndex], SpawnParams))
 			{
-				PlayerController->Possess(PlayerCharacter);
-				PlayerController->SetClientInputBinding(ECharacterType::HunterCharacter);
+				PController->Possess(PlayerCharacter);
+				Interface->SetControllerInputBinding(ECharacterType::HunterCharacter);
 
 				HunterSpawnTransformIndex++;
 			}
 		}
 	}
+	AGameState* PropHuntGameState = GetGameState<AGameState>();
+	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(PropHuntGameState))
+	{
+		GameStateInterface->StartPreMatchTimer(30);
+	}
+	CallPreMatchWidget();
 	// Call Pre match widget in controller using rpc
 	// ControllerRpc -> Call Widget
 	// GameState -> StartTimer()
+}
+
+void AGameplayGameMode::CallPreMatchWidget()
+{
+	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+	{
+		Interface->InitializePreMatchUI();
+	}
 }
 
 

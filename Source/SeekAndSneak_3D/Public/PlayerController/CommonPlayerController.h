@@ -26,6 +26,8 @@ class SEEKANDSNEAK_3D_API ACommonPlayerController : public APlayerController , p
 
 protected:
 
+	void SetControllerInputBinding(ECharacterType CharacterType)override;
+	void InitializePreMatchUI()override;
 	ECharacterType GetCharacterType()override;
 
 	ACommonPlayerController();
@@ -54,13 +56,22 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetClientInputBinding(ECharacterType CharacterType);
 
+protected:
+
+	UFUNCTION(Client,Reliable)
+	void SetClientPreMatchWidget();
+
 
 private:
 
 /*---------------------------------Hunter Player Controller Inputs---------------------------------------- */
 
+
 	UPROPERTY(EditDefaultsOnly)
-	UInputMappingContext* HunterPlayerMappingContext;
+	UInputMappingContext* HunterPreMatchMappingContext;
+
+	UPROPERTY(EditDefaultsOnly)
+	UInputMappingContext* HunterInMatchMappingContext;
 
 	//InputAction For Ground Movement --WSAD
 	UPROPERTY(EditDefaultsOnly)
@@ -80,7 +91,7 @@ private:
 	/*---------------------------------Prop Player Controller Inputs---------------------------------------- */
 	
 	UPROPERTY(EditDefaultsOnly)
-	UInputMappingContext* PropPlayerMappingContext;
+	UInputMappingContext* PropMappingContext;
 
 	//InputAction For Ground Movement --WSAD
 	UPROPERTY(EditDefaultsOnly)

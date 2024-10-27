@@ -5,14 +5,47 @@
 
 #include "Net/UnrealNetwork.h"
 
+#include "Runtime/Engine/Public/TimerManager.h"
+
+#include "Kismet/KismetSystemLibrary.h"
+
+
+APropHuntGameState* APropHuntGameState::GetPropHuntGameState()
+{
+    return this;
+}
 void APropHuntGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(APropHuntGameState, PreMatchTimer);
+    DOREPLIFETIME(APropHuntGameState, MatchTimer);
 }
 
-int32 APropHuntGameState::GetPreMatchTimerVariable()
+void APropHuntGameState::OnRep_MatchTimer()
 {
-    return PreMatchTimer;
+    OnMatchTimerChange.Broadcast(MatchTimer);
+}
+
+void APropHuntGameState::StartMatchTimer()
+{
+    GetWorld()->GetTimerManager().SetTimer(MatchTimerHandle, this, &APropHuntGameState::UpdatMatchTimer, 1, true);
+}
+
+void APropHuntGameState::UpdatMatchTimer()
+{
+    MatchTimer--;
+    OnMatchTimerChange.Broadcast(MatchTimer);
+    if (MatchTimer == 0)StopMatchTimer();
+}
+
+void APropHuntGameState::StopMatchTimer()
+{
+    GetWorld()->GetTimerManager().ClearTimer(MatchTimerHandle);
+}
+
+
+void APropHuntGameState::StartPreMatchTimer(int32 StartingTimer)
+{
+    //MatchTimer = StartingTimer;
+    StartMatchTimer();
 }
