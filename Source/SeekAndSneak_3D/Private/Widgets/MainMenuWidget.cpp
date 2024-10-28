@@ -13,7 +13,7 @@
 
 UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FClassFinder<USessionWidget>WidgetClass(TEXT("/Game/Widgets/BP_SessionWidget.BP_SessionWidget_C"));
+	static ConstructorHelpers::FClassFinder<USessionWidget>WidgetClass(TEXT("/Game/Widgets/Menu/BP_SessionWidget.BP_SessionWidget_C"));
 
 	if (WidgetClass.Succeeded())
 	{

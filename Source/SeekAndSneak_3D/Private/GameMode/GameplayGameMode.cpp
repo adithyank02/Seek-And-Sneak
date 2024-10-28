@@ -19,11 +19,21 @@
 /*------------InterFunction--------------*/
 void AGameplayGameMode::PreMatchTimerEnded()
 {
+	AGameState* PropHuntGameState = GetGameState<AGameState>();
+	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(PropHuntGameState))
+	{
+		GameStateInterface->StartInMatchTimer(720);   //720 sec == 12 minutes
+	}
 	//Calling To Create The InMatch UI Widget
 	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
 	{
 		Interface->InitializeInMatchUI();
 	}
+	
+}
+
+void AGameplayGameMode::InMatchTimerEnded()
+{
 	
 }
 

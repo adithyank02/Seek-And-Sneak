@@ -11,7 +11,7 @@
 
 AMainMenuController::AMainMenuController()
 {	
-	static ConstructorHelpers::FClassFinder<UUserWidget>WidgetClass(TEXT("/Game/Widgets/BP_MainMenuWidget.BP_MainMenuWidget_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget>WidgetClass(TEXT("/Game/Widgets/Menu/BP_MainMenuWidget.BP_MainMenuWidget_C"));
 
 	if (WidgetClass.Succeeded())
 	{

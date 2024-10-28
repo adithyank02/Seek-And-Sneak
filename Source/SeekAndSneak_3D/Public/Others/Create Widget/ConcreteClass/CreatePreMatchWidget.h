@@ -28,5 +28,5 @@ protected:
 	UCharacterPreMatchWidget* PreMatchWidget;
 
 	//Widget Class For Creating
-	TSubclassOf<class UCharacterPreMatchWidget>PreMatchWidgetClass;
+	TSubclassOf<UCharacterPreMatchWidget>PreMatchWidgetClass;
 };

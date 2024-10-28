@@ -16,7 +16,7 @@ ALobbyPlayerController::ALobbyPlayerController()
 	CameraActorSpawnTransform.SetRotation(FQuat::MakeFromRotator(FRotator(-20,0,0)));/*Axis Is YZX*/
 	CameraActorSpawnTransform.SetScale3D(FVector(1, 1, 1));
 
-	ConstructorHelpers::FClassFinder<ULobbyWidget>LobbyWidget(TEXT("/Game/Widgets/BP_LobbyWidget.BP_LobbyWidget_C"));
+	ConstructorHelpers::FClassFinder<ULobbyWidget>LobbyWidget(TEXT("/Game/Widgets/Menu/BP_LobbyWidget.BP_LobbyWidget_C"));
 
 	if (LobbyWidget.Succeeded())
 	{

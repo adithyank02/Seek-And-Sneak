@@ -19,29 +19,42 @@ void APropHuntGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(APropHuntGameState, MatchTimer);
+    DOREPLIFETIME(APropHuntGameState, PreMatchTimer);
+    DOREPLIFETIME(APropHuntGameState, InMatchTimer);
 }
 
-void APropHuntGameState::OnRep_MatchTimer()
+void APropHuntGameState::OnRep_PreMatchTimer()
 {
     //BoradCasting The Change Of Timer To Client
-    OnMatchTimerChange.Broadcast(MatchTimer);
+    OnMatchTimerChange.Broadcast(PreMatchTimer);
 }
 
-void APropHuntGameState::StartMatchTimer()
+void APropHuntGameState::OnRep_InMatchTimer()
 {
-    GetWorld()->GetTimerManager().SetTimer(MatchTimerHandle, this, &APropHuntGameState::UpdatMatchTimer, 1, true);
+    OnInMatchTimerChange.Broadcast(InMatchTimer);
 }
 
-void APropHuntGameState::UpdatMatchTimer()
+
+void APropHuntGameState::StartPreMatchTimer(int32 StartingTimer)
 {
-    MatchTimer--;
+    PreMatchTimer = StartingTimer;
+    StartPreMatchTimer();
+}
+
+void APropHuntGameState::StartPreMatchTimer()
+{
+    GetWorld()->GetTimerManager().SetTimer(MatchTimerHandle, this, &APropHuntGameState::UpdatePreMatchTimer, 1, true);
+}
+
+void APropHuntGameState::UpdatePreMatchTimer()
+{
+    PreMatchTimer--;
     //Broad Casting The Change Of Timer To Server
-    OnMatchTimerChange.Broadcast(MatchTimer);
-    if (MatchTimer == 0)StopMatchTimer();
+    OnMatchTimerChange.Broadcast(PreMatchTimer);
+    if (PreMatchTimer == 0)StopPreMatchTimer();
 }
 
-void APropHuntGameState::StopMatchTimer()
+void APropHuntGameState::StopPreMatchTimer()
 {
     GetWorld()->GetTimerManager().ClearTimer(MatchTimerHandle);
 
@@ -59,9 +72,38 @@ void APropHuntGameState::StopMatchTimer()
     }
 }
 
-
-void APropHuntGameState::StartPreMatchTimer(int32 StartingTimer)
+void APropHuntGameState::StartInMatchTimer(int32 StartingTimer)
 {
-    //MatchTimer = StartingTimer;
-    StartMatchTimer();
+    InMatchTimer = StartingTimer;
+    StartInMatchTimer();
+}
+
+void APropHuntGameState::StartInMatchTimer()
+{
+    GetWorld()->GetTimerManager().SetTimer(MatchTimerHandle, this, &APropHuntGameState::UpdateInMatchTimer, 1, true);
+}
+
+
+void APropHuntGameState::UpdateInMatchTimer()
+{
+    InMatchTimer--;
+    OnInMatchTimerChange.Broadcast(InMatchTimer);
+    if (InMatchTimer == 0)StopInMatchTimer();
+}
+void APropHuntGameState::StopInMatchTimer()
+{
+    GetWorld()->GetTimerManager().ClearTimer(MatchTimerHandle);
+
+    //Informing The GameMode About Match Timer Finish
+    if (HasAuthority())
+    {
+        AGameMode* PropHuntGameMode = Cast<AGameMode>(GetWorld()->GetAuthGameMode());
+        if (PropHuntGameMode)
+        {
+            if (IPropHuntGameModeInterface* GameModeInterface = Cast<IPropHuntGameModeInterface>(PropHuntGameMode))
+            {
+                GameModeInterface->InMatchTimerEnded();
+            }
+        }
+    }
 }

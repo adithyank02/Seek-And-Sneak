@@ -23,6 +23,7 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	/*Interface Function*/
 	void PreMatchTimerEnded()override;
+	void InMatchTimerEnded()override;
 
 	//Storing Controller Interface - - Avoiding Re-Casting
 	TArray<TScriptInterface<IControllerInterface>>ControllerInterfaceArray;

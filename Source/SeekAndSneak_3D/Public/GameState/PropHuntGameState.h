@@ -9,6 +9,7 @@
 #include "PropHuntGameState.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchTimerChanges,int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInMatchTimerChanges, int32);
 
 /**
  * 
@@ -23,26 +24,40 @@ public:
 	//Delegate For Server To Inform TimerValue Changes
 	FOnMatchTimerChanges OnMatchTimerChange;
 
+	FOnInMatchTimerChanges OnInMatchTimerChange;
+
 private:
 
 	//Interface Function
 	void StartPreMatchTimer(int32 StartingTimer)override;
+	void StartInMatchTimer(int32 StartingTimer)override;
+
 	APropHuntGameState* GetPropHuntGameState()override;
 
 //---------------------------------------------------
 
-	UPROPERTY(ReplicatedUsing = OnRep_MatchTimer)
-	int32 MatchTimer = 30;
+	UPROPERTY(ReplicatedUsing = OnRep_PreMatchTimer)
+	int32 PreMatchTimer;
+
+	UPROPERTY(ReplicatedUsing = OnRep_InMatchTimer)
+	int32 InMatchTimer;
 
 	UFUNCTION()
-	void OnRep_MatchTimer();
+	void OnRep_PreMatchTimer();
+
+	UFUNCTION()
+	void OnRep_InMatchTimer();
 
 	FTimerHandle MatchTimerHandle;
 
 //---------------------------------------------------
-	void StartMatchTimer();
-	void UpdatMatchTimer();
-	void StopMatchTimer();
+	void StartPreMatchTimer();
+	void UpdatePreMatchTimer();
+	void StopPreMatchTimer();
+
+	void StartInMatchTimer();
+	void UpdateInMatchTimer();
+	void StopInMatchTimer();
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const override;
 

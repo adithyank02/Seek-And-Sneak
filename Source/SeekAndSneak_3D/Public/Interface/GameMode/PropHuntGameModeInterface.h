@@ -24,4 +24,5 @@ class SEEKANDSNEAK_3D_API IPropHuntGameModeInterface
 public:
 
 	virtual void PreMatchTimerEnded() = 0; 
+	virtual void InMatchTimerEnded() = 0;
 };

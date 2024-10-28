@@ -26,6 +26,7 @@ class SEEKANDSNEAK_3D_API IGameStateInterface
 public:
 
 	virtual void StartPreMatchTimer(int32 StartingTimer) = 0; 
+	virtual void StartInMatchTimer(int32 StartingTimer) = 0;
 	virtual APropHuntGameState* GetPropHuntGameState() = 0;
 
 };

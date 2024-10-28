@@ -18,6 +18,7 @@
 #include "Widgets/PreMatch/CharacterPreMatchWidget.h"
 
 #include "Others/Create Widget/ConcreteClass/CreatePreMatchWidget.h"
+#include "Others/Create Widget/ConcreteClass/CreateInMatchWidget.h"
 
 
 #include "Kismet/KismetSystemLibrary.h"
@@ -47,7 +48,9 @@ ECharacterType ACommonPlayerController::GetCharacterType()
 
 ACommonPlayerController::ACommonPlayerController()
 {	
+	//Creating Instance And Store In Map With Enum
 	WidgetLibrary.Add(EWidgetType::PreMatchWidget,MakeUnique<CreatePreMatchWidget>());
+	WidgetLibrary.Add(EWidgetType::InMatchWidget, MakeUnique<CreateInMatchWidget>());
 }
 
 void ACommonPlayerController::BeginPlay()
@@ -144,6 +147,9 @@ void ACommonPlayerController::SetClientInMatchWidget_Implementation()
 		}
 		//Removing The PreMatch Widget
 		WidgetLibrary[EWidgetType::PreMatchWidget]->End();
+
+		//Creating In Match Widget
+		WidgetLibrary[EWidgetType::InMatchWidget]->Begin(this, OwnerCharacterType);
 	}
 
 }
