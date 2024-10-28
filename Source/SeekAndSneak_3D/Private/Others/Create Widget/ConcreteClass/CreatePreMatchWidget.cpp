@@ -33,4 +33,14 @@ void CreatePreMatchWidget::Begin(APlayerController* PlayerController, ECharacter
 void CreatePreMatchWidget::End()
 {
 	if(PreMatchWidget)PreMatchWidget->RemoveFromParent();
+	//RemovePointerRef();
+}
+
+void CreatePreMatchWidget::RemovePointerRef()
+{
+	PreMatchWidget = nullptr;
+	delete PreMatchWidget;
+
+	PreMatchWidgetClass = nullptr;
+	delete PreMatchWidgetClass;
 }

@@ -22,7 +22,7 @@ void AGameplayGameMode::PreMatchTimerEnded()
 	AGameState* PropHuntGameState = GetGameState<AGameState>();
 	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(PropHuntGameState))
 	{
-		GameStateInterface->StartInMatchTimer(720);   //720 sec == 12 minutes
+		GameStateInterface->StartInMatchTimer(InMatchTimeInSec);   //720 sec == 12 minutes
 	}
 	//Calling To Create The InMatch UI Widget
 	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
@@ -32,9 +32,12 @@ void AGameplayGameMode::PreMatchTimerEnded()
 	
 }
 
-void AGameplayGameMode::InMatchTimerEnded()
+void AGameplayGameMode::OnMatchEnded()
 {
-	
+	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+	{
+		Interface->CallEndMatch(ECharacterType::PropCharacter);
+	}
 }
 
 
@@ -54,7 +57,7 @@ void AGameplayGameMode::BeginPlay()
 	{
 		//Adding A Delay To Ensure All Player Join And Stored
 		FTimerHandle SpawnPropCharacterTimer;
-		GetWorld()->GetTimerManager().SetTimer(SpawnPropCharacterTimer, this, &AGameplayGameMode::SetUpPropCharacter, 2);
+		GetWorld()->GetTimerManager().SetTimer(SpawnPropCharacterTimer, this, &AGameplayGameMode::SetUpPropCharacter, FirstDeley);
 	}
 }
 
@@ -130,7 +133,7 @@ void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingContr
 	AGameState* PropHuntGameState = GetGameState<AGameState>();
 	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(PropHuntGameState))
 	{
-		GameStateInterface->StartPreMatchTimer(30);
+		GameStateInterface->StartPreMatchTimer(PreMatchTimeInSec);
 	}
 	CallPreMatchWidget();
 }

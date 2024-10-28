@@ -27,8 +27,12 @@ class SEEKANDSNEAK_3D_API ACommonPlayerController : public APlayerController , p
 protected:
 
 	void SetControllerInputBinding(ECharacterType CharacterType)override;
+
 	void InitializePreMatchUI()override;
 	void InitializeInMatchUI() override;
+	void CallEndMatch(ECharacterType MatchWinner)override;
+
+	ECharacterType GetWinnerCharacterType()override;
 	ECharacterType GetCharacterType()override;
 
 	ACommonPlayerController();
@@ -38,6 +42,7 @@ private:
 	void BeginPlay()override;
 
 	ECharacterType OwnerCharacterType;
+	ECharacterType WinnerCharacterType;
 
 	void BindHunterPlayerInputs();
 	void BindPropPlayerInputs();
@@ -68,6 +73,10 @@ protected:
 	//Clinet Function For Setting InMatch Widget
 	UFUNCTION(Client,Reliable)
 	void SetClientInMatchWidget();
+	
+    //Client Rpc That Calls When Game End -- Find One Winner
+	UFUNCTION(Client,Reliable)
+	void SetClientOnMatchEnd(ECharacterType MatchWinner);
 
 
 private:

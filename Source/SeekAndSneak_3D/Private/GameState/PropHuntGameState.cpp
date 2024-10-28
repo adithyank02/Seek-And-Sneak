@@ -102,7 +102,7 @@ void APropHuntGameState::StopInMatchTimer()
         {
             if (IPropHuntGameModeInterface* GameModeInterface = Cast<IPropHuntGameModeInterface>(PropHuntGameMode))
             {
-                GameModeInterface->InMatchTimerEnded();
+                GameModeInterface->OnMatchEnded();
             }
         }
     }

@@ -21,9 +21,11 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	void BeginPlay()override;
 
+	int const FirstDeley = 3;
+
 	/*Interface Function*/
 	void PreMatchTimerEnded()override;
-	void InMatchTimerEnded()override;
+	void OnMatchEnded()override;
 
 	//Storing Controller Interface - - Avoiding Re-Casting
 	TArray<TScriptInterface<IControllerInterface>>ControllerInterfaceArray;
@@ -46,6 +48,10 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 	//Random Index For Selecting Player
 	int GetRandomIndex(int Min, int Max);
 
+	int const PreMatchTimeInSec = 10;
+	int const InMatchTimeInSec = 20; //12 Minutes
+
+
 //--------------- UPROPERTY VARIABLES------------------
 
 	UPROPERTY(EditDefaultsOnly)
@@ -59,5 +65,8 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FTransform>HunterCharacterSpawnTranform;
+
+
+
 
 };

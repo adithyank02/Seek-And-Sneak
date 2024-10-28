@@ -22,10 +22,14 @@ public:
 
 private:
 
+	ECharacterType PlayerCharacterType;
+
 	UHunterInMatchWidget* HunterWidget;
 	TSubclassOf<UHunterInMatchWidget>HunterInMatchWidgetClass;
 
 	UPropInMatchWidget* PropWidget;
 	TSubclassOf<UPropInMatchWidget>PropInMatchWidgetClass;
+
+	void RemovePointerRef();
 	
 };

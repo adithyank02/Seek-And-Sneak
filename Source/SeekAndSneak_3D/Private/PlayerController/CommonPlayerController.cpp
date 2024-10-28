@@ -19,6 +19,7 @@
 
 #include "Others/Create Widget/ConcreteClass/CreatePreMatchWidget.h"
 #include "Others/Create Widget/ConcreteClass/CreateInMatchWidget.h"
+#include "Others/Create Widget/ConcreteClass/CreateMatchEndWidget.h"
 
 
 #include "Kismet/KismetSystemLibrary.h"
@@ -40,6 +41,17 @@ void ACommonPlayerController::InitializeInMatchUI()
 	SetClientInMatchWidget();
 }
 
+void ACommonPlayerController::CallEndMatch(ECharacterType MatchWinner)
+{
+	//Called When Match End
+	SetClientOnMatchEnd(MatchWinner);
+}
+
+ECharacterType ACommonPlayerController::GetWinnerCharacterType()
+{
+	return WinnerCharacterType;
+}
+
 ECharacterType ACommonPlayerController::GetCharacterType()
 {
 	return OwnerCharacterType;
@@ -51,6 +63,7 @@ ACommonPlayerController::ACommonPlayerController()
 	//Creating Instance And Store In Map With Enum
 	WidgetLibrary.Add(EWidgetType::PreMatchWidget,MakeUnique<CreatePreMatchWidget>());
 	WidgetLibrary.Add(EWidgetType::InMatchWidget, MakeUnique<CreateInMatchWidget>());
+	WidgetLibrary.Add(EWidgetType::PostMatchWidget, MakeUnique<CreateMatchEndWidget>());
 }
 
 void ACommonPlayerController::BeginPlay()
@@ -129,7 +142,6 @@ void ACommonPlayerController::RemovePropInputRef()
 
 /*------------------Client Rpc---------------------*/
 
-
 void ACommonPlayerController::SetClientPreMatchWidget_Implementation()
 {
 	//Creating Pre Match Widget
@@ -153,6 +165,20 @@ void ACommonPlayerController::SetClientInMatchWidget_Implementation()
 	}
 
 }
+void ACommonPlayerController::SetClientOnMatchEnd_Implementation(ECharacterType MatchWinner)
+{
+	if (IsLocalController())
+	{
+		//Storing The Winner Character Type To Use On Widgets
+		WinnerCharacterType = MatchWinner;
+		WidgetLibrary[EWidgetType::InMatchWidget]->End();
+
+		WidgetLibrary[EWidgetType::PostMatchWidget]->Begin(this,OwnerCharacterType);
+	}
+}
+
+/*-----------------------Client RPC ----------------------------*/
+
 //Mapping Context With Full Controlls Enabled
 void ACommonPlayerController::SetHunterInMatchMappingContext()
 {

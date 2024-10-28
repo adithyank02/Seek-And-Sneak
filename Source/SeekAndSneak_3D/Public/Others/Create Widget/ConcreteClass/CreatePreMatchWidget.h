@@ -29,4 +29,7 @@ protected:
 
 	//Widget Class For Creating
 	TSubclassOf<UCharacterPreMatchWidget>PreMatchWidgetClass;
+
+	//Manually Removing Pointer Ref
+	void RemovePointerRef();
 };
