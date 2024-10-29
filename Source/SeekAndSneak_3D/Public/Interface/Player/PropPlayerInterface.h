@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "PropPlayerInterface.generated.h"
 
+class APropPlayer;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -27,4 +28,8 @@ public:
 	virtual void SetPlayerMesh(UStaticMesh* NewMesh) = 0;
 	virtual UStaticMesh* GetPlayerMesh() = 0;
 	virtual void SetCapsuleSize(float Radius, float Height) = 0;
+	virtual void PlayerGetDamaged(float DamageCaused) = 0;
+
+	virtual APropPlayer* GetPropPlayerRef() = 0; 
+
 };

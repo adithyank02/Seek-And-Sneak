@@ -8,6 +8,7 @@
 
 class UTextBlock;
 class UWidgetSwitcher;
+class UProgressBar;
 class UPauseGameWidget;
 
 /**
@@ -39,11 +40,16 @@ private:
 	UTextBlock* PropTotalAliveCount;
 
 	UPROPERTY(meta = (BindWidget))
+    UProgressBar* PlayerHealthBar;
+
+	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* WidgetSwitcher;
 
 	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
 
 	UPauseGameWidget* PauseGameWidget;
+
+	float TotalPercentage;
 
 	//Avoiding Re-Intialization On Each Time
 	int Minutes;
@@ -54,5 +60,7 @@ private:
 public:
 
 	void ChangeIndexOnWidgetSwitcher(int Index);
+
+	void SetPlayerHealthOnDamage(float DamageCaused);
 
 };

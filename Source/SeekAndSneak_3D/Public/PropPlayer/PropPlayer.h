@@ -17,6 +17,9 @@
 
 #include "PropPlayer.generated.h"
 
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropGetDamaged, float);
+
 UCLASS()
 class SEEKANDSNEAK_3D_API APropPlayer : public ACharacter , public IPropPlayerInterface
 {
@@ -29,6 +32,11 @@ public:
 	void SetPlayerMesh(UStaticMesh* NewMesh) override; 
 	UStaticMesh* GetPlayerMesh() override;
 	void SetCapsuleSize(float Radius, float Height) override;
+	void PlayerGetDamaged(float DamageCaused)override;
+
+	APropPlayer* GetPropPlayerRef()override;
+
+	FOnPropGetDamaged PropPlayerDamaged;
 
 private:
 
@@ -49,6 +57,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* PlayerMesh;
+
+	//Prop Character Health
+	float PropHealth;
 
 public:	
 	// Called every frame
@@ -108,7 +119,15 @@ public:
 	UFUNCTION(NetMulticast , Reliable)
 	void SmokeBombOnMulticast();
 
+//------------------------------------------------------->>>>> Smoke Bomb
 
+	void OnPropPlayerCaught();
+
+	UFUNCTION(Server,Reliable)
+	void OnPlayerCaught_Server();
+
+	UFUNCTION(NetMulticast,Reliable)
+	void OnPlayerCaught_Multicast();
 
 
 };

@@ -26,6 +26,7 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 	/*Interface Function*/
 	void PreMatchTimerEnded()override;
 	void OnMatchEnded()override;
+	void OnPropPlayerCaught(AController* PropController) override;
 
 	//Storing Controller Interface - - Avoiding Re-Casting
 	TArray<TScriptInterface<IControllerInterface>>ControllerInterfaceArray;
@@ -50,6 +51,9 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	int const PreMatchTimeInSec = 10;
 	int const InMatchTimeInSec = 20; //12 Minutes
+
+	UPROPERTY()
+	TArray<AController*>PropPlayerControllerArray;
 
 
 //--------------- UPROPERTY VARIABLES------------------

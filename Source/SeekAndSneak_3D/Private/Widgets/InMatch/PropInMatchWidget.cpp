@@ -3,9 +3,16 @@
 
 #include "Widgets/InMatch/PropInMatchWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/PauseGameWidget.h"
+
+#include "PropPlayer/PropPlayer.h"
+#include "Interface/Player/PropPlayerInterface.h"
+
 #include "GameState/PropHuntGameState.h"
+
+#include "Kismet/KismetSystemLibrary.h"
 
 UPropInMatchWidget::UPropInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -14,6 +21,7 @@ UPropInMatchWidget::UPropInMatchWidget(const FObjectInitializer& ObjectInitializ
 	{
 		PauseGameWidgetClass = WidgetClass.Class;
 	}
+	
 }
 
 void UPropInMatchWidget::NativeConstruct()
@@ -32,10 +40,19 @@ void UPropInMatchWidget::NativeConstruct()
 	if (PauseGameWidgetClass)
 	{
 		PauseGameWidget = CreateWidget<UPauseGameWidget>(GetOwningPlayer(), PauseGameWidgetClass);
-		//if (PauseGameWidget)
-		//{
+		if (PauseGameWidget)
+		{
 			WidgetSwitcher->AddChild(PauseGameWidget);
-		//}
+		}
+	}
+
+	//Binding With Prop Player Health
+	if (IPropPlayerInterface* PlayerInterface = Cast<IPropPlayerInterface>(GetOwningPlayer()->GetPawn()))
+	{
+		PlayerInterface->GetPropPlayerRef()->PropPlayerDamaged.AddUObject(this, &UPropInMatchWidget::SetPlayerHealthOnDamage);
+
+		TotalPercentage = 1.0f;
+		PlayerHealthBar->SetPercent(TotalPercentage);
 	}
 }
 
@@ -52,4 +69,11 @@ void UPropInMatchWidget::SetTextOnMatchTimerUpdate(int32 TimerValue)
 void UPropInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
 {
 	WidgetSwitcher->SetActiveWidgetIndex(Index);
+}
+
+void UPropInMatchWidget::SetPlayerHealthOnDamage(float DamageCaused)
+{
+	float InPercentage = DamageCaused * 0.1;
+	TotalPercentage -= InPercentage;
+	PlayerHealthBar->SetPercent(TotalPercentage);
 }

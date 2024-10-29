@@ -40,6 +40,29 @@ void AGameplayGameMode::OnMatchEnded()
 	}
 }
 
+void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
+{
+	if (PropPlayerControllerArray.Num() != 0)
+	{
+		for (auto Cntrl : PropPlayerControllerArray)
+		{
+			if (Cntrl == PropController)
+			{
+				PropPlayerControllerArray.RemoveSingle(Cntrl);
+				break;
+			}
+		}
+	}
+	else
+	{
+		for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+		{
+			//Interface->
+		}
+	}
+	
+}
+
 
 void AGameplayGameMode::OnPostLogin(AController* NewController)
 {
@@ -98,6 +121,9 @@ void AGameplayGameMode::SetUpPropCharacter()
 				TotalNumberOfPlayer--;
 				//Next Spawn Index
 				PropSpawnTransformIndex++;
+
+			    //Storing The Prop Controllers
+				PropPlayerControllerArray.Add(CopyArray[Index]);
 			}
 		}
 	}

@@ -13,6 +13,9 @@
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+#include "Interface/GameMode/PropHuntGameModeInterface.h"
+#include "GameFramework/GameMode.h"
+
 #include "NiagaraFunctionLibrary.h"
 
 
@@ -21,16 +24,36 @@ void APropPlayer::SetPlayerMesh(UStaticMesh* NewMesh)
 	PlayerMesh->SetStaticMesh(NewMesh);
 }
 
-
 UStaticMesh* APropPlayer::GetPlayerMesh()
 {
 	return PlayerMesh->GetStaticMesh();
 }
+
 //Re sizing The Prop Collsion Component
 void APropPlayer::SetCapsuleSize(float Radius, float Height)
 {
 	GetCapsuleComponent()->SetCapsuleRadius(Radius);
 	GetCapsuleComponent()->SetCapsuleHalfHeight(Height);
+}
+
+void APropPlayer::PlayerGetDamaged(float DamageCaused)
+{
+	if (PropHealth >= 0)
+	{
+		PropHealth -= DamageCaused;
+		PropPlayerDamaged.Broadcast(DamageCaused);
+	}
+	else
+	{
+		//Player Caught
+		OnPropPlayerCaught();
+	}
+	
+}
+
+APropPlayer* APropPlayer::GetPropPlayerRef()
+{
+	return this;
 }
 
 // Sets default values
@@ -59,6 +82,8 @@ APropPlayer::APropPlayer()
 
 	//Load The Bomb Particle
 	SmokeBombParticle = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/NiagraParticle/NS_SmokeBomb.NS_SmokeBomb"));
+
+	PropHealth = 10.0f;
 
 }
 
@@ -191,7 +216,34 @@ void APropPlayer::SmokeBombOnMulticast_Implementation()
 	if (SmokeBombParticle)UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SmokeBombParticle, GetActorLocation(), 
 		                  FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
 }
-
 //---------------------------------------------------------------------------------------------->>>>> ( Prop Smoke Bomb )
+
+void APropPlayer::OnPropPlayerCaught()
+{
+	if (HasAuthority())
+	{
+		OnPlayerCaught_Multicast();
+	}
+	else
+	{
+		OnPlayerCaught_Server();
+	}
+}
+
+
+void APropPlayer::OnPlayerCaught_Server_Implementation()
+{
+	OnPlayerCaught_Multicast();
+}
+
+void APropPlayer::OnPlayerCaught_Multicast_Implementation()
+{
+	if (IPropHuntGameModeInterface* GameModeInterface = Cast<IPropHuntGameModeInterface>(GetWorld()->GetAuthGameMode()))
+	{
+		GameModeInterface->OnPropPlayerCaught(GetController());
+	}
+	PlayerMesh->SetVisibility(false);
+
+}
 
 

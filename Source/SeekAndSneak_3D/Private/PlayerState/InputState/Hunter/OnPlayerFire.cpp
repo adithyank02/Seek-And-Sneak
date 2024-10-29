@@ -5,6 +5,9 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "PropPlayer/PropPlayer.h"
+#include "Interface/Player/PropPlayerInterface.h"
+
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
@@ -51,6 +54,7 @@ void OnPlayerFire::SetLocation(FVector V1, FVector V2)
 	EndPoint = StartPoint + (V2 * ShootingRange);
 }
 
+
 //Contain Fire Weapon Logic
 void OnPlayerFire::WeaponFiring(ACharacter* Player)
 {
@@ -61,10 +65,31 @@ void OnPlayerFire::WeaponFiring(ACharacter* Player)
 
 	if (IsHit)
 	{
-		ParticleTransform.SetLocation(HitResult.ImpactPoint);
-		UGameplayStatics::SpawnEmitterAtLocation(Player->GetWorld(), WeaponBulletHitParticle, ParticleTransform, true, EPSCPoolMethod::AutoRelease);
+		if (HitResult.GetActor()->IsA(APropPlayer::StaticClass()))
+		{
+			//Niagara Effect
+			if (HitActorInterface == nullptr)
+			{
+				CachePropPlayerInterface(HitResult.GetActor());
+			}
+			HitActorInterface->PlayerGetDamaged(BulletHitDamage);
+	    }
+		else
+		{
+			ParticleTransform.SetLocation(HitResult.ImpactPoint);
+			UGameplayStatics::SpawnEmitterAtLocation(Player->GetWorld(), WeaponBulletHitParticle, ParticleTransform, true, EPSCPoolMethod::AutoRelease);
+		}
 	}
 
 	DrawDebugLine(Player->GetWorld(), StartPoint, EndPoint, FColor::Red,false,3);
 	
 }
+void OnPlayerFire::CachePropPlayerInterface(AActor* HitActor)
+{
+	if (IPropPlayerInterface* PropInterface = Cast<IPropPlayerInterface>(HitActor))
+	{
+		HitActorInterface.SetObject(HitActor);
+		HitActorInterface.SetInterface(PropInterface);
+	}
+}
+

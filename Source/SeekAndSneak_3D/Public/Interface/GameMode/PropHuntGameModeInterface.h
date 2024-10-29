@@ -25,4 +25,5 @@ public:
 
 	virtual void PreMatchTimerEnded() = 0; 
 	virtual void OnMatchEnded() = 0;
+	virtual void OnPropPlayerCaught(AController* PropController) = 0;
 };
