@@ -26,4 +26,7 @@ public:
 	virtual void Begin(APlayerController* PlayerController, ECharacterType CharacterType) = 0;
 	//Function To Remove Widget
 	virtual void End() = 0;
+
+	//Not Compulsary To Implement Cause Not Every Widget Use The WidgetSwitcher
+	virtual void ChangeWidgetSwitcherIndex(int Index);
 };

@@ -28,14 +28,21 @@ protected:
 	void SavePlayerName(FString NewName)override;
 	FString GetSavedPlayerName()override;
 
+	void SetHostedSessionName(FName SessionName)override;
+	FName GetHostedSessionName()override;
 
 private:
 
 	UPROPERTY()
     UPropHuntSaveGame* SaveGameObject;
 
+	//Only Available In Host (Server)
+	FName HostSessionName;
+
+   //SaveGame Slot Name
 	const FString SlotName = "PropHuntSaveGame_01";
 
+	//Room Code
 	FString RoomCode;
 
 	FString LocalPlayerInGameName;

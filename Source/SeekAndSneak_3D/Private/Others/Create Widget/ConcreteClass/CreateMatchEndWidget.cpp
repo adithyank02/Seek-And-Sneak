@@ -26,3 +26,9 @@ void CreateMatchEndWidget::End()
 {
 
 }
+
+void CreateMatchEndWidget::ChangeWidgetSwitcherIndex(int Index)
+{
+	//Switching To EndGameWidget
+	if (WinnerWidget)WinnerWidget->ChangWidgetSwitcherIndex(Index);
+}

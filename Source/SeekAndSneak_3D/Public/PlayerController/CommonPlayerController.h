@@ -81,6 +81,11 @@ protected:
 
 private:
 
+	float const EndMatchWidgetTimer = 3 ; //After 3 Second EndWidget PopUp
+
+	//Called After Winner Widget Shown
+	void ShowMatchEndWidget();
+
 	void SetHunterInMatchMappingContext();
 
 

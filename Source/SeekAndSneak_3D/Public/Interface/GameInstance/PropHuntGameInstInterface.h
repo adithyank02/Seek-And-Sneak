@@ -30,4 +30,7 @@ public:
 	virtual void SavePlayerName(FString NewName) = 0;
 	virtual FString GetSavedPlayerName() = 0;
 
+	virtual void SetHostedSessionName(FName SessionName) = 0;
+	virtual FName GetHostedSessionName() = 0;
+
 };

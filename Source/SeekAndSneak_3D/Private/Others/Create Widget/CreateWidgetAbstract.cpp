@@ -10,3 +10,7 @@ CreateWidgetAbstract::CreateWidgetAbstract()
 CreateWidgetAbstract::~CreateWidgetAbstract()
 {
 }
+
+void CreateWidgetAbstract::ChangeWidgetSwitcherIndex(int Index)
+{
+}

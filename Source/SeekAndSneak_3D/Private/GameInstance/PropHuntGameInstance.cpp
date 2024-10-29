@@ -48,3 +48,14 @@ FString UPropHuntGameInstance::GetSavedPlayerName()
 {
 	return SaveGameObject->PlayerName;
 }
+
+void UPropHuntGameInstance::SetHostedSessionName(FName SessionName)
+{
+	HostSessionName = SessionName;
+}
+
+FName UPropHuntGameInstance::GetHostedSessionName()
+{
+	return HostSessionName;
+}
+

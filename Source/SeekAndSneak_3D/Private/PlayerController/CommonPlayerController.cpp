@@ -169,15 +169,31 @@ void ACommonPlayerController::SetClientOnMatchEnd_Implementation(ECharacterType 
 {
 	if (IsLocalController())
 	{
+
 		//Storing The Winner Character Type To Use On Widgets
 		WinnerCharacterType = MatchWinner;
 		WidgetLibrary[EWidgetType::InMatchWidget]->End();
 
+		//Showing The Winner Of The Game
 		WidgetLibrary[EWidgetType::PostMatchWidget]->Begin(this,OwnerCharacterType);
+
+		//Call Endmatch After Some Timer
+		FTimerHandle EndMatchTimer;
+		GetWorld()->GetTimerManager().SetTimer(EndMatchTimer,this, &ACommonPlayerController::ShowMatchEndWidget,EndMatchWidgetTimer,false);
 	}
 }
 
 /*-----------------------Client RPC ----------------------------*/
+
+void ACommonPlayerController::ShowMatchEndWidget()
+{
+	int NextIndex = 1;
+	WidgetLibrary[EWidgetType::PostMatchWidget]->ChangeWidgetSwitcherIndex(NextIndex);
+	SetInputMode(FInputModeUIOnly());
+	bShowMouseCursor = true;
+}
+
+
 
 //Mapping Context With Full Controlls Enabled
 void ACommonPlayerController::SetHunterInMatchMappingContext()

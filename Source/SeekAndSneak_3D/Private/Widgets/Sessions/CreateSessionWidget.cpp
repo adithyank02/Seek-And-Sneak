@@ -36,8 +36,6 @@ void UCreateSessionWidget::HandleTextBoxCommited(const FText& CommitedText, ETex
 
 	TotalPlayerNum_TextBox->SetText(FText::FromString(FString::FromInt(NumberOfConnections)));
 
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d"), NumberOfConnections), true, true, FLinearColor::White, 5);
-
 }
 
 void UCreateSessionWidget::OnCreateButtonClicked()
@@ -66,6 +64,7 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 			
 			//Setting Session Name Has Local System Name
 			FName SessionName = FPlatformProcess::ComputerName();
+
 			//Creating A Key For  Session Name
 			FName SessionKey = FName("SESSIONKEY");
 
@@ -74,7 +73,10 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 
 			if (IPropHuntGameInstInterface* GameInstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
 			{
+				//Setting The Room Id
 				GameInstanceInterface->SetRoomId(RoomCode);
+
+				GameInstanceInterface->SetHostedSessionName(SessionName);
 
 				if (SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings))return;
 			}
@@ -94,8 +96,6 @@ void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool bWas
 		FString Option = "listen";
 
 		UGameplayStatics::OpenLevel(GetWorld(), LevelName,true, Option);
-
-		UKismetSystemLibrary::PrintString(GetWorld(), SessionName.ToString(), true, true, FLinearColor::Blue, 5);
 	}
 	else
 	{

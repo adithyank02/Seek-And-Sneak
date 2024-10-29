@@ -38,7 +38,6 @@ void UMainMenuWidget::NativeConstruct()
 	SessionWidget->BackButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::SessionWidgetBackButton);
 
 	CheckForSavedPlayerName();
-
 }
 
 void UMainMenuWidget::OnPlayerNameCommitted(const FText& Text, ETextCommit::Type CommitType)
@@ -60,7 +59,6 @@ void UMainMenuWidget::OnCreateSessionButtonClicked()
 		if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
 		{
 			InstanceInterface->SavePlayerName(Player_InGameName);
-			//NO Use
 			SavedPlayerName = Player_InGameName;
 		}
 		WidgetSwitcher->SetActiveWidgetIndex(1);
