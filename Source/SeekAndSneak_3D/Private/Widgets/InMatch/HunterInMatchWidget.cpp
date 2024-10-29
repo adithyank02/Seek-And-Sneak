@@ -3,10 +3,21 @@
 
 #include "Widgets/InMatch/HunterInMatchWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/WidgetSwitcher.h"
+#include "Widgets/PauseGameWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "HunterPlayer/HunterPlayer.h"
 
 #include "GameState/PropHuntGameState.h"
+
+UHunterInMatchWidget::UHunterInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	ConstructorHelpers::FClassFinder<UPauseGameWidget>WidgetClass(TEXT("/Game/Widgets/Menu/BP_PauseGameWidget.BP_PauseGameWidget_C"));
+	if (WidgetClass.Succeeded())
+	{
+		PauseGameWidgetClass = WidgetClass.Class;
+	}
+}
 
 void UHunterInMatchWidget::NativeConstruct()
 {
@@ -26,6 +37,16 @@ void UHunterInMatchWidget::NativeConstruct()
 	if (IHunterPlayerInterface* PlayerInterface = Cast<IHunterPlayerInterface>(PlayerActor))
 	{
 		PlayerInterface->GetPropProximityInstance()->ProximityNotifierDelegate.BindUObject(this, &UHunterInMatchWidget::OnProximityChange);
+	}
+
+	//Adding Widget To Widget Switcher
+	if (PauseGameWidgetClass)
+	{
+		PauseGameWidget = CreateWidget<UPauseGameWidget>(this, PauseGameWidgetClass);
+		// iif(PauseGameWidget)
+		//{
+			WidgetSwitcher->AddChild(PauseGameWidget);
+		//}
 	}
 }
 
@@ -53,6 +74,11 @@ void UHunterInMatchWidget::OnProximityChange(EProximityRange CurrentRange)
 		break;
 	}
 
+}
+
+void UHunterInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
+{
+	WidgetSwitcher->SetActiveWidgetIndex(Index);
 }
 
 void UHunterInMatchWidget::UpdateProximityTextAndColor(const FText Text, const FLinearColor Color)

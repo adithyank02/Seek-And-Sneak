@@ -169,6 +169,7 @@ void AHunterPlayer::StopFiringWeapon()
 	GetWorld()->GetTimerManager().ClearTimer(FiringWeaponTimer);
 	
 }
+
 void AHunterPlayer::FireWeapon_OnServer_Implementation(FVector StartPoint, FVector EndPoint)
 {
 	FireWeapon_OnMulticast(StartPoint,EndPoint);
@@ -179,3 +180,4 @@ void AHunterPlayer::FireWeapon_OnMulticast_Implementation(FVector StartPoint, FV
 	InputStateLibrary[InputStateEnum::OnHunterFire]->SetLocation(StartPoint, EndPoint);
 	InputStateLibrary[InputStateEnum::OnHunterFire]->Begin(this);
 }
+

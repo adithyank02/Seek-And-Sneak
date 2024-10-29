@@ -19,6 +19,7 @@ public:
 
 	void Begin(APlayerController* PlayerController, ECharacterType CharacterType)override;
 	void End()override;
+	void ChangeWidgetSwitcherIndex(int Index)override;
 
 private:
 

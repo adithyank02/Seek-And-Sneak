@@ -180,6 +180,7 @@ void APropPlayer::SmokeBombFunction()
 	}
 }
 
+
 void APropPlayer::SmokeBombOnServer_Implementation()
 {
 	SmokeBombOnMulticast();
@@ -190,3 +191,7 @@ void APropPlayer::SmokeBombOnMulticast_Implementation()
 	if (SmokeBombParticle)UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SmokeBombParticle, GetActorLocation(), 
 		                  FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
 }
+
+//---------------------------------------------------------------------------------------------->>>>> ( Prop Smoke Bomb )
+
+

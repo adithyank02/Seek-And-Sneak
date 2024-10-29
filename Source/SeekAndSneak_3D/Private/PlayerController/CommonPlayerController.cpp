@@ -193,6 +193,25 @@ void ACommonPlayerController::ShowMatchEndWidget()
 	bShowMouseCursor = true;
 }
 
+void ACommonPlayerController::PauseMenuFunction()
+{
+	if (bPauseMenuOpened)
+	{
+		SetInputMode(FInputModeGameOnly());
+		bShowMouseCursor = false;
+		//PasueMenu Is Opened -- So Need To be Closed
+		WidgetLibrary[EWidgetType::InMatchWidget]->ChangeWidgetSwitcherIndex(InGameUIIndex); // Switching Of Pause Menu
+
+	}
+	else
+	{
+		SetInputMode(FInputModeGameAndUI());
+		bShowMouseCursor = true;
+		//PauseMenu Is Closed -- So Need To Be OPen
+		WidgetLibrary[EWidgetType::InMatchWidget]->ChangeWidgetSwitcherIndex(PauseMenuIndex); //Switching To Pause Menu
+	}
+	bPauseMenuOpened = !bPauseMenuOpened;
+}
 
 
 //Mapping Context With Full Controlls Enabled
@@ -205,7 +224,6 @@ void ACommonPlayerController::SetHunterInMatchMappingContext()
 		Subsystem->AddMappingContext(HunterInMatchMappingContext, 0);
 	}
 }
-
 
 /*--------------------------------------------------- Binding Input And Function ------------------------------------------------------------------*/
 
@@ -230,7 +248,7 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Started, HunterPlayer, &AHunterPlayer::StartFiringWeapon);
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::StopFiringWeapon);
 
-				UKismetSystemLibrary::PrintString(GetWorld(), GetPawn()->GetName(), true, true, FLinearColor::Black, 10);
+				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started,this, &ACommonPlayerController::PauseMenuFunction);
 
 			}
 			//Setting The Pre Match MappingContext For Until The Prop Hide In Game
@@ -273,6 +291,8 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 				EnhancedInput->BindAction(PropCloneAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::PropCloneFunction);
 
 				EnhancedInput->BindAction(PropSmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
+
+				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &ACommonPlayerController::PauseMenuFunction);
 
 			}
 		}

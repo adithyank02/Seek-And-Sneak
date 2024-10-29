@@ -9,6 +9,9 @@
 
 class UImage;
 class UTextBlock;
+class UWidgetSwitcher;
+class UPauseGameWidget;
+
 
 /**
  * 
@@ -19,6 +22,8 @@ class SEEKANDSNEAK_3D_API UHunterInMatchWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+
+	UHunterInMatchWidget(const FObjectInitializer& ObjectInitializer);
 
 	void NativeConstruct() override;
 
@@ -41,6 +46,13 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* PropTotalAliveCount;
+
+	UPROPERTY(meta = (BindWidget))
+	UWidgetSwitcher* WidgetSwitcher;
+
+	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
+
+	UPauseGameWidget* PauseGameWidget;
 
 	void UpdateProximityTextAndColor(const FText Text, const FLinearColor Color);
 
@@ -66,5 +78,9 @@ private:
 	const FLinearColor WarmTextColor = FLinearColor(232.0f / 255.0f, 155.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);  //Orange Color
 	const FLinearColor CoolTextColor = FLinearColor(0.0f / 255.0f, 189.0f / 255.0f, 239.0f / 255.0f, 255.0f / 255.0f);  //SkyBlue Color
 	const FLinearColor ColdTextColor = FLinearColor(0.0f / 255.0f, 92.0f / 255.0f, 239.0f / 255.0f, 255.0f / 255.0f);   //Blue Color
+
+public:
+
+	void ChangeIndexOnWidgetSwitcher(int Index);
 	
 };

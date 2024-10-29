@@ -137,4 +137,19 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* PropSmokeBombAction;
+
+	/*-------------------Common Actions ------------------*/
+
+	//Toggle Button
+	bool bPauseMenuOpened;
+
+	const int InGameUIIndex = 0;
+	const int PauseMenuIndex = 1;
+
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction* PauseMenuAction;
+
+	void PauseMenuFunction();
+
+
 };

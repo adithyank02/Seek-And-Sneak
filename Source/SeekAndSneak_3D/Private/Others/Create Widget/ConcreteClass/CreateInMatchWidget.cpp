@@ -50,6 +50,18 @@ void CreateInMatchWidget::End()
 	//RemovePointerRef();
 }
 
+void CreateInMatchWidget::ChangeWidgetSwitcherIndex(int Index)
+{
+	if (PlayerCharacterType == ECharacterType::HunterCharacter)
+	{
+		HunterWidget->ChangeIndexOnWidgetSwitcher(Index);
+	}
+	else
+	{
+		PropWidget->ChangeIndexOnWidgetSwitcher(Index);
+	}
+}
+
 void CreateInMatchWidget::RemovePointerRef()
 {
 	/*HunterWidget = nullptr;
