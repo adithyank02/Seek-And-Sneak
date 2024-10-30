@@ -38,12 +38,9 @@ void APropPlayer::SetCapsuleSize(float Radius, float Height)
 
 void APropPlayer::PlayerGetDamaged(float DamageCaused)
 {
-	if (PropHealth >= 0)
-	{
-		PropHealth -= DamageCaused;
-		PropPlayerDamaged.Broadcast(DamageCaused);
-	}
-	else
+	PropHealth -= DamageCaused;
+	PropPlayerDamaged.Broadcast(DamageCaused);
+	if (PropHealth <= 0)
 	{
 		//Player Caught
 		OnPropPlayerCaught();
@@ -81,7 +78,8 @@ APropPlayer::APropPlayer()
 	TotalCloneCount = 5.0f;
 
 	//Load The Bomb Particle
-	SmokeBombParticle = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/NiagraParticle/NS_SmokeBomb.NS_SmokeBomb"));
+	SmokeBombParticle = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Other_BP/NiagraParticle/NS_SmokeBomb.NS_SmokeBomb"));
+	PlayerCaughtParticle = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Other_BP/NiagraParticle/NS_PropPlayerCaught.NS_PropPlayerCaught"));
 
 	PropHealth = 10.0f;
 
@@ -242,7 +240,11 @@ void APropPlayer::OnPlayerCaught_Multicast_Implementation()
 	{
 		GameModeInterface->OnPropPlayerCaught(GetController());
 	}
+	if(PlayerCaughtParticle)UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),PlayerCaughtParticle, GetActorLocation(),
+		FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
 	PlayerMesh->SetVisibility(false);
+	PlayerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 }
 

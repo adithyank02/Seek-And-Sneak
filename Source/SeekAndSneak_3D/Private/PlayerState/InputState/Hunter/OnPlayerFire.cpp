@@ -68,11 +68,10 @@ void OnPlayerFire::WeaponFiring(ACharacter* Player)
 		if (HitResult.GetActor()->IsA(APropPlayer::StaticClass()))
 		{
 			//Niagara Effect
-			if (HitActorInterface == nullptr)
+			if (IPropPlayerInterface* PropInterface = Cast<IPropPlayerInterface>(HitResult.GetActor()))
 			{
-				CachePropPlayerInterface(HitResult.GetActor());
-			}
-			HitActorInterface->PlayerGetDamaged(BulletHitDamage);
+				PropInterface->PlayerGetDamaged(BulletHitDamage);
+			}			
 	    }
 		else
 		{
@@ -83,13 +82,5 @@ void OnPlayerFire::WeaponFiring(ACharacter* Player)
 
 	DrawDebugLine(Player->GetWorld(), StartPoint, EndPoint, FColor::Red,false,3);
 	
-}
-void OnPlayerFire::CachePropPlayerInterface(AActor* HitActor)
-{
-	if (IPropPlayerInterface* PropInterface = Cast<IPropPlayerInterface>(HitActor))
-	{
-		HitActorInterface.SetObject(HitActor);
-		HitActorInterface.SetInterface(PropInterface);
-	}
 }
 

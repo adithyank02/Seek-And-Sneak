@@ -22,13 +22,18 @@ UHunterInMatchWidget::UHunterInMatchWidget(const FObjectInitializer& ObjectIniti
 void UHunterInMatchWidget::NativeConstruct()
 {
 
-	AGameState* PropHuntGameState = GetWorld()->GetGameState<AGameState>();
+	APropHuntGameState* PropHuntGameState = GetWorld()->GetGameState<APropHuntGameState>();
 	if (PropHuntGameState)
 	{
 		if (IGameStateInterface* Interface = Cast<IGameStateInterface>(PropHuntGameState))
 		{
 			//Binding The GameState MatchTimer Delegate
 			Interface->GetPropHuntGameState()->OnInMatchTimerChange.AddUObject(this, &UHunterInMatchWidget::SetTextOnMatchTimerUpdate);
+			PropHuntGameState->OnPropPlayerCountChange.AddUObject(this, &UHunterInMatchWidget::OnPropPlayerCaught);
+
+			Interface->GetTeamInfo(HunterPlayerCount, PropPlayerCount);
+			HunterTotalAliveCount->SetText(FText::AsNumber(HunterPlayerCount));
+			PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
 		}
 	}
 
@@ -43,11 +48,12 @@ void UHunterInMatchWidget::NativeConstruct()
 	if (PauseGameWidgetClass)
 	{
 		PauseGameWidget = CreateWidget<UPauseGameWidget>(this, PauseGameWidgetClass);
-		// iif(PauseGameWidget)
-		//{
+		if(PauseGameWidget)
+		{
 			WidgetSwitcher->AddChild(PauseGameWidget);
-		//}
+		}
 	}
+	
 }
 
 void UHunterInMatchWidget::SetTextOnMatchTimerUpdate(int32 TimerValue)
@@ -79,6 +85,12 @@ void UHunterInMatchWidget::OnProximityChange(EProximityRange CurrentRange)
 void UHunterInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
 {
 	WidgetSwitcher->SetActiveWidgetIndex(Index);
+}
+
+void UHunterInMatchWidget::OnPropPlayerCaught()
+{
+	PropPlayerCount--;
+	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
 }
 
 void UHunterInMatchWidget::UpdateProximityTextAndColor(const FText Text, const FLinearColor Color)

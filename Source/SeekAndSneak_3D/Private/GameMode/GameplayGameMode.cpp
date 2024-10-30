@@ -23,11 +23,16 @@ void AGameplayGameMode::PreMatchTimerEnded()
 	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(PropHuntGameState))
 	{
 		GameStateInterface->StartInMatchTimer(InMatchTimeInSec);   //720 sec == 12 minutes
-	}
-	//Calling To Create The InMatch UI Widget
-	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
-	{
-		Interface->InitializeInMatchUI();
+	
+		//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d --  %d"), JoinedPlayerController.Num() - PropPlayerControllerArray.Num(), PropPlayerControllerArray.Num()), true, true, FLinearColor::White, 10);
+
+		//Gving The Team Info Into Game State
+		GameStateInterface->SetTeamInfo(JoinedPlayerController.Num() - PropPlayerControllerArray.Num(), PropPlayerControllerArray.Num());
+	 //Calling To Create The InMatch UI Widget
+	 for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+	 {
+	 	Interface->InitializeInMatchUI();
+	 }
 	}
 	
 }
@@ -52,12 +57,14 @@ void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 				break;
 			}
 		}
+		//Inform The Ingame widget
 	}
 	else
 	{
 		for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
 		{
-			//Interface->
+			//Hunter Won The Game
+			Interface->CallEndMatch(ECharacterType::HunterCharacter);
 		}
 	}
 	
@@ -92,7 +99,7 @@ void AGameplayGameMode::SetUpPropCharacter()
 	int TotalNumberOfPlayer = JoinedPlayerController.Num();
 
 	//Getting The Count To Spawn -- PropCount < Hunter Count
-	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2 ;
+	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2+1 ;
 
 	int PropSpawnTransformIndex = 0;
 
@@ -116,14 +123,16 @@ void AGameplayGameMode::SetUpPropCharacter()
 				//Setting Input Binding For Prop Character
 				Interface->SetControllerInputBinding(ECharacterType::PropCharacter);
 
+				//Storing The Prop Controllers
+				PropPlayerControllerArray.Add(CopyArray[Index]);
+
 				//Removing For Not To Spawn Same Player Twice
 				CopyArray.RemoveAt(Index);
 				TotalNumberOfPlayer--;
 				//Next Spawn Index
 				PropSpawnTransformIndex++;
 
-			    //Storing The Prop Controllers
-				PropPlayerControllerArray.Add(CopyArray[Index]);
+			  
 			}
 		}
 	}

@@ -110,6 +110,7 @@ public:
 //--------------------------------------------------------->>>>> Smoke Bomb
 
 	UNiagaraSystem* SmokeBombParticle;
+	UNiagaraSystem* PlayerCaughtParticle;
 
 	void SmokeBombFunction();
 

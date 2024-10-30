@@ -38,10 +38,6 @@ private:
 	FTransform ParticleTransform;
 	UParticleSystem* WeaponBulletHitParticle;
 
-	TScriptInterface<IPropPlayerInterface>HitActorInterface;
-
-	void CachePropPlayerInterface(AActor* HitActor);
-
 	const int BulletHitDamage = 1.0f;
 
 	//LineTrace Variables

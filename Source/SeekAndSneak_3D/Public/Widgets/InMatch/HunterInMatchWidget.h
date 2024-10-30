@@ -54,6 +54,9 @@ protected:
 
 	UPauseGameWidget* PauseGameWidget;
 
+	int HunterPlayerCount;
+	int PropPlayerCount;
+
 	void UpdateProximityTextAndColor(const FText Text, const FLinearColor Color);
 
 private:
@@ -83,4 +86,5 @@ public:
 
 	void ChangeIndexOnWidgetSwitcher(int Index);
 	
+	void OnPropPlayerCaught();
 };

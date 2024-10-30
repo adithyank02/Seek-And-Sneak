@@ -51,7 +51,7 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	int const PreMatchTimeInSec = 10;
 	int const InMatchTimeInSec = 20; //12 Minutes
-
+	
 	UPROPERTY()
 	TArray<AController*>PropPlayerControllerArray;
 

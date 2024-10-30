@@ -15,6 +15,25 @@ APropHuntGameState* APropHuntGameState::GetPropHuntGameState()
 {
     return this;
 }
+void APropHuntGameState::SetTeamInfo(int TotalHunterPlayer, int TotalPropPlayer)
+{
+    TotalNumberOfHunterPlayer = TotalHunterPlayer;
+    TotalNumberOfPropPlayer = TotalPropPlayer;
+
+    UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Game State Called"));
+  //  UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d --  %d"), TotalHunterPlayer, TotalPropPlayer), true, true, FLinearColor::White, 10);
+}
+void APropHuntGameState::GetTeamInfo(int& TotalHunterPlayer, int& TotalPropPlayer)
+{
+    TotalHunterPlayer = TotalNumberOfHunterPlayer;
+    TotalPropPlayer = TotalNumberOfPropPlayer;
+}
+void APropHuntGameState::OnPropPlayerCaught()
+{
+    TotalNumberOfPropPlayer--;
+    OnPropPlayerCountChange.Broadcast();
+
+}
 void APropHuntGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -34,11 +53,15 @@ void APropHuntGameState::OnRep_InMatchTimer()
     OnInMatchTimerChange.Broadcast(InMatchTimer);
 }
 
-
 void APropHuntGameState::StartPreMatchTimer(int32 StartingTimer)
 {
     PreMatchTimer = StartingTimer;
     StartPreMatchTimer();
+}
+
+void APropHuntGameState::OnRep_PropPlayerCountUpdate()
+{
+    OnPropPlayerCountChange.Broadcast();
 }
 
 void APropHuntGameState::StartPreMatchTimer()
@@ -77,6 +100,8 @@ void APropHuntGameState::StartInMatchTimer(int32 StartingTimer)
     InMatchTimer = StartingTimer;
     StartInMatchTimer();
 }
+
+
 
 void APropHuntGameState::StartInMatchTimer()
 {

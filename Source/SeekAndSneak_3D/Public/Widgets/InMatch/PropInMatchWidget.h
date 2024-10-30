@@ -57,10 +57,15 @@ private:
 
 	void SetTextOnMatchTimerUpdate(int32 TimerValue);
 
+	int HunterPlayerCount;
+	int PropPlayerCount;
+
 public:
 
 	void ChangeIndexOnWidgetSwitcher(int Index);
 
 	void SetPlayerHealthOnDamage(float DamageCaused);
+
+	void OnPropPlayerCaught();
 
 };

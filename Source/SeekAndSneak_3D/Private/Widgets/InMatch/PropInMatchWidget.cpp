@@ -33,6 +33,10 @@ void UPropInMatchWidget::NativeConstruct()
 		{
 			//Binding The GameState MatchTimer Delegate
 			Interface->GetPropHuntGameState()->OnInMatchTimerChange.AddUObject(this, &UPropInMatchWidget::SetTextOnMatchTimerUpdate);
+
+			Interface->GetTeamInfo(HunterPlayerCount, PropPlayerCount);
+			HunterTotalAliveCount->SetText(FText::AsNumber(HunterPlayerCount));
+			PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
 		}
 	}
 
@@ -76,4 +80,10 @@ void UPropInMatchWidget::SetPlayerHealthOnDamage(float DamageCaused)
 	float InPercentage = DamageCaused * 0.1;
 	TotalPercentage -= InPercentage;
 	PlayerHealthBar->SetPercent(TotalPercentage);
+}
+
+void UPropInMatchWidget::OnPropPlayerCaught()
+{
+	PropPlayerCount--;
+	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
 }
