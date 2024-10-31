@@ -36,7 +36,7 @@ private:
 	//Interface Function
 	void StartPreMatchTimer(int32 StartingTimer)override;
 	void StartInMatchTimer(int32 StartingTimer)override;
-	void OnPropPlayerCaught()override;
+	void UpdatePropTeamInfo()override;
 	void SetTeamInfo(int TotalHunterPlayer, int TotalPropPlayer)override;
 
 	APropHuntGameState* GetPropHuntGameState()override;

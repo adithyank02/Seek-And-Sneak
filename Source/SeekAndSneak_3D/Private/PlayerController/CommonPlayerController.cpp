@@ -248,6 +248,7 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 
 				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started,this, &ACommonPlayerController::PauseMenuFunction);
 
+				HunterPlayer->TriggerPropProximity();
 			}
 			//Setting The Pre Match MappingContext For Until The Prop Hide In Game
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())

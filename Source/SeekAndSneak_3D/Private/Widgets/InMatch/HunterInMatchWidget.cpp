@@ -38,8 +38,7 @@ void UHunterInMatchWidget::NativeConstruct()
 	}
 
 	/*Finding The Hunter Player And Retreving The UObject Class Instance (PropProximity)*/
-	AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), AHunterPlayer::StaticClass());
-	if (IHunterPlayerInterface* PlayerInterface = Cast<IHunterPlayerInterface>(PlayerActor))
+	if (IHunterPlayerInterface* PlayerInterface = Cast<IHunterPlayerInterface>(GetOwningPlayer()->GetPawn()))
 	{
 		PlayerInterface->GetPropProximityInstance()->ProximityNotifierDelegate.BindUObject(this, &UHunterInMatchWidget::OnProximityChange);
 	}

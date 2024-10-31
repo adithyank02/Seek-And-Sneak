@@ -19,11 +19,12 @@ void APropHuntGameState::SetTeamInfo(int TotalHunterPlayer, int TotalPropPlayer)
     TotalNumberOfHunterPlayer = TotalHunterPlayer;
     TotalNumberOfPropPlayer = TotalPropPlayer;
 
+    //Broadcasting To Server , Cause It Won't Replicate To Server
     OnHunterPlayerCountChange.Broadcast(TotalNumberOfHunterPlayer);
     OnPropPlayerCountChange.Broadcast(TotalNumberOfPropPlayer);
 }
 
-void APropHuntGameState::OnPropPlayerCaught()
+void APropHuntGameState::UpdatePropTeamInfo()
 {
     TotalNumberOfPropPlayer--;
     OnPropPlayerCountChange.Broadcast(TotalNumberOfPropPlayer);

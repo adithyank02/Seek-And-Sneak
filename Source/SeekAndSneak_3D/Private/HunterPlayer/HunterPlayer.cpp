@@ -15,9 +15,10 @@
 #include "Interface/Feature/Hunter/PropProximityInterface.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
-#include "PlayerController/CommonPlayerController.h"
+//#include "PlayerController/CommonPlayerController.h"
+//#include "PlayerController/HunterPlayerController.h"
 
-#include "PlayerController/HunterPlayerController.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 bool AHunterPlayer::CanRun()
 {
@@ -78,13 +79,6 @@ void AHunterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PropProximity = NewObject<UPropProximityNotifier>();
-
-	if (IsLocallyControlled())
-	{
-		StartPropProximity();
-	}
-
 }
 
 // Called every frame
@@ -96,11 +90,38 @@ void AHunterPlayer::Tick(float DeltaTime)
 
 void AHunterPlayer::StartPropProximity()
 {
-	if (IPropProximityInterface* Interface = Cast<IPropProximityInterface>(PropProximity))
-	{
+	if (IsLocallyControlled())
+	{ 
+		PropProximity = NewObject<UPropProximityNotifier>();
+
+	  if (IPropProximityInterface* Interface = Cast<IPropProximityInterface>(PropProximity))
+	  {
 		Interface->Start(this);
+	  }
 	}
+	
 }
+void AHunterPlayer::TriggerPropProximity()
+{
+	StartPropProximity();
+}
+
+void AHunterPlayer::OnPropProximityChange(EProximityRange NewProximityRange)
+{
+
+}
+
+void AHunterPlayer::PossessedBy(AController* PlayerController)
+{
+	Super::PossessedBy(PlayerController);
+
+	//if (IsLocallyControlled())
+	//
+		//Starting PropProximity 
+		//();
+	//}	
+}
+
 
 void AHunterPlayer::PlayerJogFunction(const FInputActionValue& InputValue)
 {

@@ -64,8 +64,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+
+	void OnPropProximityChange(EProximityRange NewProximityRange);
 	//Trigger The Proximity
 	void StartPropProximity();
+
+	void PossessedBy(AController* PlayerController)override;
+
+public:
+
+	void TriggerPropProximity();
 
 	//Movement Function
 	void PlayerJogFunction(const FInputActionValue& InputValue);

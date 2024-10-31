@@ -14,7 +14,7 @@ void UPropProximityNotifier::Start(ACharacter* Player)
 	TraceParams.AddIgnoredActor(Player);
 
 	FTimerHandle ProximityTimer;
-	Player->GetWorld()->GetTimerManager().SetTimer(ProximityTimer, this, &UPropProximityNotifier::CheckProximity, 1,true);
+	Player->GetWorld()->GetTimerManager().SetTimer(ProximityTimer, this, &UPropProximityNotifier::CheckProximity, 2,true);
 }
 
 void UPropProximityNotifier::CheckProximity()
@@ -22,18 +22,25 @@ void UPropProximityNotifier::CheckProximity()
 	StartPoint = GetPlayer->GetActorLocation();
 	EndPoint = StartPoint;
 
-	bIsHit = GetPlayer->GetWorld()->SweepSingleByChannel(HitResult, StartPoint, EndPoint,
+	bIsHit = GetPlayer->GetWorld()->SweepMultiByChannel(HitResultArray, StartPoint, EndPoint,
 		                                                FQuat::Identity, ECC_Visibility,
 		                                                FCollisionShape::MakeSphere(Radius),TraceParams);
 
-	if (bIsHit && HitResult.GetActor()->IsA(APropPlayer::StaticClass()))
+	DrawDebugSphere(GetPlayer->GetWorld(), EndPoint, Radius, 12, bIsHit ? FColor::Red : FColor::Green, false, 5);
+
+	for (const FHitResult& HitResult : HitResultArray)
 	{
-		bProximityChangeOccur = DoesProximityNeedToUpdate(FVector::Dist(StartPoint, HitResult.GetActor()->GetActorLocation()));
+		if (bIsHit && HitResult.GetActor()->IsA(APropPlayer::StaticClass()))
+		{
+			bProximityChangeOccur = DoesProximityNeedToUpdate(FVector::Dist(StartPoint, HitResult.GetActor()->GetActorLocation()));
+			break;
+		}
+		else
+		{
+			bProximityChangeOccur = DoesProximityNeedToUpdate(-1);
+		}
 	}
-	else
-	{
-		bProximityChangeOccur =  DoesProximityNeedToUpdate(-1);
-	}
+
 	//Only Executing If The Player Is Changed The Proximity Zone Area -- Avoiding Unecessary Calls
 	if (bProximityChangeOccur)ProximityNotifierDelegate.ExecuteIfBound(CurrentRange);
 

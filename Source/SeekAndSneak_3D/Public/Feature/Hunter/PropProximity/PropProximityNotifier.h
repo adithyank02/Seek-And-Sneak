@@ -57,7 +57,7 @@ private:
 	//Trace Variables
 	bool bIsHit;
 	const float Radius = 2900.0f;
-	FHitResult HitResult;
+	TArray<FHitResult>HitResultArray;
 	FVector StartPoint;
 	FVector EndPoint;
 	FCollisionQueryParams TraceParams;
