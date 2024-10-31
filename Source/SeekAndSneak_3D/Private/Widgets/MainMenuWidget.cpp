@@ -10,6 +10,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 #include "Interface/GameInstance/PropHuntGameInstInterface.h"
+#include "Interface/PropHuntPlayerState/PlayerStateInterface.h"
+#include "GameFramework/PlayerState.h"
 
 UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -56,11 +58,16 @@ void UMainMenuWidget::OnCreateSessionButtonClicked()
 {
 	if (!Player_InGameName.IsEmpty() && Player_InGameName.Len() <= PlayerNameMaxLen &&!DoesContainWhiteSpace())
 	{
+		//Saving The Game Into GameSave Object
 		if (IPropHuntGameInstInterface* InstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
 		{
 			InstanceInterface->SavePlayerName(Player_InGameName);
-			SavedPlayerName = Player_InGameName;
 		}
+		if (IPlayerStateInterface* PSInterface = Cast<IPlayerStateInterface>(GetOwningPlayer()->GetPlayerState<APlayerState>()))
+		{
+			PSInterface->SetPlayerName(Player_InGameName);	
+		}
+		
 		WidgetSwitcher->SetActiveWidgetIndex(1);
 	}
 	else

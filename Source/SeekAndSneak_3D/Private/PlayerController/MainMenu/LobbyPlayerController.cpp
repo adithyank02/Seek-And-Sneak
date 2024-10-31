@@ -6,6 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
+#include "Others/LobbyCharacter.h"
+#include "Interface/PropHuntPlayerState/PlayerStateInterface.h"
+#include "GameFramework/PlayerState.h"
+
 #include "Widgets/LobbyWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -29,10 +33,13 @@ void ALobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GetLocalPlayer())
+	if (IsLocalController())
 	{
 		FTimerHandle SpawnCameraTimer;
 		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.1, false);
+
+		FTimerHandle ShowTextTimer;
+		GetWorld()->GetTimerManager().SetTimer(ShowTextTimer, this, &ALobbyPlayerController::SetPlayerName, 1, false);
 	}
 	
 
@@ -78,5 +85,37 @@ void ALobbyPlayerController::SetInputModeType(UUserWidget* CreatedWidget)
 	SetInputMode(InputMode);
 
 	bShowMouseCursor = true;
+}
+
+void ALobbyPlayerController::SetPlayerName()
+{
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("On Posses Called"), true, true, FLinearColor::Red, 2);
+
+	if (IPlayerStateInterface* PlayerStateInterface = Cast<IPlayerStateInterface>(GetPlayerState<APlayerState>()))
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Game STate Called"), true, true, FLinearColor::Green, 2);
+		if (ALobbyCharacter* PlayerCharacter = Cast<ALobbyCharacter>(GetPawn()))
+		{
+			PlayerCharacter->ShowPlayerName(PlayerStateInterface->GetPlayerName());
+
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Pawn Called"), true, true, FLinearColor::White, 2);
+
+		}
+		else
+		{
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Pawn Not Called"), true, true, FLinearColor::Black, 2);
+		}
+	}
+	else
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Game STate Not Called"), true, true, FLinearColor::Blue, 2);
+	}
+}
+
+void ALobbyPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	
 }
 

@@ -31,5 +31,9 @@ protected:
 	void SpawnCameraActor();
 	void CreateLobbyWidget();
 	void SetInputModeType(UUserWidget* CreatedWidget);
+
+	void SetPlayerName();
+
+	void OnPossess(APawn* InPawn)override;
 	
 };

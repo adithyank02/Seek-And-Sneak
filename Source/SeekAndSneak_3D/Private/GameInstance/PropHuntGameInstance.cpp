@@ -36,12 +36,9 @@ FString UPropHuntGameInstance::GetSaveSlotName()
 
 void UPropHuntGameInstance::SavePlayerName(FString NewName)
 {
-	LocalPlayerInGameName = NewName;
-
 	SaveGameObject->PlayerName = NewName;
 
 	UGameplayStatics::SaveGameToSlot(SaveGameObject, SlotName, 0);
-
 }
 
 FString UPropHuntGameInstance::GetSavedPlayerName()
