@@ -54,8 +54,8 @@ protected:
 
 	UPauseGameWidget* PauseGameWidget;
 
-	int HunterPlayerCount = 0;
-	int PropPlayerCount = 0;
+	/*int HunterPlayerCount = 0;
+	int PropPlayerCount = 0;*/
 
 	void UpdateProximityTextAndColor(const FText Text, const FLinearColor Color);
 
@@ -86,5 +86,6 @@ public:
 
 	void ChangeIndexOnWidgetSwitcher(int Index);
 	
-	void OnPropPlayerCaught(int HunterCount , int PropCount);
+	void OnHunterPlayerTotalCountChange(int HunterPlayerCount);
+	void OnPropPlayerTotalCountChange(int PropPlayerCount);
 };

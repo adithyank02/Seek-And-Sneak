@@ -23,6 +23,8 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	int const FirstDeley = 3;
 
+	bool bMatchEnded;
+
 	/*Interface Function*/
 	void PreMatchTimerEnded()override;
 	void OnMatchEnded()override;
@@ -55,7 +57,6 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 	UPROPERTY()
 	TArray<AController*>PropPlayerControllerArray;
 
-
 //--------------- UPROPERTY VARIABLES------------------
 
 	UPROPERTY(EditDefaultsOnly)
@@ -69,8 +70,5 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FTransform>HunterCharacterSpawnTranform;
-
-
-
 
 };

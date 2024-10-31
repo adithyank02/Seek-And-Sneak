@@ -10,7 +10,9 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchTimerChanges,int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnInMatchTimerChanges, int32);
-//DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPropPlayerCountUpdate,int,int);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropPlayerCountUpdate,int);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHunterPlayerCountUpdate, int);
 
 /**
  * 
@@ -24,10 +26,10 @@ public:
 
 	//Delegate For Server To Inform TimerValue Changes
 	FOnMatchTimerChanges OnMatchTimerChange;
-
 	FOnInMatchTimerChanges OnInMatchTimerChange;
 
-	//FOnPropPlayerCountUpdate OnPropPlayerCountChange;
+	FOnPropPlayerCountUpdate OnPropPlayerCountChange;
+	FOnHunterPlayerCountUpdate OnHunterPlayerCountChange;
 
 private:
 
@@ -36,7 +38,6 @@ private:
 	void StartInMatchTimer(int32 StartingTimer)override;
 	void OnPropPlayerCaught()override;
 	void SetTeamInfo(int TotalHunterPlayer, int TotalPropPlayer)override;
-	void GetTeamInfo(int& TotalHunterPlayer, int& TotalPropPlayer)override;
 
 	APropHuntGameState* GetPropHuntGameState()override;
 
@@ -58,13 +59,18 @@ private:
 
 	//Since Hunter Won't die there number won't change
 	//UPROPERTY(Replicated)
-	//int TotalNumberOfHunterPlayer;
+	UPROPERTY(ReplicatedUsing = OnRep_HunterPlayerCountUpdate)
+	int TotalNumberOfHunterPlayer;
 
-	//UPROPERTY(ReplicatedUsing = OnRep_PropPlayerCountUpdate)
-	//int TotalNumberOfPropPlayer;
+	UFUNCTION()
+	void OnRep_HunterPlayerCountUpdate();
 
-	/*UFUNCTION()
-	void OnRep_PropPlayerCountUpdate();*/
+	UPROPERTY(ReplicatedUsing = OnRep_PropPlayerCountUpdate)
+	//UPROPERTY(Replicated)
+	int TotalNumberOfPropPlayer;
+
+	UFUNCTION()
+	void OnRep_PropPlayerCountUpdate();
 
 //---------------------------------------------------
 	void StartPreMatchTimer();

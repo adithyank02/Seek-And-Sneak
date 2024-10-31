@@ -30,16 +30,10 @@ void UHunterInMatchWidget::NativeConstruct()
 		{
 			//Binding The GameState MatchTimer Delegate
 			Interface->GetPropHuntGameState()->OnInMatchTimerChange.AddUObject(this, &UHunterInMatchWidget::SetTextOnMatchTimerUpdate);
-		//	PropHuntGameState->OnPropPlayerCountChange.AddUObject(this, &UHunterInMatchWidget::OnPropPlayerCaught);
 
-			//Interface->GetTeamInfo(HunterPlayerCount, PropPlayerCount);
+			Interface->GetPropHuntGameState()->OnHunterPlayerCountChange.AddUObject(this, &UHunterInMatchWidget::OnHunterPlayerTotalCountChange);
+			Interface->GetPropHuntGameState()->OnPropPlayerCountChange.AddUObject(this, &UHunterInMatchWidget::OnPropPlayerTotalCountChange);
 
-		//	HunterTotalAliveCount->SetText(FText::AsNumber(HunterPlayerCount));
-		//	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
-
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d --- %d"), HunterTotalAliveCount, PropTotalAliveCount), true, true, FLinearColor::Red);
-
-			
 		}
 	}
 
@@ -93,13 +87,25 @@ void UHunterInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
 	WidgetSwitcher->SetActiveWidgetIndex(Index);
 }
 
-void UHunterInMatchWidget::OnPropPlayerCaught(int HunterCount, int PropCount)
-{
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Team Info Got Updated"), true, true, FLinearColor::Blue, 5);
+/*--------------------------------------------------------------------------------------*/
 
-	HunterTotalAliveCount->SetText(FText::AsNumber(HunterCount));
-	PropTotalAliveCount->SetText(FText::AsNumber(PropCount));
+void UHunterInMatchWidget::OnHunterPlayerTotalCountChange(int HunterPlayerCount)
+{
+	HunterTotalAliveCount->SetText(FText::AsNumber(HunterPlayerCount));
 }
+
+void UHunterInMatchWidget::OnPropPlayerTotalCountChange(int PropPlayerCount)
+{
+	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
+}
+
+/*-------------------------------------------------------------------------------------------*/
+
+///void UHunterInMatchWidget::OnPropPlayerCaught(int HunterCount, int PropCount)
+//{
+//	HunterTotalAliveCount->SetText(FText::AsNumber(HunterCount));
+//	PropTotalAliveCount->SetText(FText::AsNumber(PropCount));
+//}
 
 void UHunterInMatchWidget::UpdateProximityTextAndColor(const FText Text, const FLinearColor Color)
 {

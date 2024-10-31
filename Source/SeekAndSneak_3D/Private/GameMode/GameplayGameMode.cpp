@@ -24,30 +24,36 @@ void AGameplayGameMode::PreMatchTimerEnded()
 	{
 		GameStateInterface->StartInMatchTimer(InMatchTimeInSec);   //720 sec == 12 minutes
 	
-		//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d --  %d"), JoinedPlayerController.Num() - PropPlayerControllerArray.Num(), PropPlayerControllerArray.Num()), true, true, FLinearColor::White, 10);
-
-		//Gving The Team Info Into Game State
-		GameStateInterface->SetTeamInfo(JoinedPlayerController.Num() - PropPlayerControllerArray.Num(), PropPlayerControllerArray.Num());
-	
 		//Calling To Create The InMatch UI Widget
 	 for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
 	 {
 	 	Interface->InitializeInMatchUI();
 	 }
+
+	 //Gving The Team Info Into Game State
+	 GameStateInterface->SetTeamInfo(JoinedPlayerController.Num() - PropPlayerControllerArray.Num(), PropPlayerControllerArray.Num());
 	}
 	
 }
 
 void AGameplayGameMode::OnMatchEnded()
 {
-	for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+	if (!bMatchEnded)
 	{
-		Interface->CallEndMatch(ECharacterType::PropCharacter);
+		for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+		{
+			Interface->CallEndMatch(ECharacterType::PropCharacter);
+		}
 	}
 }
 
 void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 {
+	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(GetGameState<AGameState>()))
+	{
+		GameStateInterface->OnPropPlayerCaught();
+	}
+
 	for (auto Cntrl : PropPlayerControllerArray)
 	{
 		if (Cntrl == PropController)
@@ -63,6 +69,7 @@ void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 		{
 			//Hunter Won The Game
 			Interface->CallEndMatch(ECharacterType::HunterCharacter);
+			bMatchEnded = true;
 		}
 	}
 }
