@@ -10,7 +10,7 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchTimerChanges,int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnInMatchTimerChanges, int32);
-DECLARE_MULTICAST_DELEGATE(FOnPropPlayerCountUpdate);
+//DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPropPlayerCountUpdate,int,int);
 
 /**
  * 
@@ -27,7 +27,7 @@ public:
 
 	FOnInMatchTimerChanges OnInMatchTimerChange;
 
-	FOnPropPlayerCountUpdate OnPropPlayerCountChange;
+	//FOnPropPlayerCountUpdate OnPropPlayerCountChange;
 
 private:
 
@@ -57,13 +57,14 @@ private:
 	FTimerHandle MatchTimerHandle;
 
 	//Since Hunter Won't die there number won't change
-	int TotalNumberOfHunterPlayer;
+	//UPROPERTY(Replicated)
+	//int TotalNumberOfHunterPlayer;
 
-	UPROPERTY(ReplicatedUsing = OnRep_PropPlayerCountUpdate)
-	int TotalNumberOfPropPlayer;
+	//UPROPERTY(ReplicatedUsing = OnRep_PropPlayerCountUpdate)
+	//int TotalNumberOfPropPlayer;
 
-	UFUNCTION()
-	void OnRep_PropPlayerCountUpdate();
+	/*UFUNCTION()
+	void OnRep_PropPlayerCountUpdate();*/
 
 //---------------------------------------------------
 	void StartPreMatchTimer();

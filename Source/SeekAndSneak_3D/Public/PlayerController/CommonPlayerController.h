@@ -30,6 +30,7 @@ protected:
 
 	void InitializePreMatchUI()override;
 	void InitializeInMatchUI() override;
+
 	void CallEndMatch(ECharacterType MatchWinner)override;
 
 	ECharacterType GetWinnerCharacterType()override;
@@ -77,6 +78,7 @@ protected:
     //Client Rpc That Calls When Game End -- Find One Winner
 	UFUNCTION(Client,Reliable)
 	void SetClientOnMatchEnd(ECharacterType MatchWinner);
+
 
 
 private:

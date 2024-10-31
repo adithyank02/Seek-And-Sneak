@@ -38,12 +38,16 @@ void APropPlayer::SetCapsuleSize(float Radius, float Height)
 
 void APropPlayer::PlayerGetDamaged(float DamageCaused)
 {
-	PropHealth -= DamageCaused;
-	PropPlayerDamaged.Broadcast(DamageCaused);
-	if (PropHealth <= 0)
+	if (IsLocallyControlled())
 	{
-		//Player Caught
-		OnPropPlayerCaught();
+		PropHealth -= DamageCaused;
+		PropPlayerDamaged.Broadcast(DamageCaused);
+		if (PropHealth <= 0)
+		{
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Prop Damge Is Zero Player Cought"), true, true, FLinearColor::Red, 5);
+			//Player Caught
+			OnPropPlayerCaught();
+		}
 	}
 	
 }
@@ -91,10 +95,6 @@ void APropPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (SmokeBombParticle)UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Good"));
-	else UKismetSystemLibrary::PrintString(GetWorld(), TEXT("H"), true, true, FLinearColor::Red);
-
-
 }
 
 // Called every frame
@@ -122,7 +122,6 @@ void APropPlayer::StopJumpFunction()
 {
 	StopJumping();
 }
-
 
 
 //---------------------------------------------------------------------------------------------->>>>> ( Prop Morph Function )
@@ -220,28 +219,36 @@ void APropPlayer::OnPropPlayerCaught()
 {
 	if (HasAuthority())
 	{
-		OnPlayerCaught_Multicast();
+		//Calling Sharing The Information To GameMode
+		if (IPropHuntGameModeInterface* GameModeInterface = Cast<IPropHuntGameModeInterface>(GetWorld()->GetAuthGameMode()))
+		{
+			GameModeInterface->OnPropPlayerCaught(GetController());
+		}
+		OnPlayerCaught_Multicast(GetController());
 	}
 	else
 	{
-		OnPlayerCaught_Server();
+		OnPlayerCaught_Server(GetController());
 	}
 }
 
 
-void APropPlayer::OnPlayerCaught_Server_Implementation()
-{
-	OnPlayerCaught_Multicast();
-}
-
-void APropPlayer::OnPlayerCaught_Multicast_Implementation()
+void APropPlayer::OnPlayerCaught_Server_Implementation(AController* PlayerController)
 {
 	if (IPropHuntGameModeInterface* GameModeInterface = Cast<IPropHuntGameModeInterface>(GetWorld()->GetAuthGameMode()))
 	{
 		GameModeInterface->OnPropPlayerCaught(GetController());
 	}
+	OnPlayerCaught_Multicast(PlayerController);
+}
+
+void APropPlayer::OnPlayerCaught_Multicast_Implementation(AController* PlayerController)
+{
+	//Caught Indicating Niagara Particle
 	if(PlayerCaughtParticle)UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),PlayerCaughtParticle, GetActorLocation(),
 		FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
+
+	//Temporary
 	PlayerMesh->SetVisibility(false);
 	PlayerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);

@@ -5,10 +5,12 @@
 #include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/PauseGameWidget.h"
-#include "Kismet/GameplayStatics.h"
-#include "HunterPlayer/HunterPlayer.h"
 
+#include "HunterPlayer/HunterPlayer.h"
 #include "GameState/PropHuntGameState.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UHunterInMatchWidget::UHunterInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -21,19 +23,23 @@ UHunterInMatchWidget::UHunterInMatchWidget(const FObjectInitializer& ObjectIniti
 
 void UHunterInMatchWidget::NativeConstruct()
 {
-
-	APropHuntGameState* PropHuntGameState = GetWorld()->GetGameState<APropHuntGameState>();
+	AGameState* PropHuntGameState = GetWorld()->GetGameState<AGameState>();
 	if (PropHuntGameState)
 	{
 		if (IGameStateInterface* Interface = Cast<IGameStateInterface>(PropHuntGameState))
 		{
 			//Binding The GameState MatchTimer Delegate
 			Interface->GetPropHuntGameState()->OnInMatchTimerChange.AddUObject(this, &UHunterInMatchWidget::SetTextOnMatchTimerUpdate);
-			PropHuntGameState->OnPropPlayerCountChange.AddUObject(this, &UHunterInMatchWidget::OnPropPlayerCaught);
+		//	PropHuntGameState->OnPropPlayerCountChange.AddUObject(this, &UHunterInMatchWidget::OnPropPlayerCaught);
 
-			Interface->GetTeamInfo(HunterPlayerCount, PropPlayerCount);
-			HunterTotalAliveCount->SetText(FText::AsNumber(HunterPlayerCount));
-			PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
+			//Interface->GetTeamInfo(HunterPlayerCount, PropPlayerCount);
+
+		//	HunterTotalAliveCount->SetText(FText::AsNumber(HunterPlayerCount));
+		//	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
+
+			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d --- %d"), HunterTotalAliveCount, PropTotalAliveCount), true, true, FLinearColor::Red);
+
+			
 		}
 	}
 
@@ -87,10 +93,12 @@ void UHunterInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
 	WidgetSwitcher->SetActiveWidgetIndex(Index);
 }
 
-void UHunterInMatchWidget::OnPropPlayerCaught()
+void UHunterInMatchWidget::OnPropPlayerCaught(int HunterCount, int PropCount)
 {
-	PropPlayerCount--;
-	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Team Info Got Updated"), true, true, FLinearColor::Blue, 5);
+
+	HunterTotalAliveCount->SetText(FText::AsNumber(HunterCount));
+	PropTotalAliveCount->SetText(FText::AsNumber(PropCount));
 }
 
 void UHunterInMatchWidget::UpdateProximityTextAndColor(const FText Text, const FLinearColor Color)

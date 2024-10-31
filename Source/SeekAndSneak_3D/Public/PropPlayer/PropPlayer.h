@@ -125,10 +125,10 @@ public:
 	void OnPropPlayerCaught();
 
 	UFUNCTION(Server,Reliable)
-	void OnPlayerCaught_Server();
+	void OnPlayerCaught_Server(AController* PlayerController);
 
 	UFUNCTION(NetMulticast,Reliable)
-	void OnPlayerCaught_Multicast();
+	void OnPlayerCaught_Multicast(AController* PlayerController);
 
 
 };

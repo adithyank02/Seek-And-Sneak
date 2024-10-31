@@ -57,8 +57,8 @@ private:
 
 	void SetTextOnMatchTimerUpdate(int32 TimerValue);
 
-	int HunterPlayerCount;
-	int PropPlayerCount;
+	int HunterPlayerCount = 0;
+	int PropPlayerCount = 0;
 
 public:
 

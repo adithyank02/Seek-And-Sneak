@@ -169,7 +169,6 @@ void ACommonPlayerController::SetClientOnMatchEnd_Implementation(ECharacterType 
 {
 	if (IsLocalController())
 	{
-
 		//Storing The Winner Character Type To Use On Widgets
 		WinnerCharacterType = MatchWinner;
 		WidgetLibrary[EWidgetType::InMatchWidget]->End();

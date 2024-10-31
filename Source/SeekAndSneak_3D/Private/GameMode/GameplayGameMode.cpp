@@ -28,7 +28,8 @@ void AGameplayGameMode::PreMatchTimerEnded()
 
 		//Gving The Team Info Into Game State
 		GameStateInterface->SetTeamInfo(JoinedPlayerController.Num() - PropPlayerControllerArray.Num(), PropPlayerControllerArray.Num());
-	 //Calling To Create The InMatch UI Widget
+	
+		//Calling To Create The InMatch UI Widget
 	 for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
 	 {
 	 	Interface->InitializeInMatchUI();
@@ -47,19 +48,16 @@ void AGameplayGameMode::OnMatchEnded()
 
 void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 {
-	if (PropPlayerControllerArray.Num() != 0)
+	for (auto Cntrl : PropPlayerControllerArray)
 	{
-		for (auto Cntrl : PropPlayerControllerArray)
+		if (Cntrl == PropController)
 		{
-			if (Cntrl == PropController)
-			{
-				PropPlayerControllerArray.RemoveSingle(Cntrl);
-				break;
-			}
+			PropPlayerControllerArray.RemoveSingle(Cntrl);
+			break;
 		}
-		//Inform The Ingame widget
 	}
-	else
+
+	if (PropPlayerControllerArray.Num() == 0)
 	{
 		for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
 		{
@@ -67,7 +65,6 @@ void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 			Interface->CallEndMatch(ECharacterType::HunterCharacter);
 		}
 	}
-	
 }
 
 
@@ -99,7 +96,10 @@ void AGameplayGameMode::SetUpPropCharacter()
 	int TotalNumberOfPlayer = JoinedPlayerController.Num();
 
 	//Getting The Count To Spawn -- PropCount < Hunter Count
-	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2+1 ;
+	int PropCharacterSpawnCount = 0;
+
+	if(TotalNumberOfPlayer%2!=0)PropCharacterSpawnCount = TotalNumberOfPlayer / 2 + 1;
+	else PropCharacterSpawnCount = TotalNumberOfPlayer / 2 ;	
 
 	int PropSpawnTransformIndex = 0;
 
@@ -111,6 +111,8 @@ void AGameplayGameMode::SetUpPropCharacter()
 	{
 		//Getting Random Index For Selecting Random Player
 		int Index = GetRandomIndex(0, TotalNumberOfPlayer - 1);
+
+		//int Index = 0;
 
 		if (IControllerInterface* Interface = Cast <IControllerInterface>(CopyArray[Index]))
 		{
@@ -180,6 +182,8 @@ void AGameplayGameMode::CallPreMatchWidget()
 		Interface->InitializePreMatchUI();
 	}
 }
+
+// ----------------Helper Functon ------------------- // 
 
 void AGameplayGameMode::StoreControllerInterface(AController* PlayerController, IControllerInterface* InterfaceRef)
 {

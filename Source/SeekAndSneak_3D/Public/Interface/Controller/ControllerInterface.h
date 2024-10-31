@@ -27,7 +27,9 @@ public:
 	virtual void SetControllerInputBinding(ECharacterType CharacterType) = 0; 
 	virtual void InitializePreMatchUI() = 0; 
 	virtual void InitializeInMatchUI() = 0;
+
 	virtual void CallEndMatch(ECharacterType MatchWinner) = 0;
+
 	virtual ECharacterType GetCharacterType() = 0; 
 	virtual ECharacterType GetWinnerCharacterType() = 0;
 };

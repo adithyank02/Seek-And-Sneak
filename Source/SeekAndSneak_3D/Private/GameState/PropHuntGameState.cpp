@@ -10,28 +10,24 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 
-
 APropHuntGameState* APropHuntGameState::GetPropHuntGameState()
 {
     return this;
 }
 void APropHuntGameState::SetTeamInfo(int TotalHunterPlayer, int TotalPropPlayer)
 {
-    TotalNumberOfHunterPlayer = TotalHunterPlayer;
-    TotalNumberOfPropPlayer = TotalPropPlayer;
-
-    UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Game State Called"));
-  //  UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%d --  %d"), TotalHunterPlayer, TotalPropPlayer), true, true, FLinearColor::White, 10);
+   // TotalNumberOfHunterPlayer = TotalHunterPlayer;
+   // TotalNumberOfPropPlayer = TotalPropPlayer;
 }
 void APropHuntGameState::GetTeamInfo(int& TotalHunterPlayer, int& TotalPropPlayer)
 {
-    TotalHunterPlayer = TotalNumberOfHunterPlayer;
-    TotalPropPlayer = TotalNumberOfPropPlayer;
+   // TotalHunterPlayer = TotalNumberOfHunterPlayer;
+   // TotalPropPlayer = TotalNumberOfPropPlayer;
 }
 void APropHuntGameState::OnPropPlayerCaught()
 {
-    TotalNumberOfPropPlayer--;
-    OnPropPlayerCountChange.Broadcast();
+  //  TotalNumberOfPropPlayer--;
+  //  OnPropPlayerCountChange.Broadcast(TotalNumberOfHunterPlayer,TotalNumberOfPropPlayer);
 
 }
 void APropHuntGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -40,6 +36,8 @@ void APropHuntGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
     DOREPLIFETIME(APropHuntGameState, PreMatchTimer);
     DOREPLIFETIME(APropHuntGameState, InMatchTimer);
+   // DOREPLIFETIME(APropHuntGameState, TotalNumberOfHunterPlayer);
+   // DOREPLIFETIME(APropHuntGameState, TotalNumberOfPropPlayer);
 }
 
 void APropHuntGameState::OnRep_PreMatchTimer()
@@ -59,10 +57,10 @@ void APropHuntGameState::StartPreMatchTimer(int32 StartingTimer)
     StartPreMatchTimer();
 }
 
-void APropHuntGameState::OnRep_PropPlayerCountUpdate()
-{
-    OnPropPlayerCountChange.Broadcast();
-}
+//void APropHuntGameState::OnRep_PropPlayerCountUpdate()
+//{
+//   // OnPropPlayerCountChange.Broadcast(TotalNumberOfHunterPlayer,TotalNumberOfPropPlayer);
+//}
 
 void APropHuntGameState::StartPreMatchTimer()
 {
