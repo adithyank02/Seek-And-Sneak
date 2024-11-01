@@ -114,6 +114,9 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* HunterFireWeaponAction;
 
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction* HunterThrowGrenadeAction;
+
 
 	/*---------------------------------Prop Player Controller Inputs---------------------------------------- */
 	

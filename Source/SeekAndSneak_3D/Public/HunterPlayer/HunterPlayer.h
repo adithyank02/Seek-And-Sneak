@@ -125,5 +125,6 @@ public:
 	void FireWeapon_OnMulticast(FVector StartPoint, FVector EndPoint);
 //----------------------------------------------------------------------->>>>> Weapon Fire Function
 
+	void ThrowGrenadeFunction();
 
 };
