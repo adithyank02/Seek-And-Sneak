@@ -129,9 +129,6 @@ private:
 	UInputAction* PropLookAction;
 
 	UPROPERTY(EditDefaultsOnly)
-	UInputAction* PropJumpAction;
-
-	UPROPERTY(EditDefaultsOnly)
 	UInputAction* PropMorphAction;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -141,6 +138,10 @@ private:
 	UInputAction* PropSmokeBombAction;
 
 	/*-------------------Common Actions ------------------*/
+
+
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction*  PlayerJumpAction;
 
 	//Toggle Button
 	bool bPauseMenuOpened;

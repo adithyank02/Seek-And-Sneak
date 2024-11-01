@@ -25,6 +25,11 @@ bool AHunterPlayer::CanRun()
 	return IsPlayerRunning;
 }
 
+bool AHunterPlayer::CanJump()
+{
+	return IsPlayerJumping;
+}
+
 USkeletalMeshComponent* AHunterPlayer::GetWeaponMeshComp()
 {
 	return WeaponMesh;
@@ -111,15 +116,12 @@ void AHunterPlayer::OnPropProximityChange(EProximityRange NewProximityRange)
 
 }
 
-void AHunterPlayer::PossessedBy(AController* PlayerController)
+void AHunterPlayer::PossessedBy(AController* NewController)
 {
-	Super::PossessedBy(PlayerController);
+	Super::PossessedBy(NewController);
 
-	//if (IsLocallyControlled())
-	//
-		//Starting PropProximity 
-		//();
-	//}	
+	PlayerController = Cast<APlayerController>(NewController);
+
 }
 
 
@@ -133,11 +135,24 @@ void AHunterPlayer::LookFunction(const FInputActionValue& InputValue)
 	MotionStateLibrary[MotionEnum::OnLook]->Begin(this, InputValue);
 }
 
+void AHunterPlayer::JumpFunction()
+{
+	IsPlayerJumping = true;
+	Jump();
+}
+
+void AHunterPlayer::StopJumpFunction()
+{
+	IsPlayerJumping = true;
+	StopJumping();
+}
+
 //---------------------------------------------------------------------------------------->>>>>> ( Sprint Function )
 void AHunterPlayer::StartSprintFunction()
 {
 	if (GetVelocity().Size() != 0)
 	{
+		bDoesPlayerSprint = true;
 		if (HasAuthority())Sprint_OnMulticast(500.0f, true);
 		else Sprint_OnServer(500.0f, true);
 	}
@@ -145,6 +160,7 @@ void AHunterPlayer::StartSprintFunction()
 
 void AHunterPlayer::StopSprintFunction()
 {
+	bDoesPlayerSprint = false;
 	if (HasAuthority())Sprint_OnMulticast(250.0f, false);
 	else Sprint_OnServer(200.0f, false);
 }

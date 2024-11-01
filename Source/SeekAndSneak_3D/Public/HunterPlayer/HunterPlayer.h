@@ -27,6 +27,8 @@ public:
 
 	// Interface Functions
 	bool CanRun()override;
+	bool CanJump()override;
+
 	USkeletalMeshComponent* GetWeaponMeshComp() override;
 	void SetFireWeaponLoc(FVector& StartPoint, FVector& ControlFrowardVector) override;
 	UPropProximityNotifier* GetPropProximityInstance() override;
@@ -46,6 +48,10 @@ private:
 
 	float WeaponBulletCount;
 	float MaxBulletCount;
+
+	//Storing The Ref To Controller
+	UPROPERTY()
+	APlayerController* PlayerController;
 
 protected:
 	// Called when the game starts or when spawned
@@ -70,7 +76,7 @@ private:
 	//Trigger The Proximity
 	void StartPropProximity();
 
-	void PossessedBy(AController* PlayerController)override;
+	void PossessedBy(AController* NewController)override;
 
 public:
 
@@ -78,10 +84,19 @@ public:
 
 	//Movement Function
 	void PlayerJogFunction(const FInputActionValue& InputValue);
+
 	void LookFunction(const FInputActionValue& InputValue);
 
+	UPROPERTY(Replicated)
+	bool IsPlayerJumping;
+
+	void JumpFunction();
+	void StopJumpFunction();
 
 //----------------------------------------------------------------------->>>>> Sprint Function
+
+	bool bDoesPlayerSprint;
+
 	void StartSprintFunction();
 	void StopSprintFunction();
 
@@ -109,7 +124,6 @@ public:
 	UFUNCTION(NetMulticast,Reliable)
 	void FireWeapon_OnMulticast(FVector StartPoint, FVector EndPoint);
 //----------------------------------------------------------------------->>>>> Weapon Fire Function
-
 
 
 };
