@@ -110,7 +110,7 @@ void AGameplayGameMode::SetUpPropCharacter()
 	int TotalNumberOfPlayer = JoinedPlayerController.Num();
 
 	//Getting The Count To Spawn -- PropCount < Hunter Count
-	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2 ;	
+	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2;
 
 	int PropSpawnTransformIndex = 0;
 
@@ -122,8 +122,6 @@ void AGameplayGameMode::SetUpPropCharacter()
 	{
 		//Getting Random Index For Selecting Random Player
 		int Index = GetRandomIndex(0, TotalNumberOfPlayer - 1);
-
-		//int Index = 0;
 
 		if (IControllerInterface* Interface = Cast <IControllerInterface>(CopyArray[Index]))
 		{
@@ -145,12 +143,10 @@ void AGameplayGameMode::SetUpPropCharacter()
 				//Next Spawn Index
 				PropSpawnTransformIndex++;
 
-			  
 			}
 		}
 	}
 	SetupHunterCharacter(CopyArray);
-	
 }
 
 void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingController)

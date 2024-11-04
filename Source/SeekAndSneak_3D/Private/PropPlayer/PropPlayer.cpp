@@ -44,7 +44,6 @@ void APropPlayer::PlayerGetDamaged(float DamageCaused)
 		PropPlayerDamaged.Broadcast(DamageCaused);
 		if (PropHealth <= 0)
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Prop Damge Is Zero Player Cought"), true, true, FLinearColor::Red, 5);
 			//Player Caught
 			OnPropPlayerCaught();
 		}

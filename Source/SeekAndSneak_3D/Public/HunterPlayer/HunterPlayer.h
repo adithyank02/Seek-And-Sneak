@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ArrowComponent.h"
 #include "InputActionValue.h"
 
 #include "PlayerState/MotionState/MotionStateAbstract.h"
@@ -62,6 +63,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly)
+	UArrowComponent* GrenadeSpawnArrow;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<APlayerCameraManager>HunterCharacterCameraManager;
@@ -125,6 +129,14 @@ public:
 	void FireWeapon_OnMulticast(FVector StartPoint, FVector EndPoint);
 //----------------------------------------------------------------------->>>>> Weapon Fire Function
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor>GrenadeActorClass;
+
 	void ThrowGrenadeFunction();
+
+	UFUNCTION(Server,Reliable)
+	void GrenadeSpawnOnServer(FTransform SpawnTransform);
+
+	void SpawnGrenade(FTransform SpawnTransform);
 
 };

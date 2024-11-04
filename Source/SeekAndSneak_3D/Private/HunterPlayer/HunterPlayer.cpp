@@ -67,6 +67,9 @@ AHunterPlayer::AHunterPlayer()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKMesh"));
 	WeaponMesh->SetupAttachment(GetMesh(), TEXT("WeaponHoldPosition"));
 
+	GrenadeSpawnArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComp"));
+	GrenadeSpawnArrow->SetupAttachment(FPSCamera);
+
 	MotionStateLibrary.Add(MotionEnum::OnMove, MakeUnique<PlayerMove>());
 	MotionStateLibrary.Add(MotionEnum::OnLook, MakeUnique<PlayerLook>());
 
@@ -214,14 +217,37 @@ void AHunterPlayer::FireWeapon_OnServer_Implementation(FVector StartPoint, FVect
 }
 void AHunterPlayer::FireWeapon_OnMulticast_Implementation(FVector StartPoint, FVector EndPoint)
 {	
-	
 	InputStateLibrary[InputStateEnum::OnHunterFire]->SetLocation(StartPoint, EndPoint);
 	InputStateLibrary[InputStateEnum::OnHunterFire]->Begin(this);
 
 }
 
+//------------------------------------------------------------------------------------------>>>>> ( Firing Weapon )
+
+
+//----------------------------------------------------------------------------------->>>>>> ( Throwing Grenade )
 void AHunterPlayer::ThrowGrenadeFunction()
 {
+	//Since The Actor Replicate Itself There Is No Need Call To Multicast RPC's From The Server
+	if (HasAuthority())
+	{
+		SpawnGrenade(GrenadeSpawnArrow->GetComponentTransform());
+	}
+	else
+	{
+		GrenadeSpawnOnServer(GrenadeSpawnArrow->GetComponentTransform());
+	}
 
+}
+
+
+void AHunterPlayer::GrenadeSpawnOnServer_Implementation(FTransform SpawnTransform)
+{
+	SpawnGrenade(SpawnTransform);
+}
+
+void AHunterPlayer::SpawnGrenade(FTransform SpawnTransform)
+{
+	GetWorld()->SpawnActor<AActor>(GrenadeActorClass, SpawnTransform);
 }
 

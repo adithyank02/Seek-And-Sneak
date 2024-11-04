@@ -5,7 +5,14 @@
 
 #include "Net/UnrealNetwork.h"
 
+#include "HunterPlayer/HunterPlayer.h"
+#include "PropPlayer/PropPlayer.h"
+#include "Interface/Player/PropPlayerInterface.h"
+
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 AGrenadeProjectile::AGrenadeProjectile()
@@ -18,13 +25,7 @@ AGrenadeProjectile::AGrenadeProjectile()
 
 	GrenadeProjectileComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComponent"));
 
-}
-
-void AGrenadeProjectile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AGrenadeProjectile, IsGrenadeHit);
+	GrenadeExplosionParticle = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Other_BP/NiagraParticle/NS_GrenadeExplosion.NS_GrenadeExplosion"));
 
 }
 
@@ -33,17 +34,51 @@ void AGrenadeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	BaseCollision->OnComponentBeginOverlap.AddDynamic(this, &AGrenadeProjectile::OnBeginOverlap);
+	BaseCollision->OnComponentHit.AddDynamic(this, &AGrenadeProjectile::OnHit);
 }
 
-void AGrenadeProjectile::OnRep_GrenadeHitNotify()
+void AGrenadeProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)
 {
-	IsHited = GetWorld()->SweepMultiByChannel(HitResultArray, StartPoint, EndPoint, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(DamageRadius), TraceParams);
+	if (HasAuthority())
+	{
+		GrenadeHitOnMulticast(HitResult.ImpactPoint);
+	}
+	else
+	{
+		GrenadeHitOnServer(HitResult.ImpactPoint);
+	}
+	
 }
 
-void AGrenadeProjectile::OnBeginOverlap(UPrimitiveComponent* OverlapedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& HitResult)
+
+void AGrenadeProjectile::GrenadeHitOnServer_Implementation(FVector ImpactPoint)
 {
-	IsGrenadeHit = true;
+   GrenadeHitOnMulticast(ImpactPoint);
 }
 
+void AGrenadeProjectile::GrenadeHitOnMulticast_Implementation(FVector ImpactPoint)
+{
+	IsHited =  GetWorld()->SweepMultiByObjectType(HitResultArray, ImpactPoint, ImpactPoint, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(DamageRadius));
+
+	//Giving Hit Damage To Player On Grenade Explosion
+	if (IsHited && HitResultArray.Num() > 0)
+	{
+		for (const FHitResult& HitResult : HitResultArray)
+		{
+			AActor* HitActor = HitResult.GetActor();
+			if (HitActor->IsA(APropPlayer::StaticClass()))
+			{
+				if (IPropPlayerInterface* PlayerInterface = Cast<IPropPlayerInterface>(HitActor))
+				{
+					PlayerInterface->PlayerGetDamaged(10);
+				}
+			}
+		}
+	}
+	if(GrenadeExplosionParticle)UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), GrenadeExplosionParticle, ImpactPoint, FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
+
+	//Not Pooling The Actor Since Its Not Continously Used
+	Destroy();
+
+}
 

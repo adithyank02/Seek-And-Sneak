@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "NiagaraSystem.h"
 #include "GrenadeProjectile.generated.h"
 
 UCLASS()
@@ -25,27 +26,29 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UProjectileMovementComponent* GrenadeProjectileComponent;
 
-	UPROPERTY(ReplicatedUsing = OnRep_GrenadeHitNotify)
-	bool IsGrenadeHit;
-
+	bool IsGrenadeHited;
 	
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const override;
 
 protected:
 	
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void OnRep_GrenadeHitNotify();
+	UPROPERTY()
+	UNiagaraSystem* GrenadeExplosionParticle;
+
+	UFUNCTION(Server,Reliable)
+	void GrenadeHitOnServer(FVector ImpactLocation);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void GrenadeHitOnMulticast(FVector ImpactLocation);
 
 	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlapedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& HitResult);
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult);
 
+	//LineTrace Variables
 	TArray<FHitResult>HitResultArray;
 	bool IsHited;
-	const float DamageRadius = 500.0f;
-	FVector StartPoint;
-	FVector EndPoint;
-	FCollisionQueryParams TraceParams;
+	const float DamageRadius = 350.0f;
+	FCollisionObjectQueryParams ObjectQueryParams = ECollisionChannel::ECC_Pawn;
 
 };

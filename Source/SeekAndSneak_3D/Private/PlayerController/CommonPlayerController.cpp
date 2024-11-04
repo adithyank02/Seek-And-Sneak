@@ -247,7 +247,7 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Started, HunterPlayer, &AHunterPlayer::StartFiringWeapon);
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::StopFiringWeapon);
 
-				EnhancedInput->BindAction(HunterThrowGrenadeAction, ETriggerEvent::Started, HunterPlayer, &AHunterPlayer::ThrowGrenadeFunction);
+				EnhancedInput->BindAction(HunterThrowGrenadeAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::ThrowGrenadeFunction);
 
 				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started,this, &ACommonPlayerController::PauseMenuFunction);
 
