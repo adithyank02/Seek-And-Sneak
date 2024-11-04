@@ -27,6 +27,8 @@ class SEEKANDSNEAK_3D_API IHunterPlayerInterface
 public:
 
 	virtual bool CanRun() = 0;
+	virtual bool CanJump() = 0;
+
 	virtual USkeletalMeshComponent* GetWeaponMeshComp() = 0;
 	virtual void SetFireWeaponLoc(FVector& StartPoint, FVector& ControlFrowardVector) = 0 ;
 

@@ -37,6 +37,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool CanPlayerRun;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool CanPlayerJump;
+
+	UPROPERTY(BlueprintReadOnly)
 	FVector Velocity;
+
+
 	FRotator AimRotation;
 };

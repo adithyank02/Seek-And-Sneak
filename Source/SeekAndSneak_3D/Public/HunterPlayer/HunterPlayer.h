@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ArrowComponent.h"
 #include "InputActionValue.h"
 
 #include "PlayerState/MotionState/MotionStateAbstract.h"
@@ -27,6 +28,8 @@ public:
 
 	// Interface Functions
 	bool CanRun()override;
+	bool CanJump()override;
+
 	USkeletalMeshComponent* GetWeaponMeshComp() override;
 	void SetFireWeaponLoc(FVector& StartPoint, FVector& ControlFrowardVector) override;
 	UPropProximityNotifier* GetPropProximityInstance() override;
@@ -47,6 +50,10 @@ private:
 	float WeaponBulletCount;
 	float MaxBulletCount;
 
+	//Storing The Ref To Controller
+	UPROPERTY()
+	APlayerController* PlayerController;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -58,21 +65,42 @@ protected:
 	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(EditDefaultsOnly)
+	UArrowComponent* GrenadeSpawnArrow;
+
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<APlayerCameraManager>HunterCharacterCameraManager;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+
+	void OnPropProximityChange(EProximityRange NewProximityRange);
 	//Trigger The Proximity
 	void StartPropProximity();
 
+	void PossessedBy(AController* NewController)override;
+
+public:
+
+	void TriggerPropProximity();
+
 	//Movement Function
 	void PlayerJogFunction(const FInputActionValue& InputValue);
+
 	void LookFunction(const FInputActionValue& InputValue);
 
+	UPROPERTY(Replicated)
+	bool IsPlayerJumping;
+
+	void JumpFunction();
+	void StopJumpFunction();
 
 //----------------------------------------------------------------------->>>>> Sprint Function
+
+	bool bDoesPlayerSprint;
+
 	void StartSprintFunction();
 	void StopSprintFunction();
 
@@ -101,6 +129,14 @@ public:
 	void FireWeapon_OnMulticast(FVector StartPoint, FVector EndPoint);
 //----------------------------------------------------------------------->>>>> Weapon Fire Function
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor>GrenadeActorClass;
 
+	void ThrowGrenadeFunction();
+
+	UFUNCTION(Server,Reliable)
+	void GrenadeSpawnOnServer(FTransform SpawnTransform);
+
+	void SpawnGrenade(FTransform SpawnTransform);
 
 };

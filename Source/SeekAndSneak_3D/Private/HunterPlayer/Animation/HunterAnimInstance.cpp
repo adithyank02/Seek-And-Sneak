@@ -36,6 +36,8 @@ void UHunterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		}
 
 		CanPlayerRun = PlayerInterface->CanRun();
+
+		CanPlayerJump = PlayerInterface->CanJump();
 	}
 
 }
