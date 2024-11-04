@@ -35,6 +35,8 @@ public:
 	
 protected:
 
+	bool DoesPlayerDetect();
+
 	bool DoesProximityNeedToUpdate(double Distance);
 
 private:
@@ -60,6 +62,6 @@ private:
 	TArray<FHitResult>HitResultArray;
 	FVector StartPoint;
 	FVector EndPoint;
-	FCollisionQueryParams TraceParams;
+	FCollisionObjectQueryParams ObjectQueryParams = ECollisionChannel::ECC_Pawn;
 
 };
