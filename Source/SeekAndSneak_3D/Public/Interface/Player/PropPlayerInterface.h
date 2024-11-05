@@ -31,5 +31,6 @@ public:
 	virtual void PlayerGetDamaged(float DamageCaused) = 0;
 
 	virtual APropPlayer* GetPropPlayerRef() = 0; 
+	virtual TArray<UStaticMesh*>GetMorphableMeshArray() = 0;
 
 };

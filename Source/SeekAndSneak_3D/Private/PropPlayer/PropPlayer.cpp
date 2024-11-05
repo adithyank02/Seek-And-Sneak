@@ -51,6 +51,11 @@ void APropPlayer::PlayerGetDamaged(float DamageCaused)
 	
 }
 
+TArray<UStaticMesh*> APropPlayer::GetMorphableMeshArray()
+{
+	return MorphMeshArray;
+}
+
 APropPlayer* APropPlayer::GetPropPlayerRef()
 {
 	return this;
@@ -184,6 +189,7 @@ void APropPlayer::PropClone_Server_Implementation()
 void APropPlayer::PropClone_Multicast_Implementation()
 {
 	InputStateLibrary[InputStateEnum::OnPropClone]->Begin(this);
+	if (bMorphMeshArrayPassed)MorphMeshArray.Empty(); bMorphMeshArrayPassed = false;
 }
 //---------------------------------------------------------------------------------------------->>>>> ( Prop Clone Function )
 

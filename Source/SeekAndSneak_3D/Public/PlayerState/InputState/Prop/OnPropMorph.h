@@ -20,6 +20,10 @@ public:
 	void Begin(ACharacter* Player)override;
 	void End(ACharacter* Player)override;
 
+protected:
+
+	TArray<UStaticMesh*>MorphableMeshArray;
+
 private:
 
 	UNiagaraSystem* NiagaraSystemOnMorph;
@@ -43,6 +47,8 @@ private:
 	/*Casting Line Trace*/
 	void CastLineTrace(ACharacter* Player);
 	/*Setting New Mesh To Player*/
-	void SetNewMesh(ACharacter* Player , FHitResult& HitResult);
+	void SetNewMesh(ACharacter* Player,UStaticMesh* MorphMesh);
+
+	
 
 };

@@ -41,8 +41,6 @@ void ALobbyPlayerController::BeginPlay()
 		FTimerHandle ShowTextTimer;
 		GetWorld()->GetTimerManager().SetTimer(ShowTextTimer, this, &ALobbyPlayerController::SetPlayerName, 1, false);
 	}
-	
-
 }
 
 void ALobbyPlayerController::SpawnCameraActor()
@@ -58,7 +56,6 @@ void ALobbyPlayerController::SpawnCameraActor()
 		}
 	}
 	CreateLobbyWidget();
-	
 }
 
 void ALobbyPlayerController::CreateLobbyWidget()
@@ -72,9 +69,7 @@ void ALobbyPlayerController::CreateLobbyWidget()
 
 			SetInputModeType(Widget);
 		}
-		
 	}
-	
 }
 
 void ALobbyPlayerController::SetInputModeType(UUserWidget* CreatedWidget)

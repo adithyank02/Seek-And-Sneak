@@ -33,6 +33,8 @@ public:
 	UStaticMesh* GetPlayerMesh() override;
 	void SetCapsuleSize(float Radius, float Height) override;
 	void PlayerGetDamaged(float DamageCaused)override;
+	TArray<UStaticMesh*>GetMorphableMeshArray()override;
+
 
 	APropPlayer* GetPropPlayerRef()override;
 
@@ -60,6 +62,11 @@ protected:
 
 	//Prop Character Health
 	float PropHealth;
+
+	bool bMorphMeshArrayPassed;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<UStaticMesh*>MorphMeshArray;
 
 public:	
 	// Called every frame

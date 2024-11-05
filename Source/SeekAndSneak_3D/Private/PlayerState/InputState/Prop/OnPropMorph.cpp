@@ -18,7 +18,7 @@ OnPropMorph::OnPropMorph()
 
 OnPropMorph::~OnPropMorph()
 {
-	PlayerInterface = nullptr;;
+	PlayerInterface = nullptr;
 }
 
 void OnPropMorph::Begin(ACharacter* Player)
@@ -34,18 +34,20 @@ void OnPropMorph::Begin(ACharacter* Player)
 		}
 		//Since The If Only Works At Once -- Setting The Self Ignorance
 		TraceCollisionParams.AddIgnoredActor(Player);
+
+		if (MorphableMeshArray.IsEmpty())
+		{
+			MorphableMeshArray = PlayerInterface->GetMorphableMeshArray();
+		}
 		
 	}
 	CastLineTrace(Player);
-
-	if (NiagaraSystemOnMorph)UKismetSystemLibrary::PrintString(Player->GetWorld(), TEXT("TRue"));
-	else UKismetSystemLibrary::PrintString(Player->GetWorld(), TEXT("FAlses"), true, true, FLinearColor::Red);
 	
 }
 
 void OnPropMorph::End(ACharacter* Player)
 {
-	
+
 }
 
 /*-----Helper Functions-----*/
@@ -63,30 +65,37 @@ void OnPropMorph::CastLineTrace(ACharacter* Player)
 
 	if (IsTraceHit && TraceHitResult.GetActor()->IsA(AStaticMeshActor::StaticClass()))
 	{
-	   SetNewMesh(Player, TraceHitResult);
+		/*Casting To StaticMeshComponent For Retreving The Mesh*/
+		if (UStaticMeshComponent* StaticMeshComponent = Cast <UStaticMeshComponent>(TraceHitResult.GetComponent()))
+		{
+			UStaticMesh* HitMesh = StaticMeshComponent->GetStaticMesh();
+			for (auto AvailableMesh : MorphableMeshArray)
+			{
+				if (HitMesh == AvailableMesh)
+				{
+					SetNewMesh(Player,HitMesh);
+					return;
+				}
+			}
+		}
 	}
 }
 
-void OnPropMorph::SetNewMesh(ACharacter* Player, FHitResult& HitResult)
+void OnPropMorph::SetNewMesh(ACharacter* Player,UStaticMesh* MorphMesh)
 {
-	/*Casting To StaticMeshComponent For Retreving The Mesh*/
-	if (UStaticMeshComponent* StaticMeshComponent = Cast <UStaticMeshComponent>(HitResult.GetComponent()))
-	{
-		if (StaticMeshComponent->ComponentHasTag("Sample"))
-		{
-			PlayerInterface->SetPlayerMesh(StaticMeshComponent->GetStaticMesh());
-			
-			SystemLocation = Player->GetActorLocation();
+	PlayerInterface->SetPlayerMesh(MorphMesh);
 
-			if(NiagaraSystemOnMorph)UNiagaraFunctionLibrary::SpawnSystemAtLocation(Player->GetWorld(), NiagaraSystemOnMorph, SystemLocation,
-				FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
+	SystemLocation = Player->GetActorLocation();
 
-			//Getting The Collision Bounds And Setting To Prop Collision
-			MeshBounds = StaticMeshComponent->GetStaticMesh()->GetBounds();
-			float CapsuleRadius = MeshBounds.BoxExtent.X;
-			float CapsuleHeight = MeshBounds.BoxExtent.Z;
-			PlayerInterface->SetCapsuleSize(CapsuleRadius, CapsuleHeight);
-		}
+	if (NiagaraSystemOnMorph)UNiagaraFunctionLibrary::SpawnSystemAtLocation(Player->GetWorld(), NiagaraSystemOnMorph, SystemLocation,
+	FRotator(0.0f), FVector(1.0f), true, true, ENCPoolMethod::AutoRelease);
+
+	//Getting The Collision Bounds And Setting To Prop Collision
+	MeshBounds = MorphMesh->GetBounds();
+	float CapsuleRadius = MeshBounds.BoxExtent.X;
+	float CapsuleHeight = MeshBounds.BoxExtent.Z;
+	PlayerInterface->SetCapsuleSize(CapsuleRadius, CapsuleHeight);
+
+	return;
 		
-	}
 }
