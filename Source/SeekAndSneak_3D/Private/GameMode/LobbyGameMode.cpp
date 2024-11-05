@@ -22,7 +22,6 @@ void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
 }
 
 void ALobbyGameMode::SpawnLobbyCharacter(AController* NewPlayerController)

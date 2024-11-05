@@ -36,7 +36,7 @@ void ALobbyPlayerController::BeginPlay()
 	if (IsLocalController())
 	{
 		FTimerHandle SpawnCameraTimer;
-		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.1, false);
+		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.01, false);
 
 		FTimerHandle ShowTextTimer;
 		GetWorld()->GetTimerManager().SetTimer(ShowTextTimer, this, &ALobbyPlayerController::SetPlayerName, 1, false);

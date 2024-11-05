@@ -110,12 +110,12 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 				//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Loop Started"), true, true, FLinearColor::Blue, 5);
 				if (SearchInfo.Session.SessionSettings.Get(RoomCodeKey, RoomCode))
 				{
-					//if (GiveSessionCode == RoomCode)
-					//{
+					if (GiveSessionCode == RoomCode)
+					{
 						UKismetSystemLibrary::PrintString(GetWorld(), TEXT("JOIN SESSION CALLED"));
 						JoinSession(SearchInfo);
 						return;
-					//}
+					}
 					//else
 					//{
 					//	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("JOIN SESSION NOT CALLED"), true, true, FLinearColor::Red, 5);
