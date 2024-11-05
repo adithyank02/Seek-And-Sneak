@@ -25,6 +25,10 @@ class SEEKANDSNEAK_3D_API UFindSessionWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+
+	UFindSessionWidget(const FObjectInitializer& ObjectInitializer);
+
 protected:
 
 	void NativeConstruct()override;
@@ -47,7 +51,20 @@ private:
 	UFUNCTION()
 	void OnFindButtonClicked();
 
-	
+	//Pointer To Loading Widget
+	UPROPERTY()
+	UUserWidget*FindingScreenWidget;
+
+	//Loading Screen WidgetClass
+	UPROPERTY()
+	TSubclassOf<UUserWidget>FindingScreenClass;
+
+	UPROPERTY()
+	TSubclassOf<UUserWidget>ErrorScreenClass;
+
+	void AddLoadingScreenWidget();
+	void AddErrorScreenWidget();
+
 	//Variable For Starting The FindSession
 	bool bCanStartFinding;
 
@@ -57,7 +74,6 @@ private:
 	void ResetInvalidTextVisibility();
 
 	//Find And Join Session Managment
-
 	TSharedPtr<FOnlineSessionSearch>SessionSetting;
 
 	//For Verying From The UserInput

@@ -11,6 +11,21 @@
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+UFindSessionWidget::UFindSessionWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	ConstructorHelpers::FClassFinder<UUserWidget>FindingWidgetClass(TEXT("/Game/Widgets/Others/BP_FindingSessionWidget.BP_FindingSessionWidget_C"));
+	ConstructorHelpers::FClassFinder<UUserWidget>ErrorWidgetClass(TEXT("/Game/Widgets/Others/BP_ErrorWidget.BP_ErrorWidget_C"));
+
+	if (FindingWidgetClass.Succeeded())
+	{
+		FindingScreenClass = FindingWidgetClass.Class;
+	}
+	if (ErrorWidgetClass.Succeeded())
+	{
+		ErrorScreenClass = ErrorWidgetClass.Class;
+	}
+}
+
 void UFindSessionWidget::NativeConstruct()
 {
 	RoomCodeInvalidText->SetVisibility(ESlateVisibility::Hidden);
@@ -38,32 +53,19 @@ void UFindSessionWidget::SessionCode_TextBoxCommited(const FText& CommitedText, 
 	{
 		ShowInvalidText();
 	}
-
 }
 
-void UFindSessionWidget::ShowInvalidText()
-{
-	RoomCodeInvalidText->SetVisibility(ESlateVisibility::Visible);
-
-	GetWorld()->GetTimerManager().SetTimer(ResetInvalidTextTimer, this, &UFindSessionWidget::ResetInvalidTextVisibility, 2, false);
-	EnterSessionCode_TextBox->SetText(FText::FromString(""));
-}
-
-void UFindSessionWidget::ResetInvalidTextVisibility()
-{
-	RoomCodeInvalidText->SetVisibility(ESlateVisibility::Hidden);
-
-}
 
 void UFindSessionWidget::OnFindButtonClicked()
 {
-	//if (bCanStartFinding)
-	//{
+	if (bCanStartFinding)
+	{
 
-	//Disabling The Button For Avoiding Spawming
-	FindButton->SetIsEnabled(false);
+	  //Disabling The Button For Avoiding Spawming
+	   FindButton->SetIsEnabled(false);
 
-		UKismetSystemLibrary::PrintString(GetWorld(), GiveSessionCode, true, true, FLinearColor::Black, 30);
+	  //Showing User To Loading The Game
+	   AddLoadingScreenWidget();
 
 		if (IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
 		{
@@ -87,17 +89,16 @@ void UFindSessionWidget::OnFindButtonClicked()
 				if (SessionInterface->FindSessions(0, SessionSetting.ToSharedRef()))return;
 			}
 		}
-	//}
-	//else
-	///{
-	//	ShowInvalidText();
-	//}
+	}
+	else
+	{
+		ShowInvalidText();
+	}
 
 }
 
 void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 {
-
 	if (bIsSucess)
 	{
 		if (SessionSetting->SearchResults.Num() > 0)
@@ -127,6 +128,11 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 
 	//Enableing The Join Button If Any Occurs Bad
 	FindButton->SetIsEnabled(true);
+	//Also Removing Loading Widget
+	FindingScreenWidget->RemoveFromParent();
+	//Creating Error Widget
+	AddErrorScreenWidget();
+	
 }
 
 void UFindSessionWidget::JoinSession(const FOnlineSessionSearchResult& SearchResult)
@@ -143,11 +149,13 @@ void UFindSessionWidget::JoinSession(const FOnlineSessionSearchResult& SearchRes
 	}
 	else
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SESSION NAME NOT FOUND"), true, true, FLinearColor::Red, 5);
-		
+		//Enableing The Join Button If Any Occurs Bad
+		FindButton->SetIsEnabled(true);
+		//Also Removing Loading Widget
+		FindingScreenWidget->RemoveFromParent();
+		//Creating Error Widget
+		AddErrorScreenWidget();
 	}
-
-
 }
 
 void UFindSessionWidget::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -165,6 +173,41 @@ void UFindSessionWidget::OnJoinSessionComplete(FName SessionName, EOnJoinSession
 	}
 
 }
+
+//--------------------Helper Function
+
+void UFindSessionWidget::AddLoadingScreenWidget()
+{
+	if (FindingScreenClass && !FindingScreenWidget)
+	{
+		//Only Creating The Wiget For Once
+		FindingScreenWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), FindingScreenClass);
+	}
+	FindingScreenWidget->AddToViewport();
 	
+}
+
+void UFindSessionWidget::AddErrorScreenWidget()
+{
+	if (ErrorScreenClass)
+	{
+		UUserWidget* ErrorScreenWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), ErrorScreenClass);
+		ErrorScreenWidget->AddToViewport();
+	}	
+}
+
+void UFindSessionWidget::ShowInvalidText()
+{
+	RoomCodeInvalidText->SetVisibility(ESlateVisibility::Visible);
+
+	GetWorld()->GetTimerManager().SetTimer(ResetInvalidTextTimer, this, &UFindSessionWidget::ResetInvalidTextVisibility, 2, false);
+	EnterSessionCode_TextBox->SetText(FText::FromString(""));
+}
+
+void UFindSessionWidget::ResetInvalidTextVisibility()
+{
+	RoomCodeInvalidText->SetVisibility(ESlateVisibility::Hidden);
+
+}
 
 
