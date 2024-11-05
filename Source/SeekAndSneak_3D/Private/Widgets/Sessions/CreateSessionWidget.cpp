@@ -40,6 +40,8 @@ void UCreateSessionWidget::HandleTextBoxCommited(const FText& CommitedText, ETex
 
 void UCreateSessionWidget::OnCreateButtonClicked()
 {
+	CreateButton->SetIsEnabled(false);
+
 	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 
 	if (OnlineSubsystem)
@@ -61,26 +63,20 @@ void UCreateSessionWidget::OnCreateButtonClicked()
 			//It Is Sending In The For Of Key Value Pair 
 			FString RoomCode = RandomSessionCodeGenerator();
 			OnlineSessionSettings.Set(RoomCodeKey/*Key*/, RoomCode/*Value*/, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-			
-			//Setting Session Name Has Local System Name
-			FName SessionName = FPlatformProcess::ComputerName();
 
 			//Creating A Key For  Session Name
 			FName SessionKey = FName("SESSIONKEY");
 
 			//Setting Session Name For Make Use To Join The Session
-			OnlineSessionSettings.Set(SessionKey, SessionName.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+			OnlineSessionSettings.Set(SessionKey, Session_Name.ToString(), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 			if (IPropHuntGameInstInterface* GameInstanceInterface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
 			{
 				//Setting The Room Id
 				GameInstanceInterface->SetRoomId(RoomCode);
 
-				GameInstanceInterface->SetHostedSessionName(SessionName);
-
-				if (SessionInterface->CreateSession(0, SessionName, OnlineSessionSettings))return;
+				if (SessionInterface->CreateSession(0, Session_Name, OnlineSessionSettings))return;
 			}
-			
 		}
 	}
 
@@ -100,6 +96,7 @@ void UCreateSessionWidget::OnSessionCreateCompleted(FName SessionName, bool bWas
 	else
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SOMETHING WENT WRONG !!! PLEASE TRY AGAIN"), true, true, FLinearColor::Red, 5);
+		CreateButton->SetIsEnabled(true);
 	}
 }
 

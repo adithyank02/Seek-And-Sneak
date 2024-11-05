@@ -45,6 +45,9 @@ private:
 	//Setting A Code Value To This Key
 	const FName RoomCodeKey = FName("RoomCode");
 
+	//const Session Name
+	const FName Session_Name = FName("SESSION_NAME");
+
 	UPROPERTY(meta = (BindWidget))
 	UEditableTextBox* TotalPlayerNum_TextBox;
 

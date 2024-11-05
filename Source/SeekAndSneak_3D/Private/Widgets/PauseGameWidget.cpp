@@ -34,10 +34,8 @@ void UPauseGameWidget::QuitMatchButtonClicked()
 	if (SessionInterface.IsValid())
 	{
 		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPauseGameWidget::OnSessionDestroyed);
-		if (IPropHuntGameInstInterface* Interface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
-		{
-			SessionInterface->DestroySession(Interface->GetHostedSessionName());
-		}
+		
+		SessionInterface->DestroySession(Session_Name);
 	}
 }
 

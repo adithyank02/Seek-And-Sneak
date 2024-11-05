@@ -59,6 +59,10 @@ void UFindSessionWidget::OnFindButtonClicked()
 {
 	//if (bCanStartFinding)
 	//{
+
+	//Disabling The Button For Avoiding Spawming
+	FindButton->SetIsEnabled(false);
+
 		UKismetSystemLibrary::PrintString(GetWorld(), GiveSessionCode, true, true, FLinearColor::Black, 30);
 
 		if (IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
@@ -93,6 +97,7 @@ void UFindSessionWidget::OnFindButtonClicked()
 
 void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 {
+
 	if (bIsSucess)
 	{
 		if (SessionSetting->SearchResults.Num() > 0)
@@ -119,6 +124,9 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 			}
 		}
 	}
+
+	//Enableing The Join Button If Any Occurs Bad
+	FindButton->SetIsEnabled(true);
 }
 
 void UFindSessionWidget::JoinSession(const FOnlineSessionSearchResult& SearchResult)
@@ -136,6 +144,7 @@ void UFindSessionWidget::JoinSession(const FOnlineSessionSearchResult& SearchRes
 	else
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SESSION NAME NOT FOUND"), true, true, FLinearColor::Red, 5);
+		
 	}
 
 

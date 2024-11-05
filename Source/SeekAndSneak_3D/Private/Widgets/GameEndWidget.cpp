@@ -47,12 +47,8 @@ void UGameEndWidget::QuitMatchButtonClicked()
 	if (SessionInterface.IsValid())
 	{
 		SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UGameEndWidget::OnSessionDestroyed);
-		if (IPropHuntGameInstInterface* Interface = Cast<IPropHuntGameInstInterface>(GetGameInstance()))
-		{
-			UKismetSystemLibrary::PrintString(GetWorld(),Interface->GetHostedSessionName().ToString());
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Session DEstoryed"));
-			SessionInterface->DestroySession(Interface->GetHostedSessionName());
-		}
+	
+			SessionInterface->DestroySession(Session_Name);		
 	}
 }
 
