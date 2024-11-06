@@ -10,6 +10,8 @@
 #include "PlayerState/InputState/Prop/OnPropMorph.h"
 #include "PlayerState/InputState/Prop/OnPropClone.h"
 
+
+
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -82,6 +84,8 @@ APropPlayer::APropPlayer()
 	InputStateLibrary.Add(InputStateEnum::OnPropMorph,MakeUnique<OnPropMorph>());
 	InputStateLibrary.Add(InputStateEnum::OnPropClone, MakeUnique<OnPropClone>());
 
+	ScanPropClass = MakeUnique<ScanProps>();
+
 	MorphMaxCoolDownTime = 15.0f;
 	TotalCloneCount = 5.0f;
 
@@ -98,7 +102,29 @@ APropPlayer::APropPlayer()
 void APropPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void APropPlayer::StartScanningProps()
+{
+	if (ScanPropClass)
+	{
+		ScanPropClass->CacheData(MorphMeshArray, this);
+		GetWorld()->GetTimerManager().SetTimer(ScanningPropsTimer, this, &APropPlayer::ScanningPropsForMorphing,0.5,true);
+	}
+}
+
+void APropPlayer::ScanningPropsForMorphing()
+{
+	ScanPropClass->StartScanning();
+}
+
+void APropPlayer::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("On Possed Called"));
+
+	StartScanningProps();
 }
 
 // Called every frame

@@ -13,9 +13,12 @@
 
 #include "Interface/Player/PropPlayerInterface.h"
 
+#include "Feature/Prop/ScanningProps/ScanProps.h"
+
 #include "NiagaraSystem.h"
 
 #include "PropPlayer.generated.h"
+
 
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropGetDamaged, float);
@@ -47,6 +50,8 @@ private:
 
 	TMap<InputStateEnum,TUniquePtr<InputStateAbstract>>InputStateLibrary;
 
+	TUniquePtr<ScanProps>ScanPropClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -67,6 +72,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<UStaticMesh*>MorphMeshArray;
+
+private:
+
+	FTimerHandle ScanningPropsTimer;
+
+	void StartScanningProps();
+
+	void ScanningPropsForMorphing();
+ 
+	void PossessedBy(AController* NewController);
 
 public:	
 	// Called every frame

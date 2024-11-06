@@ -38,8 +38,7 @@ void OnPropMorph::Begin(ACharacter* Player)
 		if (MorphableMeshArray.IsEmpty())
 		{
 			MorphableMeshArray = PlayerInterface->GetMorphableMeshArray();
-		}
-		
+		}		
 	}
 	CastLineTrace(Player);
 	

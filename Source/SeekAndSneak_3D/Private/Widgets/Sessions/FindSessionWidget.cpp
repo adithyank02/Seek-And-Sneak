@@ -183,7 +183,6 @@ void UFindSessionWidget::AddLoadingScreenWidget()
 		FindingScreenWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), FindingScreenClass);
 	}
 	FindingScreenWidget->AddToViewport();
-	
 }
 
 void UFindSessionWidget::AddErrorScreenWidget()
