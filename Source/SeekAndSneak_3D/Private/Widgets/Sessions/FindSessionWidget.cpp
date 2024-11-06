@@ -132,7 +132,6 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 	FindingScreenWidget->RemoveFromParent();
 	//Creating Error Widget
 	AddErrorScreenWidget();
-	
 }
 
 void UFindSessionWidget::JoinSession(const FOnlineSessionSearchResult& SearchResult)
