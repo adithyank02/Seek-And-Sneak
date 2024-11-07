@@ -16,7 +16,6 @@ ScanProps::ScanProps()
 
 ScanProps::~ScanProps()
 {
-
 }
 
 void ScanProps::CacheData(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter)
@@ -30,7 +29,7 @@ void ScanProps::CacheData(TArray<UStaticMesh*> PropArray, ACharacter* PlayerChar
 }
 void ScanProps::StartScanning()
 {
-	if (!HighlightedMeshArray.IsEmpty())
+	if (!HighlightedMeshSet.IsEmpty())
 	{
 		ResetHighlightedMesh();
 	}
@@ -49,31 +48,21 @@ void ScanProps::StartScanning()
 		{
 			if(MorphableMeshArray.Contains(MeshComponent->GetStaticMesh()))
 			{
-				MeshComponent->bRenderCustomDepth = true;
+				MeshComponent->SetRenderCustomDepth(true);
 				MeshComponent->SetCustomDepthStencilValue(1);
 
-				UKismetSystemLibrary::PrintString(Player->GetWorld(), TEXT("Render Custom dept to True"),true,true,FLinearColor::Red);
-
-				HighlightedMeshArray.AddUnique(MeshComponent);
-			}
-			else
-			{
-				UKismetSystemLibrary::PrintString(Player->GetWorld(), TEXT("Morph mesh array not contain mesh"), true, true, FLinearColor::Blue);
+				HighlightedMeshSet.Add(MeshComponent);
 			}
 		}
-		else
-		{
-			UKismetSystemLibrary::PrintString(Player->GetWorld(), TEXT("Casted Falide on staticmeshcomponent"), true, true, FLinearColor::White);
-		}
+		
 	}
-
-
 }
 
 void ScanProps::ResetHighlightedMesh()
 {
-	for (auto Mesh : HighlightedMeshArray)
+	for (auto Mesh : HighlightedMeshSet)
 	{
-		Mesh->bRenderCustomDepth = false;
+		Mesh->SetRenderCustomDepth(false);
+		HighlightedMeshSet.Remove(Mesh);
 	}
 }

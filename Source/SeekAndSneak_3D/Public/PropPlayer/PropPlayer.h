@@ -31,6 +31,7 @@ class SEEKANDSNEAK_3D_API APropPlayer : public ACharacter , public IPropPlayerIn
 public:
 	// Sets default values for this character's properties
 	APropPlayer();
+	
 
 	void SetPlayerMesh(UStaticMesh* NewMesh) override; 
 	UStaticMesh* GetPlayerMesh() override;
@@ -81,7 +82,9 @@ private:
 
 	void ScanningPropsForMorphing();
  
-	void PossessedBy(AController* NewController);
+	const int ScanningPropInitialTimer= 5; 
+
+	void SetScanningProp();
 
 public:	
 	// Called every frame

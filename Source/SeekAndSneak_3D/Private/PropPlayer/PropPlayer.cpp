@@ -46,8 +46,12 @@ void APropPlayer::PlayerGetDamaged(float DamageCaused)
 		PropPlayerDamaged.Broadcast(DamageCaused);
 		if (PropHealth <= 0)
 		{
+			//Stoping The ScanningMorphFunction
+			GetWorld()->GetTimerManager().ClearTimer(ScanningPropsTimer);
+
 			//Player Caught
 			OnPropPlayerCaught();
+
 		}
 	}
 	
@@ -102,6 +106,9 @@ APropPlayer::APropPlayer()
 void APropPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FTimerHandle ScanningTimer;
+	GetWorld()->GetTimerManager().SetTimer(ScanningTimer, this, &APropPlayer::SetScanningProp,ScanningPropInitialTimer, false);
 }
 
 void APropPlayer::StartScanningProps()
@@ -118,14 +125,15 @@ void APropPlayer::ScanningPropsForMorphing()
 	ScanPropClass->StartScanning();
 }
 
-void APropPlayer::PossessedBy(AController* NewController)
+void APropPlayer::SetScanningProp()
 {
-	Super::PossessedBy(NewController);
-
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("On Possed Called"));
-
-	StartScanningProps();
+	if (IsLocallyControlled())
+	{
+		StartScanningProps();
+	}
+	
 }
+
 
 // Called every frame
 void APropPlayer::Tick(float DeltaTime)

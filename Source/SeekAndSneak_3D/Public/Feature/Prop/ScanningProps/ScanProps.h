@@ -17,15 +17,16 @@ public:
      ACharacter* Player;
 	TArray<UStaticMesh*>MorphableMeshArray;
 
-	TArray<UStaticMeshComponent*>HighlightedMeshArray;
+	TSet<UStaticMeshComponent*>HighlightedMeshSet;
 
 	void CacheData(TArray<UStaticMesh*>PropArray , ACharacter* PlayerCharacter);
 
 	void StartScanning();
 
-	void ResetHighlightedMesh();
-
 private:
+
+
+	void ResetHighlightedMesh();
 
 	const float TraceRadius = 150.0f;
 	FVector StartPoint;
