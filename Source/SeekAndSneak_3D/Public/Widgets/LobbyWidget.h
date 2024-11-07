@@ -31,6 +31,8 @@ class SEEKANDSNEAK_3D_API ULobbyWidget : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	UButtonBaseWidget* StartMatchButton;
 
+	void ShowErrorMessage();
+
 	UFUNCTION()
 	void StartMatchButtonClicked();
 	

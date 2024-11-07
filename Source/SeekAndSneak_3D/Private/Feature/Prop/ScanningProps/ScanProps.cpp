@@ -3,6 +3,7 @@
 
 #include "Feature/Prop/ScanningProps/ScanProps.h"
 #include "GameFramework/Character.h"
+#include "PropPlayer/PropPlayer.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 
@@ -20,8 +21,6 @@ ScanProps::~ScanProps()
 
 void ScanProps::CacheData(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter)
 {
-	UKismetSystemLibrary::PrintString(PlayerCharacter->GetWorld(), TEXT("Mesh Array Got Stored"));
-
 	MorphableMeshArray = PropArray;
 	Player = PlayerCharacter;
 
@@ -43,18 +42,14 @@ void ScanProps::StartScanning()
 
 	for (const FHitResult& HitResult: TraceHitArray)
 	{
-		UKismetSystemLibrary::PrintString(Player->GetWorld(), HitResult.GetActor()->GetActorLabel(), true, true, FLinearColor::Yellow);
 		if (UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
 		{
-			if(MorphableMeshArray.Contains(MeshComponent->GetStaticMesh()))
+			if (MorphableMeshArray.Contains(MeshComponent->GetStaticMesh()))
 			{
 				MeshComponent->SetRenderCustomDepth(true);
-				MeshComponent->SetCustomDepthStencilValue(1);
-
 				HighlightedMeshSet.Add(MeshComponent);
 			}
 		}
-		
 	}
 }
 

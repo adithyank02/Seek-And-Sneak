@@ -116,10 +116,6 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 						JoinSession(SearchInfo);
 						return;
 					}
-					//else
-					//{
-					//	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("JOIN SESSION NOT CALLED"), true, true, FLinearColor::Red, 5);
-					//}
 				}
 				
 			}
