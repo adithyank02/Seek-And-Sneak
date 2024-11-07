@@ -22,7 +22,7 @@ void AGameplayGameMode::PreMatchTimerEnded()
 	AGameState* PropHuntGameState = GetGameState<AGameState>();
 	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(PropHuntGameState))
 	{
-		GameStateInterface->StartInMatchTimer(InMatchTimeInSec);   //720 sec == 12 minutes
+		GameStateInterface->StartInMatchTimer(InMatchTimeInSec); 
 	
 		//Calling To Create The InMatch UI Widget
 	 for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
@@ -49,11 +49,14 @@ void AGameplayGameMode::OnMatchEnded()
 
 void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 {
+
+	//Informing The GameState To Update On Prop Team Info
 	if (IGameStateInterface* GameStateInterface = Cast<IGameStateInterface>(GetGameState<AGameState>()))
 	{
-		GameStateInterface->OnPropPlayerCaught();
+		GameStateInterface->UpdatePropTeamInfo();
 	}
 
+	//Finding The Controller Responsible For Caught Player
 	for (auto Cntrl : PropPlayerControllerArray)
 	{
 		if (Cntrl == PropController)
@@ -63,13 +66,17 @@ void AGameplayGameMode::OnPropPlayerCaught(AController* PropController)
 		}
 	}
 
-	if (PropPlayerControllerArray.Num() == 0)
+	if (!bMatchEnded)
 	{
-		for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+		//Informing To EndGame When All Prop Get Caught
+		if (PropPlayerControllerArray.Num() == 0)
 		{
-			//Hunter Won The Game
-			Interface->CallEndMatch(ECharacterType::HunterCharacter);
-			bMatchEnded = true;
+			for (TScriptInterface<IControllerInterface>& Interface : ControllerInterfaceArray)
+			{
+				//Hunter Won The Game
+				Interface->CallEndMatch(ECharacterType::HunterCharacter);
+				bMatchEnded = true;
+			}
 		}
 	}
 }
@@ -103,10 +110,7 @@ void AGameplayGameMode::SetUpPropCharacter()
 	int TotalNumberOfPlayer = JoinedPlayerController.Num();
 
 	//Getting The Count To Spawn -- PropCount < Hunter Count
-	int PropCharacterSpawnCount = 0;
-
-	if(TotalNumberOfPlayer%2!=0)PropCharacterSpawnCount = TotalNumberOfPlayer / 2 + 1;
-	else PropCharacterSpawnCount = TotalNumberOfPlayer / 2 ;	
+	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2 ;
 
 	int PropSpawnTransformIndex = 0;
 
@@ -118,8 +122,6 @@ void AGameplayGameMode::SetUpPropCharacter()
 	{
 		//Getting Random Index For Selecting Random Player
 		int Index = GetRandomIndex(0, TotalNumberOfPlayer - 1);
-
-		//int Index = 0;
 
 		if (IControllerInterface* Interface = Cast <IControllerInterface>(CopyArray[Index]))
 		{
@@ -141,12 +143,10 @@ void AGameplayGameMode::SetUpPropCharacter()
 				//Next Spawn Index
 				PropSpawnTransformIndex++;
 
-			  
 			}
 		}
 	}
 	SetupHunterCharacter(CopyArray);
-	
 }
 
 void AGameplayGameMode::SetupHunterCharacter(TArray<AController*> RemainingController)

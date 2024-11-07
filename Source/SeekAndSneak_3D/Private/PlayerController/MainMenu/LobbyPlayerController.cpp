@@ -36,13 +36,11 @@ void ALobbyPlayerController::BeginPlay()
 	if (IsLocalController())
 	{
 		FTimerHandle SpawnCameraTimer;
-		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.1, false);
+		GetWorld()->GetTimerManager().SetTimer(SpawnCameraTimer, this, &ALobbyPlayerController::SpawnCameraActor, 0.01, false);
 
 		FTimerHandle ShowTextTimer;
 		GetWorld()->GetTimerManager().SetTimer(ShowTextTimer, this, &ALobbyPlayerController::SetPlayerName, 1, false);
 	}
-	
-
 }
 
 void ALobbyPlayerController::SpawnCameraActor()
@@ -58,7 +56,6 @@ void ALobbyPlayerController::SpawnCameraActor()
 		}
 	}
 	CreateLobbyWidget();
-	
 }
 
 void ALobbyPlayerController::CreateLobbyWidget()
@@ -72,9 +69,7 @@ void ALobbyPlayerController::CreateLobbyWidget()
 
 			SetInputModeType(Widget);
 		}
-		
 	}
-	
 }
 
 void ALobbyPlayerController::SetInputModeType(UUserWidget* CreatedWidget)

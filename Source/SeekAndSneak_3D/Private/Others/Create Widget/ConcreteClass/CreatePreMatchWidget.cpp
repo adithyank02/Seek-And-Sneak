@@ -8,7 +8,7 @@
 CreatePreMatchWidget::CreatePreMatchWidget()
 {
 	//Retreving BP Widget Class
-	PreMatchWidgetClass = LoadClass<UCharacterPreMatchWidget>(nullptr, TEXT("/Game/Widgets/BP_CharacterPreMatchWidget.BP_CharacterPreMatchWidget_C"));
+	PreMatchWidgetClass = LoadClass<UCharacterPreMatchWidget>(nullptr, TEXT("/Game/Widgets/InMatch/BP_CharacterPreMatchWidget.BP_CharacterPreMatchWidget_C"));
 }
 
 CreatePreMatchWidget::~CreatePreMatchWidget()

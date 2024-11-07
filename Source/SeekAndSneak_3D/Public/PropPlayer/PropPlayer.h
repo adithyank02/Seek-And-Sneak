@@ -13,9 +13,12 @@
 
 #include "Interface/Player/PropPlayerInterface.h"
 
+#include "Feature/Prop/ScanningProps/ScanProps.h"
+
 #include "NiagaraSystem.h"
 
 #include "PropPlayer.generated.h"
+
 
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropGetDamaged, float);
@@ -28,11 +31,14 @@ class SEEKANDSNEAK_3D_API APropPlayer : public ACharacter , public IPropPlayerIn
 public:
 	// Sets default values for this character's properties
 	APropPlayer();
+	
 
 	void SetPlayerMesh(UStaticMesh* NewMesh) override; 
 	UStaticMesh* GetPlayerMesh() override;
 	void SetCapsuleSize(float Radius, float Height) override;
 	void PlayerGetDamaged(float DamageCaused)override;
+	TArray<UStaticMesh*>GetMorphableMeshArray()override;
+
 
 	APropPlayer* GetPropPlayerRef()override;
 
@@ -44,6 +50,8 @@ private:
 	TMap<MotionEnum,TUniquePtr<MotionStateAbstract>>MotinStateLibrary;
 
 	TMap<InputStateEnum,TUniquePtr<InputStateAbstract>>InputStateLibrary;
+
+	TUniquePtr<ScanProps>ScanPropClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -60,6 +68,23 @@ protected:
 
 	//Prop Character Health
 	float PropHealth;
+
+	bool bMorphMeshArrayPassed;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<UStaticMesh*>MorphMeshArray;
+
+private:
+
+	FTimerHandle ScanningPropsTimer;
+
+	void StartScanningProps();
+
+	void ScanningPropsForMorphing();
+ 
+	const int ScanningPropInitialTimer= 5; 
+
+	void SetScanningProp();
 
 public:	
 	// Called every frame

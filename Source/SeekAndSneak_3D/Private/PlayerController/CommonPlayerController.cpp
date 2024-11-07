@@ -126,7 +126,6 @@ void ACommonPlayerController::RemovePropInputRef()
 	PropMappingContext = nullptr;
 	PropMoveAction = nullptr;
 	PropLookAction = nullptr;
-	PropJumpAction = nullptr;
 	PropMorphAction = nullptr;
 	PropCloneAction = nullptr;
 	PropSmokeBombAction = nullptr;
@@ -134,7 +133,6 @@ void ACommonPlayerController::RemovePropInputRef()
 	delete PropMappingContext;
 	delete PropMoveAction;
 	delete PropLookAction;
-	delete PropJumpAction;
 	delete PropMorphAction;
 	delete PropCloneAction;
 	delete PropSmokeBombAction;
@@ -243,11 +241,17 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 				EnhancedInput->BindAction(HunterSprintAction, ETriggerEvent::Triggered, HunterPlayer, &AHunterPlayer::StartSprintFunction);
 				EnhancedInput->BindAction(HunterSprintAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::StopSprintFunction);
 
+				EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, HunterPlayer, &AHunterPlayer::JumpFunction);
+				EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::StopJumpFunction);
+
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Started, HunterPlayer, &AHunterPlayer::StartFiringWeapon);
 				EnhancedInput->BindAction(HunterFireWeaponAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::StopFiringWeapon);
 
+				EnhancedInput->BindAction(HunterThrowGrenadeAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::ThrowGrenadeFunction);
+
 				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started,this, &ACommonPlayerController::PauseMenuFunction);
 
+				HunterPlayer->TriggerPropProximity();
 			}
 			//Setting The Pre Match MappingContext For Until The Prop Hide In Game
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -281,8 +285,8 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 				EnhancedInput->BindAction(PropMoveAction, ETriggerEvent::Triggered, PropPlayer, &APropPlayer::MoveFunction);
 				EnhancedInput->BindAction(PropLookAction, ETriggerEvent::Triggered, PropPlayer, &APropPlayer::LookFunction);
 
-				EnhancedInput->BindAction(PropJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StartJumpFunction);
-				EnhancedInput->BindAction(PropJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StopJumpFunction);
+				EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StartJumpFunction);
+				EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StopJumpFunction);
 
 				EnhancedInput->BindAction(PropMorphAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::MorphObjectFunction);
 

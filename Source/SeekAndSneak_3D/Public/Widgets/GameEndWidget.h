@@ -18,6 +18,11 @@ class SEEKANDSNEAK_3D_API UGameEndWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+private:
+
+	//const Session Name
+	const FName Session_Name = FName("SESSION_NAME");
+
 protected:
 
 	void NativeConstruct();

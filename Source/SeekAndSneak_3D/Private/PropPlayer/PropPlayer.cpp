@@ -10,6 +10,8 @@
 #include "PlayerState/InputState/Prop/OnPropMorph.h"
 #include "PlayerState/InputState/Prop/OnPropClone.h"
 
+
+
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -44,12 +46,20 @@ void APropPlayer::PlayerGetDamaged(float DamageCaused)
 		PropPlayerDamaged.Broadcast(DamageCaused);
 		if (PropHealth <= 0)
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Prop Damge Is Zero Player Cought"), true, true, FLinearColor::Red, 5);
+			//Stoping The ScanningMorphFunction
+			GetWorld()->GetTimerManager().ClearTimer(ScanningPropsTimer);
+
 			//Player Caught
 			OnPropPlayerCaught();
+
 		}
 	}
 	
+}
+
+TArray<UStaticMesh*> APropPlayer::GetMorphableMeshArray()
+{
+	return MorphMeshArray;
 }
 
 APropPlayer* APropPlayer::GetPropPlayerRef()
@@ -78,6 +88,8 @@ APropPlayer::APropPlayer()
 	InputStateLibrary.Add(InputStateEnum::OnPropMorph,MakeUnique<OnPropMorph>());
 	InputStateLibrary.Add(InputStateEnum::OnPropClone, MakeUnique<OnPropClone>());
 
+	ScanPropClass = MakeUnique<ScanProps>();
+
 	MorphMaxCoolDownTime = 15.0f;
 	TotalCloneCount = 5.0f;
 
@@ -94,8 +106,34 @@ APropPlayer::APropPlayer()
 void APropPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FTimerHandle ScanningTimer;
+	GetWorld()->GetTimerManager().SetTimer(ScanningTimer, this, &APropPlayer::SetScanningProp,ScanningPropInitialTimer, false);
+}
+
+void APropPlayer::StartScanningProps()
+{
+	if (ScanPropClass)
+	{
+		ScanPropClass->CacheData(MorphMeshArray, this);
+		GetWorld()->GetTimerManager().SetTimer(ScanningPropsTimer, this, &APropPlayer::ScanningPropsForMorphing,0.5,true);
+	}
+}
+
+void APropPlayer::ScanningPropsForMorphing()
+{
+	ScanPropClass->StartScanning();
+}
+
+void APropPlayer::SetScanningProp()
+{
+	if (IsLocallyControlled())
+	{
+		StartScanningProps();
+	}
 	
 }
+
 
 // Called every frame
 void APropPlayer::Tick(float DeltaTime)
@@ -185,6 +223,7 @@ void APropPlayer::PropClone_Server_Implementation()
 void APropPlayer::PropClone_Multicast_Implementation()
 {
 	InputStateLibrary[InputStateEnum::OnPropClone]->Begin(this);
+	if (bMorphMeshArrayPassed)MorphMeshArray.Empty(); bMorphMeshArrayPassed = false;
 }
 //---------------------------------------------------------------------------------------------->>>>> ( Prop Clone Function )
 

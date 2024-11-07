@@ -51,8 +51,8 @@ class SEEKANDSNEAK_3D_API AGameplayGameMode : public AGameMode , public IPropHun
 	//Random Index For Selecting Player
 	int GetRandomIndex(int Min, int Max);
 
-	int const PreMatchTimeInSec = 10;
-	int const InMatchTimeInSec = 20; //12 Minutes
+	int const PreMatchTimeInSec = 30;
+	int const InMatchTimeInSec = 720; //12 Minutes
 	
 	UPROPERTY()
 	TArray<AController*>PropPlayerControllerArray;

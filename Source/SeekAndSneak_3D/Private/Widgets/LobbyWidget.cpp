@@ -31,7 +31,12 @@ void ULobbyWidget::NativeConstruct()
 	
 }
 
+void ULobbyWidget::ShowErrorMessage()
+{
+
+}
+
 void ULobbyWidget::StartMatchButtonClicked()
 {
-	GetWorld()->ServerTravel(("/Game/Maps/SampleMatchLevel1?listen"), true);
+	GetWorld()->ServerTravel(("/Game/Maps/CityMarket_Map?listen"), true);
 }

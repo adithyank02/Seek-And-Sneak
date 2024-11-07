@@ -28,6 +28,6 @@ public:
 	virtual void StartPreMatchTimer(int32 StartingTimer) = 0; 
 	virtual void StartInMatchTimer(int32 StartingTimer) = 0;
 	virtual void SetTeamInfo(int TotalHunterPlayer, int TotalPropPlayer) = 0;
-	virtual void OnPropPlayerCaught() = 0;
+	virtual void UpdatePropTeamInfo() = 0;
 	virtual APropHuntGameState* GetPropHuntGameState() = 0;
 };

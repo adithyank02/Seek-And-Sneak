@@ -35,6 +35,8 @@ public:
 	
 protected:
 
+	bool DoesPlayerDetect();
+
 	bool DoesProximityNeedToUpdate(double Distance);
 
 private:
@@ -57,9 +59,9 @@ private:
 	//Trace Variables
 	bool bIsHit;
 	const float Radius = 2900.0f;
-	FHitResult HitResult;
+	TArray<FHitResult>HitResultArray;
 	FVector StartPoint;
 	FVector EndPoint;
-	FCollisionQueryParams TraceParams;
+	FCollisionObjectQueryParams ObjectQueryParams = ECollisionChannel::ECC_Pawn;
 
 };
