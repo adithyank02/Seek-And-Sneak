@@ -23,7 +23,11 @@
 
 void APropPlayer::SetPlayerMesh(UStaticMesh* NewMesh)
 {
-	PlayerMesh->SetStaticMesh(NewMesh);
+	if (PlayerMesh->GetStaticMesh() != NewMesh)
+	{
+		PlayerMesh->SetStaticMesh(NewMesh);
+		PropMeshChanged.ExecuteIfBound();
+	}
 }
 
 UStaticMesh* APropPlayer::GetPlayerMesh()
@@ -48,6 +52,8 @@ void APropPlayer::PlayerGetDamaged(float DamageCaused)
 		{
 			//Stoping The ScanningMorphFunction
 			GetWorld()->GetTimerManager().ClearTimer(ScanningPropsTimer);
+
+			PropMeshChanged.Unbind();
 
 			//Player Caught
 			OnPropPlayerCaught();

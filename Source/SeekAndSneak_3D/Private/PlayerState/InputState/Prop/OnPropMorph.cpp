@@ -13,7 +13,7 @@ OnPropMorph::OnPropMorph()
 {
 	TraceRadius = 150.0f;
 
-	NiagaraSystemOnMorph = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/NiagraParticle/NS_PoofSmoke.NS_PoofSmoke"));
+	NiagaraSystemOnMorph = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/Other_BP/NiagraParticle/NS_PoofSmoke.NS_PoofSmoke"));
 }
 
 OnPropMorph::~OnPropMorph()
@@ -31,6 +31,7 @@ void OnPropMorph::Begin(ACharacter* Player)
 			//Storing Player And Interface
 			PlayerInterface.SetObject(Cast<UObject>(Player));
 			PlayerInterface.SetInterface(Interface);
+			
 		}
 		//Since The If Only Works At Once -- Setting The Self Ignorance
 		TraceCollisionParams.AddIgnoredActor(Player);
@@ -38,7 +39,7 @@ void OnPropMorph::Begin(ACharacter* Player)
 		if (MorphableMeshArray.IsEmpty())
 		{
 			MorphableMeshArray = PlayerInterface->GetMorphableMeshArray();
-		}		
+		}
 	}
 	CastLineTrace(Player);
 	
@@ -58,7 +59,7 @@ void OnPropMorph::CastLineTrace(ACharacter* Player)
 	//StartPoint.Z += 20.0f;
 	EndPoint = StartPoint;
 
-	IsTraceHit = Player->GetWorld()->SweepSingleByChannel(TraceHitResult, StartPoint, EndPoint, FQuat::Identity, ECollisionChannel::ECC_Visibility, FCollisionShape::MakeSphere(TraceRadius), TraceCollisionParams);
+	IsTraceHit = Player->GetWorld()->SweepSingleByObjectType(TraceHitResult, StartPoint, EndPoint, FQuat::Identity, ObjectQuerys, FCollisionShape::MakeSphere(TraceRadius), TraceCollisionParams);
 	
 	DrawDebugSphere(Player->GetWorld(), EndPoint, TraceRadius, 12, IsTraceHit ? FColor::Red : FColor::Green, false, 5);
 
@@ -98,3 +99,5 @@ void OnPropMorph::SetNewMesh(ACharacter* Player,UStaticMesh* MorphMesh)
 	return;
 		
 }
+
+

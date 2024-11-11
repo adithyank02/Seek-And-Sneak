@@ -40,6 +40,7 @@ private:
 	FVector StartPoint;
 	FVector EndPoint;
 	FHitResult TraceHitResult;
+	FCollisionObjectQueryParams ObjectQuerys = ECollisionChannel::ECC_WorldDynamic;
 	FCollisionQueryParams TraceCollisionParams;
 
 	//Helper Function For Breaking Down The Code
@@ -49,6 +50,5 @@ private:
 	/*Setting New Mesh To Player*/
 	void SetNewMesh(ACharacter* Player,UStaticMesh* MorphMesh);
 
-	
 
 };

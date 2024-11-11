@@ -21,6 +21,7 @@
 
 
 
+DECLARE_DELEGATE(FOnPlayerMeshChange);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropGetDamaged, float);
 
 UCLASS()
@@ -41,6 +42,8 @@ public:
 
 
 	APropPlayer* GetPropPlayerRef()override;
+
+	FOnPlayerMeshChange PropMeshChanged;
 
 	FOnPropGetDamaged PropPlayerDamaged;
 

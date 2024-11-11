@@ -34,4 +34,10 @@ private:
 	FVector Location;
 
 	FTransform SpawnTransform;
+
+	//Array To Store Clone Actor Class
+	TArray<AActor*>ClonedActorArray;
+
+	/*Removing Previous Mesh When Prop Change To Mesh*/
+	void RemovePreviousSpawnedMesh();
 };

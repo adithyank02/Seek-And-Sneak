@@ -4,6 +4,7 @@
 #include "PlayerState/InputState/Prop/OnPropClone.h"
 #include "GameFramework/Character.h"
 #include "PropPlayer/CloneActor/PropCloneActor.h"
+#include "PropPlayer/PropPlayer.h"
 
 OnPropClone::OnPropClone()
 {
@@ -21,12 +22,13 @@ void OnPropClone::Begin(ACharacter* Player)
 		{
 			PlayerInterface.SetObject(Player);
 			PlayerInterface.SetInterface(Interface);
+
+			//Binding The Delegate
+			Interface->GetPropPlayerRef()->PropMeshChanged.BindRaw(this, &OnPropClone::RemovePreviousSpawnedMesh);
 		}
 		CloneActorClass = APropCloneActor::StaticClass();
 	}
     Location = Player->GetActorLocation();
-	//Don't Know Why But When Mesh Is Spawnd , It Always Spawn Higher Than PropPlayer In Z 
-	Location.Z -= 30.0f;
 
 	SpawnTransform.SetRotation(Player->GetActorRotation().Quaternion());
 
@@ -36,10 +38,20 @@ void OnPropClone::Begin(ACharacter* Player)
 	if (ClonedActor)
 	{
 		ClonedActor->ActorMeshComp->SetStaticMesh(PlayerInterface->GetPlayerMesh());
+		ClonedActorArray.Add(ClonedActor);
 	}
 }
 
 void OnPropClone::End(ACharacter* Player)
 {
 
+}
+
+void OnPropClone::RemovePreviousSpawnedMesh()
+{
+	for (auto  Actors: ClonedActorArray)
+	{
+		Actors->Destroy();
+	}
+	ClonedActorArray.Empty();
 }
