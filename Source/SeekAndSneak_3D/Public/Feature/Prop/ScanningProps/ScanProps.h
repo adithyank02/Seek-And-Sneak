@@ -10,16 +10,15 @@
 class SEEKANDSNEAK_3D_API ScanProps
 {
 public:
-	ScanProps();
+	ScanProps(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter);
 	~ScanProps();
 
 
      ACharacter* Player;
 	TArray<UStaticMesh*>MorphableMeshArray;
 
-	TSet<UStaticMeshComponent*>HighlightedMeshSet;
-
-	void CacheData(TArray<UStaticMesh*>PropArray , ACharacter* PlayerCharacter);
+	bool bMeshhighlighted;
+	UStaticMeshComponent* Highlightedmeshcomp;
 
 	void StartScanning();
 
@@ -31,7 +30,7 @@ private:
 	const float TraceRadius = 150.0f;
 	FVector StartPoint;
 	FVector EndPoint;
-	TArray<FHitResult>TraceHitArray;
+	FHitResult TraceHitResult;
 	FCollisionQueryParams  TraceQuery;
 	FCollisionObjectQueryParams ObjectQueryParams = ECollisionChannel::ECC_WorldDynamic;
 

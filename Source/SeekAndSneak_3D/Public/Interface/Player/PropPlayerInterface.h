@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Others/EnumClass/PropWidgetUpdateEnum.h"
 #include "PropPlayerInterface.generated.h"
 
 class APropPlayer;
@@ -33,4 +34,5 @@ public:
 	virtual APropPlayer* GetPropPlayerRef() = 0; 
 	virtual TArray<UStaticMesh*>GetMorphableMeshArray() = 0;
 
+	virtual void OnPlayerWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset) = 0;
 };

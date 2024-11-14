@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Others/EnumClass/PropWidgetUpdateEnum.h"
 #include "PropInMatchWidget.generated.h"
 
 class UTextBlock;
 class UWidgetSwitcher;
 class UProgressBar;
+class UImage;
 class UPauseGameWidget;
 
 /**
@@ -43,6 +45,9 @@ private:
     UProgressBar* PlayerHealthBar;
 
 	UPROPERTY(meta = (BindWidget))
+	UImage* SmokeBombAbilityImage;
+
+	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* WidgetSwitcher;
 
 	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
@@ -65,5 +70,7 @@ public:
 
 	void OnHunterPlayerTotalCountChange(int HunterPlayerCount);
 	void OnPropPlayerTotalCountChange(int PropPlayerCount);
+
+	void OnWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset);
 
 };

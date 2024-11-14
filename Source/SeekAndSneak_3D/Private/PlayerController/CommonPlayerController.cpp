@@ -33,7 +33,7 @@ void ACommonPlayerController::SetControllerInputBinding(ECharacterType Character
 
 void ACommonPlayerController::InitializePreMatchUI()
 {
-	SetClientPreMatchWidget();	
+	SetClientPreMatchWidget();
 }
 
 void ACommonPlayerController::InitializeInMatchUI()
@@ -295,6 +295,8 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 				EnhancedInput->BindAction(PropSmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
 
 				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &ACommonPlayerController::PauseMenuFunction);
+
+				PropPlayer->SetScanningProp();
 
 			}
 		}

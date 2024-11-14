@@ -15,6 +15,8 @@
 
 #include "Feature/Prop/ScanningProps/ScanProps.h"
 
+#include "Others/EnumClass/PropWidgetUpdateEnum.h"
+
 #include "NiagaraSystem.h"
 
 #include "PropPlayer.generated.h"
@@ -23,6 +25,7 @@
 
 DECLARE_DELEGATE(FOnPlayerMeshChange);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropGetDamaged, float);
+DECLARE_DELEGATE_TwoParams(FOnPlayerWidgetUpdate,EPropWidgetUpdate,bool);
 
 UCLASS()
 class SEEKANDSNEAK_3D_API APropPlayer : public ACharacter , public IPropPlayerInterface
@@ -32,20 +35,25 @@ class SEEKANDSNEAK_3D_API APropPlayer : public ACharacter , public IPropPlayerIn
 public:
 	// Sets default values for this character's properties
 	APropPlayer();
-	
 
 	void SetPlayerMesh(UStaticMesh* NewMesh) override; 
 	UStaticMesh* GetPlayerMesh() override;
+
 	void SetCapsuleSize(float Radius, float Height) override;
+
 	void PlayerGetDamaged(float DamageCaused)override;
+
 	TArray<UStaticMesh*>GetMorphableMeshArray()override;
 
-
 	APropPlayer* GetPropPlayerRef()override;
+
+	void OnPlayerWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)override;
 
 	FOnPlayerMeshChange PropMeshChanged;
 
 	FOnPropGetDamaged PropPlayerDamaged;
+
+	FOnPlayerWidgetUpdate PropWidgetUpdate;
 
 private:
 
@@ -77,17 +85,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TArray<UStaticMesh*>MorphMeshArray;
 
+
+public:
+
+	void SetScanningProp();
+
 private:
 
 	FTimerHandle ScanningPropsTimer;
-
-	void StartScanningProps();
 
 	void ScanningPropsForMorphing();
  
 	const int ScanningPropInitialTimer= 5; 
 
-	void SetScanningProp();
+	void StartScanningProps();
 
 public:	
 	// Called every frame
@@ -121,8 +132,11 @@ public:
 
 //------------------------------------------------------->>>>> Clone PropMesh
 
+	bool IsWidgetUpdated;
+
 	UPROPERTY(EditDefaultsOnly)
 	float TotalCloneCount;
+
 	float ClonedCount;
 
 	void PropCloneFunction();
@@ -139,6 +153,9 @@ public:
 
 	UNiagaraSystem* SmokeBombParticle;
 	UNiagaraSystem* PlayerCaughtParticle;
+
+	UPROPERTY(EditDefaultsOnly)
+	int TotalSmokeBombCount;
 
 	void SmokeBombFunction();
 

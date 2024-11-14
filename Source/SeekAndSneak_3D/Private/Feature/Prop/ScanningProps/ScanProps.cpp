@@ -10,54 +10,47 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-ScanProps::ScanProps()
+ScanProps::ScanProps(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter) : MorphableMeshArray(PropArray) , Player(PlayerCharacter)
 {
+	bMeshhighlighted = false;
 
+	TraceQuery.AddIgnoredActor(PlayerCharacter);
 }
 
 ScanProps::~ScanProps()
 {
 }
 
-void ScanProps::CacheData(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter)
-{
-	MorphableMeshArray = PropArray;
-	Player = PlayerCharacter;
-
-	TraceQuery.AddIgnoredActor(PlayerCharacter);
-}
 void ScanProps::StartScanning()
 {
-	if (!HighlightedMeshSet.IsEmpty())
+	if (bMeshhighlighted)
 	{
-		ResetHighlightedMesh();
+		Highlightedmeshcomp->SetRenderCustomDepth(false);
+		bMeshhighlighted = false;
 	}
 
 	StartPoint =  Player->GetActorLocation();
 	EndPoint = StartPoint;
 
-	Player->GetWorld()->SweepMultiByObjectType(TraceHitArray, StartPoint, EndPoint, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(TraceRadius),TraceQuery);
+	Player->GetWorld()->SweepSingleByObjectType(TraceHitResult, StartPoint, EndPoint, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(TraceRadius),TraceQuery);
 
 	DrawDebugSphere(Player->GetWorld(), EndPoint, TraceRadius, 6, FColor::Blue, false, 1);
 
-	for (const FHitResult& HitResult: TraceHitArray)
-	{
-		if (UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
+	/*for (const FHitResult& HitResult: TraceHitArray)
+	{*/
+		if (UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(TraceHitResult.GetComponent()))
 		{
 			if (MorphableMeshArray.Contains(MeshComponent->GetStaticMesh()))
 			{
 				MeshComponent->SetRenderCustomDepth(true);
-				HighlightedMeshSet.Add(MeshComponent);
+				Highlightedmeshcomp = MeshComponent;
+				bMeshhighlighted = true;
 			}
 		}
-	}
+	//}
 }
 
 void ScanProps::ResetHighlightedMesh()
 {
-	for (auto Mesh : HighlightedMeshSet)
-	{
-		Mesh->SetRenderCustomDepth(false);
-		HighlightedMeshSet.Remove(Mesh);
-	}
+	
 }

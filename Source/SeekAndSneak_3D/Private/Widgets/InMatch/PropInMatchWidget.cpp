@@ -4,6 +4,7 @@
 #include "Widgets/InMatch/PropInMatchWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/PauseGameWidget.h"
 
@@ -49,13 +50,15 @@ void UPropInMatchWidget::NativeConstruct()
 		}
 	}
 
-	//Binding With Prop Player Health
+	//Binding With Function With  Player Delegate
 	if (IPropPlayerInterface* PlayerInterface = Cast<IPropPlayerInterface>(GetOwningPlayer()->GetPawn()))
 	{
-		PlayerInterface->GetPropPlayerRef()->PropPlayerDamaged.AddUObject(this, &UPropInMatchWidget::SetPlayerHealthOnDamage);
-
+		APropPlayer* PlayerRef = PlayerInterface->GetPropPlayerRef();
+		PlayerRef->PropPlayerDamaged.AddUObject(this, &UPropInMatchWidget::SetPlayerHealthOnDamage);
 		TotalPercentage = 1.0f;
 		PlayerHealthBar->SetPercent(TotalPercentage);
+
+		PlayerRef->PropWidgetUpdate.BindUObject(this, &UPropInMatchWidget::OnWidgetUpdate);
 	}
 }
 
@@ -89,5 +92,14 @@ void UPropInMatchWidget::OnHunterPlayerTotalCountChange(int HunterPlayerCount)
 void UPropInMatchWidget::OnPropPlayerTotalCountChange(int PropPlayerCount)
 {
 	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
+}
+
+void UPropInMatchWidget::OnWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)
+{
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Hello World"));
+	switch (UpdateType)
+	{
+	case EPropWidgetUpdate::OnSmokeBombUpdate: SmokeBombAbilityImage->SetOpacity(0.5);
+	}
 }
 

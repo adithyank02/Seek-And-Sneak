@@ -46,8 +46,6 @@ void CreateInMatchWidget::End()
 	{
 		PropWidget->RemoveFromParent();
 	}
-	
-	//RemovePointerRef();
 }
 
 void CreateInMatchWidget::ChangeWidgetSwitcherIndex(int Index)

@@ -35,7 +35,7 @@ void UGameEndWidget::BindButtonDelegate()
 
 void UGameEndWidget::RestartMatchButtonClicked()
 {
-	GetWorld()->ServerTravel(("/Game/Maps/SampleMatchLevel1?listen"), true);
+	GetWorld()->ServerTravel(("/Game/Maps/CityMarket_Map?listen"), true);
 }
 
 void UGameEndWidget::QuitMatchButtonClicked()

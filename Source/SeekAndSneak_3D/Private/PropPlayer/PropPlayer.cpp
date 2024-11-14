@@ -73,6 +73,11 @@ APropPlayer* APropPlayer::GetPropPlayerRef()
 	return this;
 }
 
+void APropPlayer::OnPlayerWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)
+{
+	PropWidgetUpdate.ExecuteIfBound(UpdateType, IsReset);
+}
+
 // Sets default values
 APropPlayer::APropPlayer()
 {
@@ -94,7 +99,7 @@ APropPlayer::APropPlayer()
 	InputStateLibrary.Add(InputStateEnum::OnPropMorph,MakeUnique<OnPropMorph>());
 	InputStateLibrary.Add(InputStateEnum::OnPropClone, MakeUnique<OnPropClone>());
 
-	ScanPropClass = MakeUnique<ScanProps>();
+	
 
 	MorphMaxCoolDownTime = 15.0f;
 	TotalCloneCount = 5.0f;
@@ -121,7 +126,6 @@ void APropPlayer::StartScanningProps()
 {
 	if (ScanPropClass)
 	{
-		ScanPropClass->CacheData(MorphMeshArray, this);
 		GetWorld()->GetTimerManager().SetTimer(ScanningPropsTimer, this, &APropPlayer::ScanningPropsForMorphing,0.5,true);
 	}
 }
@@ -135,9 +139,10 @@ void APropPlayer::SetScanningProp()
 {
 	if (IsLocallyControlled())
 	{
+		ScanPropClass = MakeUnique<ScanProps>(MorphMeshArray,this);
+	//	if(ScanPropClass)ScanPropClass->CacheData(MorphMeshArray, this);
 		StartScanningProps();
 	}
-	
 }
 
 
@@ -237,14 +242,23 @@ void APropPlayer::PropClone_Multicast_Implementation()
 
 void APropPlayer::SmokeBombFunction()
 {
-	if (HasAuthority())
+	if (TotalSmokeBombCount > 0)
 	{
-		SmokeBombOnMulticast();
+		if (HasAuthority())
+		{
+			SmokeBombOnMulticast();
+		}
+		else
+		{
+			SmokeBombOnServer();
+		}
+		TotalSmokeBombCount++;
 	}
-	else
+	else if (!IsWidgetUpdated)
 	{
-		SmokeBombOnServer();
+		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnSmokeBombUpdate, false); IsWidgetUpdated = true;
 	}
+	
 }
 
 

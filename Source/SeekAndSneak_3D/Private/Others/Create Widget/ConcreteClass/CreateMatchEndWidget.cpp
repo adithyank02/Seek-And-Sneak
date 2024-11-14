@@ -24,7 +24,7 @@ void CreateMatchEndWidget::Begin(APlayerController* PlayerController, ECharacter
 
 void CreateMatchEndWidget::End()
 {
-
+	WinnerWidget->RemoveFromParent();
 }
 
 void CreateMatchEndWidget::ChangeWidgetSwitcherIndex(int Index)
