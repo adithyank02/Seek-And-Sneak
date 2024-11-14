@@ -140,7 +140,6 @@ void APropPlayer::SetScanningProp()
 	if (IsLocallyControlled())
 	{
 		ScanPropClass = MakeUnique<ScanProps>(MorphMeshArray,this);
-	//	if(ScanPropClass)ScanPropClass->CacheData(MorphMeshArray, this);
 		StartScanningProps();
 	}
 }
@@ -187,7 +186,14 @@ void APropPlayer::MorphObjectFunction()
 			MorphObject_Server();
 		}
 		MorphCoolDownTime = MorphMaxCoolDownTime;
-		ClonedCount = 0;
+
+		//Reseting Cloned Count when New Mesh Get Morph
+		ClonedCount = 0; 
+
+		//Updating The Widget Accoridng 
+		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnMorphUpdate, false);
+		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnCloneUpdate, true);
+
 		GetWorld()->GetTimerManager().SetTimer(MorphCoolDownTimer, this, &APropPlayer::UpdateMorphCoolDownTime, 1, true);
 	}
 }
@@ -205,7 +211,12 @@ void APropPlayer::MorphObject_Multicast_Implementation()
 void APropPlayer::UpdateMorphCoolDownTime()
 {
 	MorphCoolDownTime--;
-	if (MorphCoolDownTime == 0)GetWorld()->GetTimerManager().ClearTimer(MorphCoolDownTimer);
+	if (MorphCoolDownTime == 0)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(MorphCoolDownTimer);
+
+		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnMorphUpdate, true);
+	}
 }
 
 //----------------------------------------------------------------------------------------------->>>>>
@@ -224,6 +235,8 @@ void APropPlayer::PropCloneFunction()
 			PropClone_Server();
 		}
 		ClonedCount++;
+
+		if (ClonedCount == TotalCloneCount)PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnCloneUpdate, false);
 	}
 }
 
@@ -252,11 +265,9 @@ void APropPlayer::SmokeBombFunction()
 		{
 			SmokeBombOnServer();
 		}
-		TotalSmokeBombCount++;
-	}
-	else if (!IsWidgetUpdated)
-	{
-		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnSmokeBombUpdate, false); IsWidgetUpdated = true;
+		TotalSmokeBombCount--;
+
+		if (TotalSmokeBombCount == 0)PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnSmokeBombUpdate, false);
 	}
 	
 }

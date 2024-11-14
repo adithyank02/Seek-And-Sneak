@@ -96,10 +96,14 @@ void UPropInMatchWidget::OnPropPlayerTotalCountChange(int PropPlayerCount)
 
 void UPropInMatchWidget::OnWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Hello World"));
 	switch (UpdateType)
 	{
+	case EPropWidgetUpdate::OnMorphUpdate: IsReset ? MorphAbilityImage->SetOpacity(1) : MorphAbilityImage->SetOpacity(0.5);
+		break;
+	case EPropWidgetUpdate::OnCloneUpdate: IsReset ? CloneAbilityImage->SetOpacity(1) : CloneAbilityImage->SetOpacity(0.5);
+		break;
 	case EPropWidgetUpdate::OnSmokeBombUpdate: SmokeBombAbilityImage->SetOpacity(0.5);
+		break;
 	}
 }
 

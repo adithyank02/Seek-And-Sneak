@@ -45,6 +45,12 @@ private:
     UProgressBar* PlayerHealthBar;
 
 	UPROPERTY(meta = (BindWidget))
+	UImage* MorphAbilityImage;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* CloneAbilityImage;
+
+	UPROPERTY(meta = (BindWidget))
 	UImage* SmokeBombAbilityImage;
 
 	UPROPERTY(meta = (BindWidget))

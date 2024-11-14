@@ -132,8 +132,6 @@ public:
 
 //------------------------------------------------------->>>>> Clone PropMesh
 
-	bool IsWidgetUpdated;
-
 	UPROPERTY(EditDefaultsOnly)
 	float TotalCloneCount;
 
