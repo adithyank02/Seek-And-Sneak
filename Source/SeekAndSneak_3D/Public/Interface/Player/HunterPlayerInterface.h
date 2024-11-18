@@ -8,6 +8,7 @@
 
 
 class UPropProximityNotifier;
+class AHunterPlayer;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -33,5 +34,7 @@ public:
 	virtual void SetFireWeaponLoc(FVector& StartPoint, FVector& ControlFrowardVector) = 0 ;
 
 	virtual UPropProximityNotifier* GetPropProximityInstance() = 0;
+
+	virtual AHunterPlayer* GetHunterPlayerRef() = 0;
 
 };

@@ -53,6 +53,11 @@ void AHunterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(AHunterPlayer, IsPlayerRunning);
 }
 
+AHunterPlayer* AHunterPlayer::GetHunterPlayerRef()
+{
+	return this;
+}
+
 // Sets default values
 AHunterPlayer::AHunterPlayer()
 {
@@ -74,9 +79,6 @@ AHunterPlayer::AHunterPlayer()
 	MotionStateLibrary.Add(MotionEnum::OnLook, MakeUnique<PlayerLook>());
 
 	InputStateLibrary.Add(InputStateEnum::OnHunterFire, MakeUnique<OnPlayerFire>());
-
-	MaxBulletCount = 30;
-	WeaponBulletCount = MaxBulletCount;
 
 	WeaponFireRate = 0.15f;
 }
@@ -107,16 +109,10 @@ void AHunterPlayer::StartPropProximity()
 		Interface->Start(this);
 	  }
 	}
-	
 }
 void AHunterPlayer::TriggerPropProximity()
 {
 	StartPropProximity();
-}
-
-void AHunterPlayer::OnPropProximityChange(EProximityRange NewProximityRange)
-{
-
 }
 
 void AHunterPlayer::PossessedBy(AController* NewController)
@@ -165,7 +161,7 @@ void AHunterPlayer::StopSprintFunction()
 {
 	bDoesPlayerSprint = false;
 	if (HasAuthority())Sprint_OnMulticast(250.0f, false);
-	else Sprint_OnServer(200.0f, false);
+	else Sprint_OnServer(250.0f, false);
 }
 
 void AHunterPlayer::Sprint_OnServer_Implementation(float WalkSpeed,bool CanSprint)         /*Server*/
@@ -180,26 +176,24 @@ void AHunterPlayer::Sprint_OnMulticast_Implementation(float WalkSpeed,bool CanSp
 }
 //------------------------------------------------------------------------------------------>>>>>
 
-
 //------------------------------------------------------------------------------------------>>>>> ( Firing Weapon )
 void AHunterPlayer::StartFiringWeapon()
 {
-	GetWorld()->GetTimerManager().SetTimer(FiringWeaponTimer, this, &AHunterPlayer::OnWeaponFiring,WeaponFireRate,true);
+	if (!bDoesPlayerSprint)
+	{
+		GetWorld()->GetTimerManager().SetTimer(FiringWeaponTimer, this, &AHunterPlayer::OnWeaponFiring, WeaponFireRate, true);
+	}		
 }
 
 void AHunterPlayer::OnWeaponFiring()
 {
-	if (WeaponBulletCount > 0)
+	if (HasAuthority())
 	{
-		if (HasAuthority())
-		{
-			FireWeapon_OnMulticast(FPSCamera->GetComponentLocation(),FPSCamera->GetForwardVector());
-		}
-		else
-		{
-			FireWeapon_OnServer(FPSCamera->GetComponentLocation(), FPSCamera->GetForwardVector());
-		}
-		WeaponBulletCount--;
+		FireWeapon_OnMulticast(FPSCamera->GetComponentLocation(),FPSCamera->GetForwardVector());
+	}
+	else
+	{
+		FireWeapon_OnServer(FPSCamera->GetComponentLocation(), FPSCamera->GetForwardVector());
 	}
 }
 
@@ -207,7 +201,6 @@ void AHunterPlayer::OnWeaponFiring()
 void AHunterPlayer::StopFiringWeapon()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FiringWeaponTimer);
-	
 }
 
 
@@ -228,16 +221,20 @@ void AHunterPlayer::FireWeapon_OnMulticast_Implementation(FVector StartPoint, FV
 //----------------------------------------------------------------------------------->>>>>> ( Throwing Grenade )
 void AHunterPlayer::ThrowGrenadeFunction()
 {
-	//Since The Actor Replicate Itself There Is No Need Call To Multicast RPC's From The Server
-	if (HasAuthority())
+	if (CurrentGrenadeCount < TotalGrenadeCount)
 	{
-		SpawnGrenade(GrenadeSpawnArrow->GetComponentTransform());
+		//Since The Actor Replicate Itself There Is No Need Call To Multicast RPC's From The Server
+		if (HasAuthority())
+		{
+			SpawnGrenade(GrenadeSpawnArrow->GetComponentTransform());
+		}
+		else
+		{
+			GrenadeSpawnOnServer(GrenadeSpawnArrow->GetComponentTransform());
+		}
+		CurrentGrenadeCount++;
+		if (CurrentGrenadeCount == TotalGrenadeCount)WidgetUpdate.ExecuteIfBound(ECharacterWidgetUpdate::OnGrenadeUpdate);
 	}
-	else
-	{
-		GrenadeSpawnOnServer(GrenadeSpawnArrow->GetComponentTransform());
-	}
-
 }
 
 

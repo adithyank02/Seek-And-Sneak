@@ -110,7 +110,7 @@ void AGameplayGameMode::SetUpPropCharacter()
 	int TotalNumberOfPlayer = JoinedPlayerController.Num();
 
 	//Getting The Count To Spawn -- PropCount < Hunter Count
-	int PropCharacterSpawnCount = TotalNumberOfPlayer /2;
+	int PropCharacterSpawnCount = TotalNumberOfPlayer / 2;
 
 	int PropSpawnTransformIndex = 0;
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Feature/Hunter/PropProximity/PropProximityNotifier.h"
+#include "Others/EnumClass/CharacterWidgetUpdateEnum.h"
 #include "HunterInMatchWidget.generated.h"
 
 class UImage;
@@ -48,14 +49,8 @@ protected:
 	UTextBlock* PropTotalAliveCount;
 
 	UPROPERTY(meta = (BindWidget))
-	UWidgetSwitcher* WidgetSwitcher;
+	UImage* ThrowGrenadeAbilityImage;
 
-	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
-
-	UPauseGameWidget* PauseGameWidget;
-
-	/*int HunterPlayerCount = 0;
-	int PropPlayerCount = 0;*/
 
 	void UpdateProximityTextAndColor(const FText Text, const FLinearColor Color);
 
@@ -82,10 +77,12 @@ private:
 	const FLinearColor CoolTextColor = FLinearColor(0.0f / 255.0f, 189.0f / 255.0f, 239.0f / 255.0f, 255.0f / 255.0f);  //SkyBlue Color
 	const FLinearColor ColdTextColor = FLinearColor(0.0f / 255.0f, 92.0f / 255.0f, 239.0f / 255.0f, 255.0f / 255.0f);   //Blue Color
 
-public:
 
-	void ChangeIndexOnWidgetSwitcher(int Index);
+	void OnGrenadeUpdate(ECharacterWidgetUpdate UpdateType);
+
+public:
 	
 	void OnHunterPlayerTotalCountChange(int HunterPlayerCount);
 	void OnPropPlayerTotalCountChange(int PropPlayerCount);
+
 };

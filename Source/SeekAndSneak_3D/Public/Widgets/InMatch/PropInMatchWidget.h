@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Others/EnumClass/PropWidgetUpdateEnum.h"
+#include "Others/EnumClass/CharacterWidgetUpdateEnum.h"
 #include "PropInMatchWidget.generated.h"
 
 class UTextBlock;
@@ -56,10 +56,6 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* WidgetSwitcher;
 
-	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
-
-	UPauseGameWidget* PauseGameWidget;
-
 	float TotalPercentage;
 
 	//Avoiding Re-Intialization On Each Time
@@ -70,13 +66,11 @@ private:
 
 public:
 
-	void ChangeIndexOnWidgetSwitcher(int Index);
-
 	void SetPlayerHealthOnDamage(float DamageCaused);
 
 	void OnHunterPlayerTotalCountChange(int HunterPlayerCount);
 	void OnPropPlayerTotalCountChange(int PropPlayerCount);
 
-	void OnWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset);
+	void OnWidgetUpdate(ECharacterWidgetUpdate UpdateType, bool IsReset);
 
 };

@@ -48,17 +48,6 @@ void CreateInMatchWidget::End()
 	}
 }
 
-void CreateInMatchWidget::ChangeWidgetSwitcherIndex(int Index)
-{
-	if (PlayerCharacterType == ECharacterType::HunterCharacter)
-	{
-		HunterWidget->ChangeIndexOnWidgetSwitcher(Index);
-	}
-	else
-	{
-		PropWidget->ChangeIndexOnWidgetSwitcher(Index);
-	}
-}
 
 void CreateInMatchWidget::RemovePointerRef()
 {

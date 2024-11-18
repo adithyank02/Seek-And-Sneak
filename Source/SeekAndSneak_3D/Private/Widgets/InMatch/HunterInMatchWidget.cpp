@@ -3,6 +3,7 @@
 
 #include "Widgets/InMatch/HunterInMatchWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/PauseGameWidget.h"
 
@@ -14,11 +15,7 @@
 
 UHunterInMatchWidget::UHunterInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	ConstructorHelpers::FClassFinder<UPauseGameWidget>WidgetClass(TEXT("/Game/Widgets/Menu/BP_PauseGameWidget.BP_PauseGameWidget_C"));
-	if (WidgetClass.Succeeded())
-	{
-		PauseGameWidgetClass = WidgetClass.Class;
-	}
+
 }
 
 void UHunterInMatchWidget::NativeConstruct()
@@ -41,16 +38,8 @@ void UHunterInMatchWidget::NativeConstruct()
 	if (IHunterPlayerInterface* PlayerInterface = Cast<IHunterPlayerInterface>(GetOwningPlayer()->GetPawn()))
 	{
 		PlayerInterface->GetPropProximityInstance()->ProximityNotifierDelegate.BindUObject(this, &UHunterInMatchWidget::OnProximityChange);
-	}
 
-	//Adding Widget To Widget Switcher
-	if (PauseGameWidgetClass)
-	{
-		PauseGameWidget = CreateWidget<UPauseGameWidget>(this, PauseGameWidgetClass);
-		if(PauseGameWidget)
-		{
-			WidgetSwitcher->AddChild(PauseGameWidget);
-		}
+		PlayerInterface->GetHunterPlayerRef()->WidgetUpdate.BindUObject(this, &UHunterInMatchWidget::OnGrenadeUpdate);
 	}
 	
 }
@@ -81,9 +70,9 @@ void UHunterInMatchWidget::OnProximityChange(EProximityRange CurrentRange)
 
 }
 
-void UHunterInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
+void UHunterInMatchWidget::OnGrenadeUpdate(ECharacterWidgetUpdate UpdateType)
 {
-	WidgetSwitcher->SetActiveWidgetIndex(Index);
+	ThrowGrenadeAbilityImage->SetOpacity(0.5);
 }
 
 /*--------------------------------------------------------------------------------------*/
@@ -99,12 +88,6 @@ void UHunterInMatchWidget::OnPropPlayerTotalCountChange(int PropPlayerCount)
 }
 
 /*-------------------------------------------------------------------------------------------*/
-
-///void UHunterInMatchWidget::OnPropPlayerCaught(int HunterCount, int PropCount)
-//{
-//	HunterTotalAliveCount->SetText(FText::AsNumber(HunterCount));
-//	PropTotalAliveCount->SetText(FText::AsNumber(PropCount));
-//}
 
 void UHunterInMatchWidget::UpdateProximityTextAndColor(const FText Text, const FLinearColor Color)
 {

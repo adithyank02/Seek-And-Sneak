@@ -15,7 +15,7 @@
 
 #include "Feature/Prop/ScanningProps/ScanProps.h"
 
-#include "Others/EnumClass/PropWidgetUpdateEnum.h"
+#include "Others/EnumClass/CharacterWidgetUpdateEnum.h"
 
 #include "NiagaraSystem.h"
 
@@ -25,7 +25,7 @@
 
 DECLARE_DELEGATE(FOnPlayerMeshChange);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPropGetDamaged, float);
-DECLARE_DELEGATE_TwoParams(FOnPlayerWidgetUpdate,EPropWidgetUpdate,bool);
+DECLARE_DELEGATE_TwoParams(FOnPlayerWidgetUpdate,ECharacterWidgetUpdate,bool);
 
 UCLASS()
 class SEEKANDSNEAK_3D_API APropPlayer : public ACharacter , public IPropPlayerInterface
@@ -47,7 +47,7 @@ public:
 
 	APropPlayer* GetPropPlayerRef()override;
 
-	void OnPlayerWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)override;
+	void OnPlayerWidgetUpdate(ECharacterWidgetUpdate UpdateType, bool IsReset)override;
 
 	FOnPlayerMeshChange PropMeshChanged;
 

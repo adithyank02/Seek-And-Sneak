@@ -4,9 +4,13 @@
 
 #include "CoreMinimal.h"
 
-enum class EPropWidgetUpdate : uint8
+enum class ECharacterWidgetUpdate : uint8
 {
+	//Prop
 	OnMorphUpdate,
 	OnCloneUpdate,
 	OnSmokeBombUpdate,
+
+	//Hunter
+	OnGrenadeUpdate
 };

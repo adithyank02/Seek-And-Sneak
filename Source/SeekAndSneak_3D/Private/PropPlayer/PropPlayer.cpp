@@ -73,7 +73,7 @@ APropPlayer* APropPlayer::GetPropPlayerRef()
 	return this;
 }
 
-void APropPlayer::OnPlayerWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)
+void APropPlayer::OnPlayerWidgetUpdate(ECharacterWidgetUpdate UpdateType, bool IsReset)
 {
 	PropWidgetUpdate.ExecuteIfBound(UpdateType, IsReset);
 }
@@ -191,8 +191,8 @@ void APropPlayer::MorphObjectFunction()
 		ClonedCount = 0; 
 
 		//Updating The Widget Accoridng 
-		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnMorphUpdate, false);
-		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnCloneUpdate, true);
+		PropWidgetUpdate.ExecuteIfBound(ECharacterWidgetUpdate::OnMorphUpdate, false);
+		PropWidgetUpdate.ExecuteIfBound(ECharacterWidgetUpdate::OnCloneUpdate, true);
 
 		GetWorld()->GetTimerManager().SetTimer(MorphCoolDownTimer, this, &APropPlayer::UpdateMorphCoolDownTime, 1, true);
 	}
@@ -215,7 +215,7 @@ void APropPlayer::UpdateMorphCoolDownTime()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(MorphCoolDownTimer);
 
-		PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnMorphUpdate, true);
+		PropWidgetUpdate.ExecuteIfBound(ECharacterWidgetUpdate::OnMorphUpdate, true);
 	}
 }
 
@@ -236,7 +236,7 @@ void APropPlayer::PropCloneFunction()
 		}
 		ClonedCount++;
 
-		if (ClonedCount == TotalCloneCount)PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnCloneUpdate, false);
+		if (ClonedCount == TotalCloneCount)PropWidgetUpdate.ExecuteIfBound(ECharacterWidgetUpdate::OnCloneUpdate, false);
 	}
 }
 
@@ -267,7 +267,7 @@ void APropPlayer::SmokeBombFunction()
 		}
 		TotalSmokeBombCount--;
 
-		if (TotalSmokeBombCount == 0)PropWidgetUpdate.ExecuteIfBound(EPropWidgetUpdate::OnSmokeBombUpdate, false);
+		if (TotalSmokeBombCount == 0)PropWidgetUpdate.ExecuteIfBound(ECharacterWidgetUpdate::OnSmokeBombUpdate, false);
 	}
 	
 }

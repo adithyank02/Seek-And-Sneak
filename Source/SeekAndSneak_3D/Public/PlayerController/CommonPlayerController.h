@@ -14,7 +14,7 @@
 #include "Others/EnumClass/CharacterTypeEnum.h"
 #include "CommonPlayerController.generated.h"
 
-
+class UPauseGameWidget;
 
 /**
  * 
@@ -58,6 +58,11 @@ private:
 
 	//Mapping Responsible For Storing Widget Class 
 	TMap<EWidgetType,TUniquePtr<CreateWidgetAbstract>>WidgetLibrary;
+    
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
+
+	UPauseGameWidget* PauseGameWidget;
 
 public:
 
@@ -147,10 +152,9 @@ private:
 	UInputAction*  PlayerJumpAction;
 
 	//Toggle Button
-	bool bPauseMenuOpened;
+	bool bPauseMenuOpened ;
 
-	const int InGameUIIndex = 0;
-	const int PauseMenuIndex = 1;
+	bool bOnce;
 
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* PauseMenuAction;

@@ -16,6 +16,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Widgets/PreMatch/CharacterPreMatchWidget.h"
+#include "Widgets/PauseGameWidget.h"
 
 #include "Others/Create Widget/ConcreteClass/CreatePreMatchWidget.h"
 #include "Others/Create Widget/ConcreteClass/CreateInMatchWidget.h"
@@ -59,7 +60,9 @@ ECharacterType ACommonPlayerController::GetCharacterType()
 /*----------------------------Interface Function---------------------------------*/
 
 ACommonPlayerController::ACommonPlayerController()
-{	
+{
+	bPauseMenuOpened = true;
+
 	//Creating Instance And Store In Map With Enum
 	WidgetLibrary.Add(EWidgetType::PreMatchWidget,MakeUnique<CreatePreMatchWidget>());
 	WidgetLibrary.Add(EWidgetType::InMatchWidget, MakeUnique<CreateInMatchWidget>());
@@ -69,6 +72,17 @@ ACommonPlayerController::ACommonPlayerController()
 void ACommonPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsLocalController())
+	{
+		if (PauseGameWidgetClass)
+		{
+			PauseGameWidget = CreateWidget<UPauseGameWidget>(this, PauseGameWidgetClass);
+			PauseGameWidget->AddToViewport();
+			PauseGameWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+
 }
 
 
@@ -192,22 +206,27 @@ void ACommonPlayerController::ShowMatchEndWidget()
 
 void ACommonPlayerController::PauseMenuFunction()
 {
-	if (bPauseMenuOpened)
-	{
-		SetInputMode(FInputModeGameOnly());
-		bShowMouseCursor = false;
-		//PasueMenu Is Opened -- So Need To be Closed
-		WidgetLibrary[EWidgetType::InMatchWidget]->ChangeWidgetSwitcherIndex(InGameUIIndex); // Switching Of Pause Menu
-	}
-	else
-	{
-		SetInputMode(FInputModeGameAndUI());
-		bShowMouseCursor = true;
-		//PauseMenu Is Closed -- So Need To Be OPen
-		WidgetLibrary[EWidgetType::InMatchWidget]->ChangeWidgetSwitcherIndex(PauseMenuIndex); //Switching To Pause Menu
-	}
 	bPauseMenuOpened = !bPauseMenuOpened;
+
+	if (bPauseMenuOpened) 
+	{
+		if (PauseGameWidget)
+		{
+			bShowMouseCursor = true;
+			PauseGameWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else 
+	{
+		if (PauseGameWidget)
+		{
+			PauseGameWidget->SetVisibility(ESlateVisibility::Hidden);
+			bShowMouseCursor = false;
+		}
+	}
+
 }
+
 
 
 //Mapping Context With Full Controlls Enabled
@@ -249,7 +268,7 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 
 				EnhancedInput->BindAction(HunterThrowGrenadeAction, ETriggerEvent::Completed, HunterPlayer, &AHunterPlayer::ThrowGrenadeFunction);
 
-				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started,this, &ACommonPlayerController::PauseMenuFunction);
+				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Completed,this, &ACommonPlayerController::PauseMenuFunction);
 
 				HunterPlayer->TriggerPropProximity();
 			}
@@ -294,7 +313,7 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 
 				EnhancedInput->BindAction(PropSmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
 
-				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Started, this, &ACommonPlayerController::PauseMenuFunction);
+				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Completed, this, &ACommonPlayerController::PauseMenuFunction);
 
 				PropPlayer->SetScanningProp();
 

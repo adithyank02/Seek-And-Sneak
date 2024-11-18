@@ -12,10 +12,11 @@
 #include "PlayerState/InputState/InputStateAbstract.h"
 
 #include "Feature/Hunter/PropProximity/PropProximityNotifier.h"
-
+#include "Others/EnumClass/CharacterWidgetUpdateEnum.h"
 #include "Interface/Player/HunterPlayerInterface.h"
 #include "HunterPlayer.generated.h"
 
+DECLARE_DELEGATE_OneParam(FOnHunterWidgetUpdate,ECharacterWidgetUpdate);
 
 UCLASS()
 class SEEKANDSNEAK_3D_API AHunterPlayer : public ACharacter , public IHunterPlayerInterface
@@ -32,8 +33,12 @@ public:
 
 	USkeletalMeshComponent* GetWeaponMeshComp() override;
 	void SetFireWeaponLoc(FVector& StartPoint, FVector& ControlFrowardVector) override;
+
 	UPropProximityNotifier* GetPropProximityInstance() override;
+
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeTimeProps)const override;
+
+	virtual AHunterPlayer* GetHunterPlayerRef() override;
 
 private:
 
@@ -46,9 +51,6 @@ private:
 
 	UPROPERTY(Replicated);
 	bool IsPlayerRunning;
-
-	float WeaponBulletCount;
-	float MaxBulletCount;
 
 	//Storing The Ref To Controller
 	UPROPERTY()
@@ -74,10 +76,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	FOnHunterWidgetUpdate WidgetUpdate;
+
 private:
 
-	void OnPropProximityChange(EProximityRange NewProximityRange);
-	//Trigger The Proximity
 	void StartPropProximity();
 
 	void PossessedBy(AController* NewController)override;
@@ -129,6 +131,13 @@ public:
 	void FireWeapon_OnMulticast(FVector StartPoint, FVector EndPoint);
 //----------------------------------------------------------------------->>>>> Weapon Fire Function
 
+//----------------------------------------------------------------------->>>>> Throw Grenade Function
+	
+	UPROPERTY(EditDefaultsOnly)
+	int TotalGrenadeCount;
+
+	int CurrentGrenadeCount;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor>GrenadeActorClass;
 

@@ -13,9 +13,9 @@ public:
 	ScanProps(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter);
 	~ScanProps();
 
-
-     ACharacter* Player;
 	TArray<UStaticMesh*>MorphableMeshArray;
+     ACharacter* Player;
+	
 
 	bool bMeshhighlighted;
 	UStaticMeshComponent* Highlightedmeshcomp;

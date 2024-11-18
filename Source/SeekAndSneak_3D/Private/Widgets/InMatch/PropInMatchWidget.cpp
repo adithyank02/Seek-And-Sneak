@@ -17,11 +17,6 @@
 
 UPropInMatchWidget::UPropInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	ConstructorHelpers::FClassFinder<UPauseGameWidget>WidgetClass(TEXT("/Game/Widgets/Menu/BP_PauseGameWidget.BP_PauseGameWidget_C"));
-	if (WidgetClass.Succeeded())
-	{
-		PauseGameWidgetClass = WidgetClass.Class;
-	}
 	
 }
 
@@ -37,16 +32,6 @@ void UPropInMatchWidget::NativeConstruct()
 
 			Interface->GetPropHuntGameState()->OnHunterPlayerCountChange.AddUObject(this, &UPropInMatchWidget::OnHunterPlayerTotalCountChange);
 			Interface->GetPropHuntGameState()->OnPropPlayerCountChange.AddUObject(this, &UPropInMatchWidget::OnPropPlayerTotalCountChange);
-		}
-	}
-
-	//Adding Widget To Widget Switcher
-	if (PauseGameWidgetClass)
-	{
-		PauseGameWidget = CreateWidget<UPauseGameWidget>(GetOwningPlayer(), PauseGameWidgetClass);
-		if (PauseGameWidget)
-		{
-			WidgetSwitcher->AddChild(PauseGameWidget);
 		}
 	}
 
@@ -72,11 +57,6 @@ void UPropInMatchWidget::SetTextOnMatchTimerUpdate(int32 TimerValue)
 	InMatchTimerText_Seconds->SetText(FText::AsNumber(Seconds));
 }
 
-void UPropInMatchWidget::ChangeIndexOnWidgetSwitcher(int Index)
-{
-	WidgetSwitcher->SetActiveWidgetIndex(Index);
-}
-
 void UPropInMatchWidget::SetPlayerHealthOnDamage(float DamageCaused)
 {
 	float InPercentage = DamageCaused * 0.1;
@@ -94,15 +74,16 @@ void UPropInMatchWidget::OnPropPlayerTotalCountChange(int PropPlayerCount)
 	PropTotalAliveCount->SetText(FText::AsNumber(PropPlayerCount));
 }
 
-void UPropInMatchWidget::OnWidgetUpdate(EPropWidgetUpdate UpdateType, bool IsReset)
+void UPropInMatchWidget::OnWidgetUpdate(ECharacterWidgetUpdate UpdateType, bool IsReset)
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Hello World"));
 	switch (UpdateType)
 	{
-	case EPropWidgetUpdate::OnMorphUpdate: IsReset ? MorphAbilityImage->SetOpacity(1) : MorphAbilityImage->SetOpacity(0.5);
+	case ECharacterWidgetUpdate::OnMorphUpdate: IsReset ? MorphAbilityImage->SetOpacity(1) : MorphAbilityImage->SetOpacity(0.5);
 		break;
-	case EPropWidgetUpdate::OnCloneUpdate: IsReset ? CloneAbilityImage->SetOpacity(1) : CloneAbilityImage->SetOpacity(0.5);
+	case ECharacterWidgetUpdate::OnCloneUpdate: IsReset ? CloneAbilityImage->SetOpacity(1) : CloneAbilityImage->SetOpacity(0.5);
 		break;
-	case EPropWidgetUpdate::OnSmokeBombUpdate: SmokeBombAbilityImage->SetOpacity(0.5);
+	case ECharacterWidgetUpdate::OnSmokeBombUpdate: SmokeBombAbilityImage->SetOpacity(0.5);
 		break;
 	}
 }
