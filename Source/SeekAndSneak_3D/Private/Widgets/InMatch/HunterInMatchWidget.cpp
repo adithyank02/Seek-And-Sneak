@@ -11,7 +11,6 @@
 #include "GameState/PropHuntGameState.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 UHunterInMatchWidget::UHunterInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

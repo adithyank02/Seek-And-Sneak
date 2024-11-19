@@ -8,7 +8,6 @@
 #include "Interface/GameMode/PropHuntGameModeInterface.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
-#include "Kismet/KismetSystemLibrary.h"
 
 APropHuntGameState* APropHuntGameState::GetPropHuntGameState()
 {

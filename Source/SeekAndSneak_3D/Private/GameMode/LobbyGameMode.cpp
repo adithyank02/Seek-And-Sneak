@@ -8,7 +8,6 @@
 #include "Camera/CameraComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
-#include "Kismet/KismetSystemLibrary.h"
 
 void ALobbyGameMode::OnPostLogin(AController* NewPlayerController)
 {

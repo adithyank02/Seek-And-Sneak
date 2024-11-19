@@ -3,7 +3,6 @@
 
 #include "Others/LobbyCharacter.h"
 
-#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ALobbyCharacter::ALobbyCharacter()
@@ -42,7 +41,6 @@ void ALobbyCharacter::SetPlayerName_Multicast_Implementation(const FString& Play
 	PlayerNameText->SetText(FText::FromString(PlayerName));
 	PlayerNameText->SetVisibility(true);
 
-	UKismetSystemLibrary::PrintString(GetWorld(), PlayerName, true, true, FLinearColor::Blue, 10);
 }
 
 

@@ -5,7 +5,6 @@
 #include "Widgets/Base Class/ButtonBaseWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Interface/GameInstance/PropHuntGameInstInterface.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCreateSessionWidget::NativeConstruct()
@@ -109,7 +108,6 @@ FString UCreateSessionWidget::RandomSessionCodeGenerator()
 		int Index = FMath::RandRange(0, StringTotalLength-1);
 		GeneratedCode += Characters[Index];
 	}
-	UKismetSystemLibrary::PrintString(GetWorld(),GeneratedCode, true, true, FLinearColor::Yellow, 60);
 	return GeneratedCode;
 }
 

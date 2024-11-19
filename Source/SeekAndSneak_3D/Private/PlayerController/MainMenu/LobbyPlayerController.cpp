@@ -11,7 +11,6 @@
 #include "GameFramework/PlayerState.h"
 
 #include "Widgets/LobbyWidget.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
@@ -84,26 +83,15 @@ void ALobbyPlayerController::SetInputModeType(UUserWidget* CreatedWidget)
 
 void ALobbyPlayerController::SetPlayerName()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("On Posses Called"), true, true, FLinearColor::Red, 2);
+	
 
 	if (IPlayerStateInterface* PlayerStateInterface = Cast<IPlayerStateInterface>(GetPlayerState<APlayerState>()))
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Game STate Called"), true, true, FLinearColor::Green, 2);
 		if (ALobbyCharacter* PlayerCharacter = Cast<ALobbyCharacter>(GetPawn()))
 		{
 			PlayerCharacter->ShowPlayerName(PlayerStateInterface->GetPlayerName());
-
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Pawn Called"), true, true, FLinearColor::White, 2);
-
 		}
-		else
-		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Pawn Not Called"), true, true, FLinearColor::Black, 2);
-		}
-	}
-	else
-	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Game STate Not Called"), true, true, FLinearColor::Blue, 2);
+
 	}
 }
 

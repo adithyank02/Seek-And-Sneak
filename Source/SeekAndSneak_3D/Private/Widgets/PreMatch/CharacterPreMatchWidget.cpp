@@ -8,7 +8,6 @@
 #include "Interface/Controller/ControllerInterface.h"
 #include "Interface/GameState/GameStateInterface.h"
 
-#include "Kismet/KismetSystemLibrary.h"
 
 void UCharacterPreMatchWidget::NativeConstruct()
 {

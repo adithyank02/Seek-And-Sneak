@@ -9,8 +9,7 @@
 #include "Interface/Player/PropPlayerInterface.h"
 
 #include "Runtime/Engine/Public/TimerManager.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "DrawDebugHelpers.h"
+
 
 OnPlayerFire::OnPlayerFire()
 {
@@ -78,9 +77,6 @@ void OnPlayerFire::WeaponFiring(ACharacter* Player)
 			ParticleTransform.SetLocation(HitResult.ImpactPoint);
 			UGameplayStatics::SpawnEmitterAtLocation(Player->GetWorld(), WeaponBulletHitParticle, ParticleTransform, true, EPSCPoolMethod::AutoRelease);
 		}
-	}
-
-	DrawDebugLine(Player->GetWorld(), StartPoint, EndPoint, FColor::Red,false,3);
-	
+	}	
 }
 

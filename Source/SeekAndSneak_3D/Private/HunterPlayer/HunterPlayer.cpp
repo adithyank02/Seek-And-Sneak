@@ -15,11 +15,6 @@
 #include "Interface/Feature/Hunter/PropProximityInterface.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
-//#include "PlayerController/CommonPlayerController.h"
-//#include "PlayerController/HunterPlayerController.h"
-
-#include "Kismet/KismetSystemLibrary.h"
-
 bool AHunterPlayer::CanRun()
 {
 	return IsPlayerRunning;

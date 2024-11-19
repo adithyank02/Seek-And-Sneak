@@ -6,8 +6,7 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
-#include "Kismet/KismetSystemLibrary.h"
+
 
 OnPropMorph::OnPropMorph()
 {
@@ -60,8 +59,6 @@ void OnPropMorph::CastLineTrace(ACharacter* Player)
 	EndPoint = StartPoint;
 
 	IsTraceHit = Player->GetWorld()->SweepSingleByObjectType(TraceHitResult, StartPoint, EndPoint, FQuat::Identity, ObjectQuerys, FCollisionShape::MakeSphere(TraceRadius), TraceCollisionParams);
-	
-	DrawDebugSphere(Player->GetWorld(), EndPoint, TraceRadius, 12, IsTraceHit ? FColor::Red : FColor::Green, false, 5);
 
 	if (IsTraceHit && TraceHitResult.GetActor()->IsA(AStaticMeshActor::StaticClass()))
 	{

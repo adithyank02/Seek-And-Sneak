@@ -7,8 +7,7 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 
-#include "DrawDebugHelpers.h"
-#include "Kismet/KismetSystemLibrary.h"
+
 
 ScanProps::ScanProps(TArray<UStaticMesh*> PropArray, ACharacter* PlayerCharacter) : MorphableMeshArray(PropArray) , Player(PlayerCharacter)
 {
@@ -33,8 +32,6 @@ void ScanProps::StartScanning()
 	EndPoint = StartPoint;
 
 	Player->GetWorld()->SweepSingleByObjectType(TraceHitResult, StartPoint, EndPoint, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(TraceRadius),TraceQuery);
-
-	DrawDebugSphere(Player->GetWorld(), EndPoint, TraceRadius, 6, FColor::Blue, false, 1);
 
 	/*for (const FHitResult& HitResult: TraceHitArray)
 	{*/

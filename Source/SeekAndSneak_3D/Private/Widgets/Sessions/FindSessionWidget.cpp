@@ -9,7 +9,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework\PlayerController.h"
 #include "Runtime/Engine/Public/TimerManager.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 UFindSessionWidget::UFindSessionWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

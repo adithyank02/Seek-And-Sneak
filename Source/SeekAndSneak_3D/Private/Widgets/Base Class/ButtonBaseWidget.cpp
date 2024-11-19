@@ -6,7 +6,7 @@
 #include "Components/TextBlock.h"
 #include "SlateCore.h"
 
-#include "Kismet/KismetSystemLibrary.h"
+
 
 
 void UButtonBaseWidget::SynchronizeProperties()

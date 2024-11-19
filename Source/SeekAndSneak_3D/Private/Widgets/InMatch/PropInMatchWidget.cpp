@@ -13,7 +13,6 @@
 
 #include "GameState/PropHuntGameState.h"
 
-#include "Kismet/KismetSystemLibrary.h"
 
 UPropInMatchWidget::UPropInMatchWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -76,7 +75,6 @@ void UPropInMatchWidget::OnPropPlayerTotalCountChange(int PropPlayerCount)
 
 void UPropInMatchWidget::OnWidgetUpdate(ECharacterWidgetUpdate UpdateType, bool IsReset)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Hello World"));
 	switch (UpdateType)
 	{
 	case ECharacterWidgetUpdate::OnMorphUpdate: IsReset ? MorphAbilityImage->SetOpacity(1) : MorphAbilityImage->SetOpacity(0.5);
