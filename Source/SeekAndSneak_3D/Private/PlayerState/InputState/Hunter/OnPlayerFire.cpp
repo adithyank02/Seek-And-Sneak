@@ -77,6 +77,6 @@ void OnPlayerFire::WeaponFiring(ACharacter* Player)
 			ParticleTransform.SetLocation(HitResult.ImpactPoint);
 			UGameplayStatics::SpawnEmitterAtLocation(Player->GetWorld(), WeaponBulletHitParticle, ParticleTransform, true, EPSCPoolMethod::AutoRelease);
 		}
-	}	
+	}
 }
 

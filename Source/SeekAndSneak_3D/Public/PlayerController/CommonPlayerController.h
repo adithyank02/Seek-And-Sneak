@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Camera/PlayerCameraManager.h"
 #include "Interface/Controller/ControllerInterface.h"
 
 #include "Others/Create Widget/CreateWidgetAbstract.h"
@@ -63,6 +64,15 @@ private:
 	TSubclassOf<UPauseGameWidget>PauseGameWidgetClass;
 
 	UPauseGameWidget* PauseGameWidget;
+
+	//Camera Manger For Different Character
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APlayerCameraManager>HunterCameraManager;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APlayerCameraManager>PropCameraManager;
+
+	void SetupCameraManager(TSubclassOf<APlayerCameraManager>& PlyerCamManger);
 
 public:
 

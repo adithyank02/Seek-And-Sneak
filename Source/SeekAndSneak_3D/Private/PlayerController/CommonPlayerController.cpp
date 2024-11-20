@@ -24,8 +24,6 @@
 
 
 
-
-
 /*-----------------------------Interface Function--------------------------------*/
 void ACommonPlayerController::SetControllerInputBinding(ECharacterType CharacterType)
 {
@@ -152,6 +150,7 @@ void ACommonPlayerController::RemovePropInputRef()
 	delete PropSmokeBombAction;
 }
 
+
 /*------------------Client Rpc---------------------*/
 
 void ACommonPlayerController::SetClientPreMatchWidget_Implementation()
@@ -271,6 +270,8 @@ void ACommonPlayerController::BindHunterPlayerInputs()  //Hunter Input Bindings
 				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Completed,this, &ACommonPlayerController::PauseMenuFunction);
 
 				HunterPlayer->TriggerPropProximity();
+
+				SetupCameraManager(HunterCameraManager);
 			}
 			//Setting The Pre Match MappingContext For Until The Prop Hide In Game
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -296,30 +297,55 @@ void ACommonPlayerController::BindPropPlayerInputs()   //Prop Input Bindings
 			Subsystem->AddMappingContext(PropMappingContext, 0);
 		}
 
-		if (UEnhancedInputComponent* EnhancedInput = Cast <UEnhancedInputComponent>(this->InputComponent))
-		{
-			if (APropPlayer* PropPlayer = Cast<APropPlayer>(GetPawn()))
+			if (UEnhancedInputComponent* EnhancedInput = Cast <UEnhancedInputComponent>(this->InputComponent))
 			{
-				//Binding InputAction And The Correspoding Functions
-				EnhancedInput->BindAction(PropMoveAction, ETriggerEvent::Triggered, PropPlayer, &APropPlayer::MoveFunction);
-				EnhancedInput->BindAction(PropLookAction, ETriggerEvent::Triggered, PropPlayer, &APropPlayer::LookFunction);
+				if (APropPlayer* PropPlayer = Cast<APropPlayer>(GetPawn()))
+				{
+					//Binding InputAction And The Correspoding Functions
+					EnhancedInput->BindAction(PropMoveAction, ETriggerEvent::Triggered, PropPlayer, &APropPlayer::MoveFunction);
+					EnhancedInput->BindAction(PropLookAction, ETriggerEvent::Triggered, PropPlayer, &APropPlayer::LookFunction);
 
-				EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StartJumpFunction);
-				EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StopJumpFunction);
+					EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StartJumpFunction);
+					EnhancedInput->BindAction(PlayerJumpAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::StopJumpFunction);
 
-				EnhancedInput->BindAction(PropMorphAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::MorphObjectFunction);
+					EnhancedInput->BindAction(PropMorphAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::MorphObjectFunction);
 
-				EnhancedInput->BindAction(PropCloneAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::PropCloneFunction);
+					EnhancedInput->BindAction(PropCloneAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::PropCloneFunction);
 
-				EnhancedInput->BindAction(PropSmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
+					EnhancedInput->BindAction(PropSmokeBombAction, ETriggerEvent::Started, PropPlayer, &APropPlayer::SmokeBombFunction);
 
-				EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Completed, this, &ACommonPlayerController::PauseMenuFunction);
+					EnhancedInput->BindAction(PauseMenuAction, ETriggerEvent::Completed, this, &ACommonPlayerController::PauseMenuFunction);
 
-				PropPlayer->SetScanningProp();
+					PropPlayer->SetScanningProp(); 
 
+					SetupCameraManager(PropCameraManager);
+
+				}
 			}
-		}
 
 	}
+}
+
+void ACommonPlayerController::SetupCameraManager(TSubclassOf<APlayerCameraManager>& PlyerCamManger)
+{
+	//Destroying The Default PlayerManger If It Exist
+	if (PlayerCameraManager)
+	{
+		PlayerCameraManager->Destroy();
+		PlayerCameraManager = nullptr;
+	}
+
+	//Creating New Object Of Custom Camera Manger To Use
+	PlayerCameraManager = NewObject<APlayerCameraManager>(this, PlyerCamManger);
+
+	if (PlayerCameraManager)
+	{
+		PlayerCameraManager->InitializeFor(this);
+
+		//Ensuing The CameraManager Use The View Of Pawn Camera Component
+		SetViewTargetWithBlend(GetPawn());
+	
+	}
+
 }
 
