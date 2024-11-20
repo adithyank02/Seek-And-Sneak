@@ -106,12 +106,11 @@ void UFindSessionWidget::OnFindSessionCompleted(bool bIsSucess)
 			FString RoomCode;
 			for (const FOnlineSessionSearchResult& SearchInfo : SessionSetting->SearchResults)
 			{
-				//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Loop Started"), true, true, FLinearColor::Blue, 5);
 				if (SearchInfo.Session.SessionSettings.Get(RoomCodeKey, RoomCode))
 				{
 					if (GiveSessionCode == RoomCode)
 					{
-						UKismetSystemLibrary::PrintString(GetWorld(), TEXT("JOIN SESSION CALLED"));
+						
 						JoinSession(SearchInfo);
 						return;
 					}

@@ -8,6 +8,7 @@
 #include "CharacterPreMatchWidget.generated.h"
 
 class UTextBlock;
+class UImage;
 class IGameStateInterface;
 
 /**
@@ -35,6 +36,26 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ShowTimerText;
+
+	//Prop Power Up components 
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* PropPowerUpImage_1;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* PropPowerUpImage_2;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* PropPowerUpImage_3;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PropPowerUpText_1;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PropPowerUpText_2;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PropPowerUpText_3;
 
 	/*For Setting The CharacterType Of The Controller*/
 	void SetCharacterType();

@@ -3,6 +3,7 @@
 
 #include "Widgets/PreMatch/CharacterPreMatchWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 
 #include "GameState/PropHuntGameState.h"
 #include "Interface/Controller/ControllerInterface.h"
@@ -20,6 +21,14 @@ void UCharacterPreMatchWidget::NativeConstruct()
 			Interface->GetPropHuntGameState()->OnMatchTimerChange.AddUObject(this, &UCharacterPreMatchWidget::SetTextOnMatchTimerUpdate);
 		}
 	}
+
+
+	 PropPowerUpImage_1->SetVisibility(ESlateVisibility::Hidden);
+     PropPowerUpImage_2->SetVisibility(ESlateVisibility::Hidden);
+     PropPowerUpImage_3->SetVisibility(ESlateVisibility::Hidden);
+     PropPowerUpText_1->SetVisibility(ESlateVisibility::Hidden);
+     PropPowerUpText_2->SetVisibility(ESlateVisibility::Hidden);
+     PropPowerUpText_3->SetVisibility(ESlateVisibility::Hidden); 
 
 	SetCharacterType();
 
@@ -60,6 +69,14 @@ void UCharacterPreMatchWidget::SetWidgetText()
         CharacterText = FString("Prop");
         CharacterObjective = FString("Hide from the hunter and survive till the end");
 		ShowingTimeText = FString("HIDING TIME ENDS IN");
+
+		//Showing the power up inputs to prop since they have movement at beginning
+		PropPowerUpImage_1->SetVisibility(ESlateVisibility::Visible);
+		PropPowerUpImage_2->SetVisibility(ESlateVisibility::Visible);
+		PropPowerUpImage_3->SetVisibility(ESlateVisibility::Visible);
+		PropPowerUpText_1->SetVisibility(ESlateVisibility::Visible);
+		PropPowerUpText_2->SetVisibility(ESlateVisibility::Visible);
+		PropPowerUpText_3->SetVisibility(ESlateVisibility::Visible);
 	}
 	CharacterTypeText->SetText(FText::FromString(CharacterText));
 	CharacterObjectiveText->SetText(FText::FromString(CharacterObjective));
