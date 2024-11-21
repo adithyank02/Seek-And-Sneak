@@ -31,8 +31,4 @@
 
 Feel free to contribute! Open issues or submit pull requests if you'd like to improve the game or add new features.
 
-## Contact
-
-For any inquiries or feedback, feel free to reach out to me on GitHub or email me at **adithyank2021@example.com**.
-
 
