@@ -1,5 +1,8 @@
 # Seek And Sneak 3D
 
+##Note!!
+This repository is the secondary repository , the first repository was corrupted due to lfs has reached its limit , hence all the commit history on the repo one has been not accessible so you won't find history of the game from the beginnning
+
 ## Overview
 
 ** Seek And Sneak 3D ** is a multiplayer game built in **Unreal Engine** that reimagines the classic hide-and-seek genre. Players are split into two teams—**Hunters** and **Props**—each with unique abilities designed to create a more strategic and challenging experience. The goal for **Hunters** is to locate and eliminate the **Props**, while the **Props** must use their abilities to survive and evade capture until time runs out.
