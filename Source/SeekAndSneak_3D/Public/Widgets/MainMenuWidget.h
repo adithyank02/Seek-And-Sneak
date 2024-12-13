@@ -40,6 +40,9 @@ private:
 	UButtonBaseWidget* ExitGameButton;
 
 	UPROPERTY(meta = (BindWidget))
+	UButtonBaseWidget* RateGameButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UEditableTextBox* EnterNameEditableBox;
 
 	UPROPERTY(meta = (BindWidget))
@@ -56,6 +59,9 @@ private:
 	void OnCreateSessionButtonClicked();
 	UFUNCTION()
 	void OnExitGameButtonClicked();
+
+	UFUNCTION()
+	void OnRateGameButtonClicked();
 
 	//Widget Switcher
 	UPROPERTY(meta = (BindWidget))

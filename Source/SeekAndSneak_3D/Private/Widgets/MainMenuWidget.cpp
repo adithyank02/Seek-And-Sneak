@@ -31,6 +31,7 @@ void UMainMenuWidget::NativeConstruct()
 
 	CreateSessionButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::OnCreateSessionButtonClicked);
 	ExitGameButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::OnExitGameButtonClicked);
+	RateGameButton->BaseButtonClicked.BindUObject(this, &UMainMenuWidget::OnRateGameButtonClicked);
 
 	SessionWidget = CreateWidget<USessionWidget>(this,SessionWidgetClass);
 	WidgetSwitcher->AddChild(SessionWidget);
@@ -80,6 +81,13 @@ void UMainMenuWidget::OnCreateSessionButtonClicked()
 void UMainMenuWidget::OnExitGameButtonClicked()
 {
 	UKismetSystemLibrary::QuitGame(GetWorld(),nullptr, EQuitPreference::Quit, false);
+}
+
+void UMainMenuWidget::OnRateGameButtonClicked()
+{
+	FString ReviewUrl = TEXT("https://adithyankdev.github.io/2DGame_ReviewPage/");
+
+	FPlatformProcess::LaunchURL(*ReviewUrl, nullptr, nullptr);
 }
 
 void UMainMenuWidget::SessionWidgetBackButton()
